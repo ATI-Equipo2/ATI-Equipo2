@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Blog de Sofía</title>
+</head>
+
+<body>
+    <h1>Mis Publicaciones</h1>
+    {% for post in posts %}
+    <article>
+        <h2>{{ post.title }}</h2>
+        <p><small>Publicado por: {{ post.author }} el {{
+                post.published_date }}</small></p>
+        <p>{{ post.text|linebreaksbr }}</p>
+    </article>
+    <hr>
+    {% empty %}
+    <p>No hay publicaciones disponibles todavía.</p>
+    {% endfor %}
+</body>
+
+</html>
