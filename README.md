@@ -29,28 +29,36 @@ Para mantener un código limpio y homogéneo nos basaremos en lo siguiente:
 * Como vamos a trabajar con Django nos enfocaremos en establecer una programación orientada a objetos
 * Usar MVC de Django
 
-# gitActions
+# GitActions. Automatización del Tablero en GitHub Projects
 
-Nuestro objetivo es que las tarjetas del proyecto *mAsTIcotas* se muevan automáticamente a la columna de completado cuando el código se integra a la rama main
+Nuestro objetivo es que las tarjetas del proyecto **mAsTIcotas** se muevan automáticamente a la columna de *Completado* (Done) cuando el código se integra definitivamente a la rama `main`.
 
 ## ¿Cómo funciona?
 
-Hemos activado el flujo de trabajo nativo de GitHub Projects llamado *"Pull request merged"*.
+Hemos activado el flujo de trabajo nativo de GitHub Projects. 
 
-Esta automatización escucha cada vez que un Pull Request es aceptado y fusionado. Si el PR está correctamente vinculado a un Issue, el sistema se encarga de cerrar el Issue y mover la tarjeta al estado final
+Esta automatización escucha en segundo plano cada vez que un Pull Request (PR) es aceptado y fusionado. Si el PR está correctamente vinculado a un *Issue* (tarea), el sistema interviene: cierra el *Issue* automáticamente y mueve la tarjeta correspondiente al estado final en nuestro tablero, manteniendo todo sincronizado sin esfuerzo manual.
 
 ## Instrucciones para el Equipo
 
-Para que la automatización funcione, todo el equipo debe seguir este estándar al crear un Pull Request desde la rama develop hacia main:
+Para que esta automatización funcione, es **obligatorio** que todo el equipo siga este estándar al crear un Pull Request hacia la rama `main`:
 
-1. Crear el Pull Request
-2. Vincular la tarjeta: En la descripción del Pull Request, se debe incluir una palabra clave seguida del símbolo # y el número de tu Issue. Por ejemplo:
-   
-   Closes #33
-   Fixes #33
-   Resolves #33
-   
-3. Revisión y Aprobación: el repositorio necesita aprobaciones; una persona revisará los cambios en la pestaña "Files changed" y seleccionará "Approve"
-4. Hacer el Merge
+**1. Abrir el Pull Request:** 
+Sube tu rama de desarrollo a GitHub y abre el PR apuntando hacia `main`.
 
-Al completarse el merge, la tarjeta vinculada viajará sola a la columna de finalizado del tablero
+**2. Vincular la tarjeta (Paso clave):** 
+En la caja de descripción del Pull Request, debes incluir una palabra clave exacta seguida del símbolo `#` y el número de tu Issue. 
+*Ejemplos válidos (usar solo uno):*
+* `Closes #33`
+* `Fixes #33`
+* `Resolves #33`
+
+**3. Pruebas Automáticas y Aprobación:** 
+Antes de fusionar el código, se deben cumplir dos barreras de seguridad:
+* **Integración Continua (CI):** El flujo de GitHub Actions ejecutará nuestras pruebas de Django. Debemos esperar a que termine y muestre el *check* verde (✅).
+* **Revisión de Código:** Otro miembro del equipo revisará los cambios en la pestaña *"Files changed"* y seleccionará *"Approve"*.
+
+**4. Ejecutar el Merge:** 
+Con las pruebas en verde y la aprobación del equipo, se procede a presionar *"Merge pull request"*.
+
+*Al completarse el merge, la tarjeta vinculada viajará sola a la columna de finalizado del tablero.*
