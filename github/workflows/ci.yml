@@ -1,0 +1,24 @@
+name: Django CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar el repositorio
+      uses: actions/checkout@v4
+
+    - name: Levantar la arquitectura con Docker Compose
+      run: docker compose up -d --build
+
+    - name: Esperar inicialización
+      run: sleep 10 
+
+    - name: Ejecutar pruebas de Django
+      run: docker compose exec -T web python manage.py test
