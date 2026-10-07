@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% if title %}
+            {{ title }}
+        {% else %}
+            Registrarse
+        {% endif %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <img id="pata-amarilla" src="{% static 'img/pata-amarilla.png' %}" alt="fondo de la pata amarilla">
+    <img id="pata-anaranjada" src="{% static 'img/pata-anaranjada.png' %}" alt="fondo de la pata anaranjada">
+
+    <h1 id="registro">{{ nombre }}</h1>
+
+    <img id="logo" src="{% static 'img/logo.jpeg' %}" alt="logo de la aplicación">
+
+    <div class="contenedor">
+        
+        <!-- Formulario de registro -->
+        {% block content %}
+
+
+        {% endblock %}
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% if title %}
+            {{ title }}
+        {% else %}
+            Feed
+        {% endif %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<header>
+    <input id="input-buscar" type="text" placeholder="Buscar">
+    <img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="">
+</header>
+
+
+<section>
+
+</section>
+
+
+<footer>
+    <div class="footer">
+        <p>Política de Privacidad</p>
+        <p>Términos de Servicio</p>
+        <p>Avisos Legales</p>
+    </div>
+</footer>
+
+<img id="icono-buscar-anaranjado1" src="{% static 'img/icono-buscar-anaranjado.png' %}" alt="">
+<img id="icono-perfil1" src="{% static 'img/icono-perfil.png' %}" alt="">
+<img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="">
+<img id="icono-mascota-feed" src="{% static 'img/icono-mascota.png' %}" alt="">
+<img id="icono-mensaje" src="{% static 'img/icono-mensaje.png' %}" alt="">
+<img id="icono-notificacion1" src="{% static 'img/icono-notificacion.png' %}" alt="">
+<img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="">
+<img id="icono-salir-marron" src="{% static 'img/icono-salir-marron.png' %}" alt="">
+<img id="icono-inicio1" src="{% static 'img/icono-inicio.png' %}" alt="">
+
+</body>
+</html>
