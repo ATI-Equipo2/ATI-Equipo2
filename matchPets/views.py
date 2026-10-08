@@ -2,14 +2,11 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 
-def registro(request):
-    return render(request, 'registro.html', {'nombre': 'Registrarse'})
+def signup(request):
+    return render(request, 'signup.html', {'name': 'Registrarse'})
 
-def inicio(request):
-    return render(request, 'index.html', {'nombre': 'Registrarse'})
-
-def inicio_sesion(request):
-    return render(request, 'inicio_sesion.html', {'nombre': 'Iniciar Sesión'})
+def login(request):
+    return render(request, 'login.html', {'name': 'Iniciar Sesión'})
 
 def agregar_mascota(request):
     return render(request, 'index.html', {'nombre': 'Agregar Mascota'})

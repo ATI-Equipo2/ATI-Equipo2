@@ -1,10 +1,9 @@
 from django.urls import path
-from .views import inicio, inicio_sesion, registro, agregar_mascota, base_navegacion, base_feed_mobile, base_perfil
+from .views import login, signup, agregar_mascota, base_navegacion, base_feed_mobile, base_perfil
 
 urlpatterns = [
-    path('', inicio, name='inicio'),
-    path('registro/', registro, name='registro'),
-    path('inicio_sesion/', inicio_sesion, name='inicio_sesion'),
+    path('', signup, name='registro'),
+    path('inicio_sesion/', login, name='inicio_sesion'),
     path('agregar_mascota/', agregar_mascota, name='agregar_mascota'),
     path('base_navegacion/', base_navegacion, name='base_navegacion'),
     path('base_feed_mobile/', base_feed_mobile, name='base_feed_mobile'),
