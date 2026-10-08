@@ -1,0 +1,164 @@
+/* Tus Mascotas y Sus Mascotas */
+
+.lista-mascotas {
+  padding: calc(30 * var(--u)) calc(84 * var(--u)) calc(40 * var(--u));
+  box-sizing: border-box;
+}
+
+.lista-encabezado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lista-atras {
+  display: none;
+}
+
+.lista-titulo {
+  margin: 0 0 calc(30 * var(--u));
+  color: var(--accent-color);
+  font-size: calc(48 * var(--u));
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.lista-grid {
+  display: grid;
+  grid-template-columns: repeat(2, calc(547 * var(--u)));
+  justify-content: center;
+  column-gap: calc(107 * var(--u));
+  row-gap: calc(30 * var(--u));
+}
+
+.tarjeta-mascota {
+  display: flex;
+  align-items: center;
+  gap: calc(34 * var(--u));
+  height: calc(328 * var(--u));
+  padding: 0 calc(32 * var(--u));
+  box-sizing: border-box;
+  background-color: var(--white);
+  color: var(--black);
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.tarjeta-mascota:hover {
+  transform: translateY(-2px);
+}
+
+.tarjeta-mascota img {
+  width: calc(146 * var(--u));
+  height: calc(184 * var(--u));
+  object-fit: cover;
+  object-position: center top;
+  border-radius: calc(8 * var(--u));
+  flex-shrink: 0;
+}
+
+.tarjeta-nombre {
+  margin: 0 0 calc(3 * var(--u));
+  color: var(--accent-color);
+  font-size: calc(40 * var(--u));
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.tarjeta-datos {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+}
+
+.tarjeta-datos p {
+  margin: 0;
+  font-size: calc(16 * var(--u));
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.lista-vacia {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--grey-400);
+  font-size: calc(24 * var(--u));
+  text-align: center;
+}
+
+.lista-agregar {
+  position: fixed;
+  right: calc(33 * var(--u));
+  bottom: calc(7% + 31 * var(--u));
+  display: flex;
+}
+
+.lista-agregar img {
+  width: calc(118 * var(--u));
+  height: calc(117 * var(--u));
+}
+
+@media (max-width: 640px) {
+  .lista-mascotas {
+    padding: calc(6 * var(--u)) calc(16 * var(--u)) 0 0;
+  }
+
+  .lista-encabezado {
+    justify-content: flex-start;
+    gap: calc(4 * var(--u));
+    padding-left: calc(5 * var(--u));
+  }
+
+  .lista-atras {
+    display: flex;
+  }
+
+  .lista-atras img {
+    width: calc(31 * var(--u));
+    height: calc(30 * var(--u));
+  }
+
+  .lista-titulo {
+    margin: 0;
+    font-size: calc(20 * var(--u));
+    font-weight: 600;
+  }
+
+  .lista-grid {
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+    row-gap: calc(28 * var(--u));
+    margin-top: calc(28 * var(--u));
+    padding-left: calc(21 * var(--u));
+  }
+
+  .tarjeta-mascota {
+    align-items: flex-start;
+    gap: calc(15 * var(--u));
+    height: auto;
+    padding: 0;
+    background-color: transparent;
+  }
+
+  .tarjeta-mascota img {
+    width: calc(95 * var(--u));
+    height: calc(113 * var(--u));
+  }
+
+  .tarjeta-nombre {
+    margin: 0;
+    font-size: calc(32 * var(--u));
+  }
+
+  .tarjeta-datos {
+    gap: calc(1 * var(--u));
+  }
+
+  .tarjeta-datos p {
+    font-size: calc(12 * var(--u));
+  }
+
+  .lista-agregar {
+    display: none;
+  }
+}

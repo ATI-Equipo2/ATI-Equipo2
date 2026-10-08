@@ -1,0 +1,52 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/perfil_detalle.css' %}">
+{% endblock %}
+
+{% block content %}
+<article class="perfil perfil--mascota perfil--mascota-propia">
+    <div class="perfil-foto">
+        <img src="{% static mascota.foto %}" alt="{% blocktranslate with nombre=mascota.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
+    </div>
+
+    <div class="perfil-info">
+        <div class="perfil-encabezado">
+            <h1 class="perfil-nombre">{{ mascota.nombre }}</h1>
+            <div class="perfil-acciones">
+                <a href="#" class="perfil-accion" aria-label="{% translate 'Editar perfil' %}">
+                    <img src="{% static 'img/perfil/icono-editar.svg' %}" alt="">
+                    <span>{% translate "Editar perfil" %}</span>
+                </a>
+            </div>
+        </div>
+
+        <ul class="perfil-datos">
+            <li class="perfil-dato">
+                <img src="{% static 'img/perfil/icono-calendario.svg' %}" alt="{% translate 'Edad' %}">
+                <span>{{ mascota.edad }}</span>
+            </li>
+            <li class="perfil-dato perfil-dato--normal">
+                <img src="{% static 'img/perfil/icono-especie.png' %}" alt="{% translate 'Especie y sexo' %}">
+                <span>{{ mascota.especie }} {{ mascota.sexo|lower }}</span>
+            </li>
+        </ul>
+
+        <p class="perfil-descripcion">{{ mascota.descripcion }}</p>
+
+        <h2 class="perfil-socializar">
+            <img src="{% static 'img/perfil/icono-socializar.png' %}" alt="">
+            <span>{% translate "En busca de socializar" %}</span>
+        </h2>
+        <p class="perfil-descripcion">{{ mascota.socializar }}</p>
+    </div>
+</article>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="#"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="#"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="#"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
+{% endblock %}

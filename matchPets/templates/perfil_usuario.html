@@ -1,0 +1,53 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/perfil_detalle.css' %}">
+{% endblock %}
+
+{% block iconos_header %}
+<a href="{% url 'tus_mascotas' %}"><img id="icono-mascota" src="{% static 'img/icono-mascota.png' %}" alt="{% translate 'Mis mascotas' %}"></a>
+{% endblock %}
+
+{% block content %}
+<article class="perfil">
+    <div class="perfil-foto">
+        <img src="{% static usuario.foto %}" alt="{% blocktranslate with nombre=usuario.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
+    </div>
+
+    <div class="perfil-info">
+        <div class="perfil-encabezado">
+            <h1 class="perfil-nombre">{{ usuario.nombre }}</h1>
+            <div class="perfil-acciones">
+                <a href="#" class="perfil-accion" aria-label="{% translate 'Editar perfil' %}">
+                    <img src="{% static 'img/perfil/icono-editar.svg' %}" alt="">
+                    <span>{% translate "Editar perfil" %}</span>
+                </a>
+                <a href="{% url 'inicio_sesion' %}" class="perfil-accion solo-movil" aria-label="{% translate 'Cerrar sesión' %}">
+                    <img src="{% static 'img/perfil/icono-logout.svg' %}" alt="">
+                </a>
+            </div>
+        </div>
+
+        <ul class="perfil-datos">
+            <li class="perfil-dato">
+                <img src="{% static 'img/perfil/icono-calendario.svg' %}" alt="{% translate 'Edad' %}">
+                <span>{{ usuario.edad }}</span>
+            </li>
+            <li class="perfil-dato">
+                <img src="{% static 'img/perfil/icono-ubicacion.svg' %}" alt="{% translate 'Ubicación' %}">
+                <span>{{ usuario.ubicacion }}</span>
+            </li>
+        </ul>
+
+        <p class="perfil-descripcion">{{ usuario.descripcion }}</p>
+    </div>
+</article>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="#"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'tus_mascotas' %}"><img src="{% static 'img/perfil/nav-mascota.svg' %}" alt="{% translate 'Mis mascotas' %}"></a>
+<a href="#"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="#"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
+{% endblock %}

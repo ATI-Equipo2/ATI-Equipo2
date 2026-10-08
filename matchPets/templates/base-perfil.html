@@ -1,6 +1,7 @@
-{% load static %}
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ LANGUAGE_CODE }}">
 
 <head>
     <meta charset="UTF-8">
@@ -9,42 +10,56 @@
         {% if title %}
         {{ title }}
         {% else %}
-        Perfil de Usuario
+        {% translate "Perfil de Usuario" %}
         {% endif %}
     </title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/perfil.css' %}">
+    <!-- Hoja de estilos propia de cada pantalla -->
+    {% block estilos %}
+    {% endblock %}
 </head>
 
 <body>
 
     <header>
-        <img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="">
-        <input id="input-buscar" type="text" placeholder="Buscar">
-        <img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="">
+        <!-- Apunta a "#" hasta que exista la ruta de Inicio (Persona 3) -->
+        <a href="#"><img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="{% translate 'Ir al inicio de matchPets' %}"></a>
+        <input id="input-buscar" type="text" placeholder="{% translate 'Buscar' %}" aria-label="{% translate 'Buscar por nombre o especie' %}">
+        <img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="{% translate 'Buscar' %}">
 
+        <!-- El primer ícono cambia según la pantalla (perfil o mascotas) -->
+        {% block iconos_header %}
+        <a href="{% url 'perfil_usuario' %}"><img id="icono-perfil" src="{% static 'img/icono-perfil.png' %}" alt="{% translate 'Mi perfil' %}"></a>
+        {% endblock %}
+        <a href="#"><img id="icono-notificacion" src="{% static 'img/icono-notificacion.png' %}" alt="{% translate 'Notificaciones' %}"></a>
+        <a href="{% url 'inicio_sesion' %}"><img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="{% translate 'Cerrar sesión' %}"></a>
     </header>
 
 
-    <section>
+    <main class="perfil-contenido">
+        {% block content %}
 
-    </section>
+
+        {% endblock %}
+    </main>
 
 
     <footer>
         <div class="footer">
-            <p>Política de Privacidad</p>
-            <p>Términos de Servicio</p>
-            <p>Avisos Legales</p>
+            <p>{% translate "Política de Privacidad" %}</p>
+            <p>{% translate "Términos de Servicio" %}</p>
+            <p>{% translate "Avisos Legales" %}</p>
         </div>
     </footer>
 
-    <img id="icono-buscar-anaranjado" src="{% static 'img/icono-buscar-anaranjado.png' %}" alt="">
-    <img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="">
-    <img id="icono-salir-marron" src="{% static 'img/icono-salir-marron.png' %}" alt="">
-    <img id="icono-inicio" src="{% static 'img/icono-inicio.png' %}" alt="">
-    <img id="icono-mascota" src="{% static 'img/icono-mascota.png' %}" alt="">
-    <img id="icono-notificacion" src="{% static 'img/icono-notificacion.png' %}" alt="">
-    <img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="">
+    <!-- Barra de navegación mobile: cada pantalla define sus íconos -->
+    <nav class="perfil-nav" aria-label="{% translate 'Navegación principal' %}">
+        {% block nav_mobile %}
+
+
+        {% endblock %}
+    </nav>
 
 </body>
 
