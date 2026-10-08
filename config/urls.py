@@ -16,12 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from matchPets.views import hola_mundo
-from matchPets.views import hello_world
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hello/', hello_world, name='hello'),
-    path('hola/', hola_mundo, name='hola_mundo'),
     path('', include('matchPets.urls')),
 ]
