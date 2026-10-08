@@ -1,42 +1,46 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         {% if title %}
-            {{ title }}
+        {{ title }}
         {% else %}
-            Registrarse
+        Registrarse
         {% endif %}
     </title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
+
 <body>
 
-<header>
-    <img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="">
-    <input id="input-buscar" type="text" placeholder="Buscar">
-    <img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="">
-    <img id="icono-perfil" src="{% static 'img/icono-perfil.png' %}" alt="">
-    <img id="icono-notificacion" src="{% static 'img/icono-notificacion.png' %}" alt="">
-    <img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="">
-</header>
+    <header>
+        <img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="">
+        <input id="input-buscar" type="text" placeholder="Buscar">
+        <img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="">
+        <img id="icono-perfil" src="{% static 'img/icono-perfil.png' %}" alt="">
+        <img id="icono-notificacion" src="{% static 'img/icono-notificacion.png' %}" alt="">
+        <img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="">
+    </header>
 
 
-<section>
+    <section>
+        {% block content %}
+        {% endblock %}
+    </section>
 
-</section>
 
-
-<footer>
-    <div class="footer">
-        <p>Política de Privacidad</p>
-        <p>Términos de Servicio</p>
-        <p>Avisos Legales</p>
-    </div>
-</footer>
+    <footer>
+        <div class="footer">
+            <p>Política de Privacidad</p>
+            <p>Términos de Servicio</p>
+            <p>Avisos Legales</p>
+        </div>
+    </footer>
 
 </body>
+
 </html>

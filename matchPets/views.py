@@ -8,11 +8,11 @@ def signup(request):
 def login(request):
     return render(request, 'login.html', {'name': 'Iniciar Sesión'})
 
-def agregar_mascota(request):
-    return render(request, 'index.html', {'nombre': 'Agregar Mascota'})
+def add_pet(request):
+    return render(request, 'add-pet.html', {'name': 'Agregar Mascota'})
 
-def base_navegacion(request):
-    return render(request, 'base-navegacion-desktop.html')
+def base_navigation(request):
+    return render(request, 'base-navigation-desktop.html')
 
 def base_feed_mobile(request):
     return render(request, 'base-feed-mobile.html')
