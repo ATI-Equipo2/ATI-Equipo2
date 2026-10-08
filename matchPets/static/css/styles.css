@@ -1,329 +1,317 @@
 @import "../css/_themes.css";
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: var(--primary-font);
-    background-color: var(--main-color);
+  margin: 0;
+  padding: 0;
+  font-family: var(--primary-font);
+  background-color: var(--main-color);
 }
 
 #pata-amarilla {
-    position: fixed;
-    bottom: 50%;
-    left: 15%;
-    width: 20%;
-    height: 40%;
-    z-index: 1;
+  position: fixed;
+  bottom: 50%;
+  left: 15%;
+  width: 20%;
+  height: 40%;
+  z-index: 1;
 }
 
 #pata-anaranjada {
-    position: fixed;
-    bottom: 20%;
-    left: 65%;
-    width: 20%;
-    height: 40%;
-    z-index: 2;
+  position: fixed;
+  bottom: 20%;
+  left: 65%;
+  width: 20%;
+  height: 40%;
+  z-index: 2;
 }
 
 #logo {
-    position: fixed;
-    top: 5%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 5%;
-    height: auto;
-    border-radius: 50%;
-    z-index: 30;
-    position: fixed;
+  position: fixed;
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -70%);
+  border-radius: 50%;
+  z-index: 100;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .contenedor {
-    display: flex;
-    position: fixed;
-    top: 25%;
-    left: 36%;
-    height: 65%;
-    width: 30%;
-    z-index: 5;
-    background-color:var(--white);
+  border-radius: 35px;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 500px;
+  height: 87%;
+  z-index: 20;
+  background-color: var(--white);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 #registro {
-    position: fixed;
-    top: 15%;
-    left: 44.5%;
-    z-index: 50;
-    color: var(--accent-color);
+  z-index: 50;
+  color: var(--accent-color);
+  text-align: center;
 }
 
 header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 12%;
-    background-color: var(--accent-color);
-    z-index: 2;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 12%;
+  background-color: var(--accent-color);
+  z-index: 2;
 }
 
 #logo-inicio {
-    position: fixed;
-    top: 1%;
-    left: 2%;
-    width: 5%;
-    height: auto;
-    border-radius: 50%;
-    z-index: 30;
+  position: fixed;
+  top: 1%;
+  left: 2%;
+  width: 5%;
+  height: auto;
+  border-radius: 50%;
+  z-index: 30;
 }
 
 #input-buscar {
-    position: fixed;
-    top: 2%;
-    left: 25%;
-    width: 45%;
-    height: 5%;
-    border-radius: 50px;
-    border: none;
-    padding: 0.5rem;
-    font-size: 1rem;
+  position: fixed;
+  top: 2%;
+  left: 25%;
+  width: 45%;
+  height: 5%;
+  border-radius: 50px;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1rem;
 }
 
 #icono-buscar {
-    position: fixed;
-    top: 2.5%;
-    left: 67%;
-    width: 3%;
-    height: auto;
-    z-index: 30;
+  position: fixed;
+  top: 2.5%;
+  left: 67%;
+  width: 3%;
+  height: auto;
+  z-index: 30;
 }
 
 #icono-buscar:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #icono-mascota {
-    position: fixed;
-    top: 2.5%;
-    left: 84%;
-    width: 4%;
-    height: auto;
-    z-index: 30;
+  position: fixed;
+  top: 2.5%;
+  left: 84%;
+  width: 4%;
+  height: auto;
+  z-index: 30;
 }
 
 #icono-notificacion {
-    position: fixed;
-    top: 2.5%;
-    left: 89.9%;
-    width: 3.5%;
-    height: auto;
-    z-index: 30;
+  position: fixed;
+  top: 2.5%;
+  left: 89.9%;
+  width: 3.5%;
+  height: auto;
+  z-index: 30;
 }
 
 #icono-salir {
-    position: fixed;
-    top: 2.5%;
-    left: 95%;
-    width: 3%;
-    height: auto;
-    z-index: 30;
+  position: fixed;
+  top: 2.5%;
+  left: 95%;
+  width: 3%;
+  height: auto;
+  z-index: 30;
 }
 
 #icono-perfil {
-    position: fixed;
-    top: 2.5%;
-    left: 84%;
-    width: 4%;
-    height: auto;
-    z-index: 30;
+  position: fixed;
+  top: 2.5%;
+  left: 84%;
+  width: 4%;
+  height: auto;
+  z-index: 30;
 }
 
 footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 7%;
-    background-color: var(--accent-color);
-    z-index: 2;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 7%;
+  background-color: var(--accent-color);
+  z-index: 2;
 }
 
 .footer {
-    position: fixed;
-    display: flex;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 7%;
-    background-color: var(--accent-color);
-    color: var(--white);
-    justify-content: flex-end;
-    z-index: 2;
+  position: fixed;
+  display: flex;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 7%;
+  background-color: var(--accent-color);
+  color: var(--white);
+  justify-content: flex-end;
+  z-index: 2;
 }
 
 .footer p {
-    margin: 0;
-    padding: 1%;
+  margin: 0;
+  padding: 1%;
 }
 
-#icono-buscar-anaranjado, #icono-salir-marron, #icono-inicio, #icono-mascota-feed, #icono-mensaje, #icono-inicio1, #icono-notificacion1, #icono-perfil1, #icono-buscar-anaranjado1, #icono-mensaje {
-    display: none;
+#icono-buscar-anaranjado,
+#icono-salir-marron,
+#icono-inicio,
+#icono-mascota-feed,
+#icono-mensaje,
+#icono-inicio1,
+#icono-notificacion1,
+#icono-perfil1,
+#icono-buscar-anaranjado1,
+#icono-mensaje {
+  display: none;
 }
 
 @media (min-width: 360px) and (max-width: 640px) {
+  #pata-amarilla,
+  #pata-anaranjada,
+  #logo-inicio,
+  header {
+    display: none;
+  }
 
-    #pata-amarilla, #pata-anaranjada, #logo-inicio, header {
-        display: none;
-    }
+  #registro {
+    font-size: 1.5rem;
+  }
 
-    #registro {
-        position: fixed;
-        top: 13%;
-        left: 32%;
-        z-index: 50;
-        color: #F97206;
-        z-index: 20;
-        font-size: 1.5rem;
-    }
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 0%;
+    background-color: #f97206;
+    z-index: 2;
+    border-radius: 5%;
+  }
 
-    #logo {
-        position: fixed;
-        top: 5%;
-        left: 50%;
-        width: 20%;
-        height: auto;
-        border-radius: 50%;
-        z-index: 30;
-    }
+  .footer p,
+  #input-buscar,
+  #icono-buscar {
+    display: none;
+  }
 
-    .contenedor {
-        display: flex;
-        position: fixed;
-        top: 10%;
-        left: 0%;
-        height: 100%;
-        width: 100%;
-        z-index: 5;
-        background-color: #ffffff;
-        border-radius: 5%;
-    }
+  #icono-buscar-anaranjado {
+    display: block;
+    position: fixed;
+    bottom: 0%;
+    left: 7%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
 
-    footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 0%;
-        height: 0%;
-        background-color: #F97206;
-        z-index: 2;
-        border-radius: 5%;
-    }
+  #icono-mascota {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 30%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
 
-    .footer p, #input-buscar, #icono-buscar {
-        display: none;
-    }
+  #icono-inicio {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 55%;
+    width: 10%;
+    height: auto;
+    z-index: 3;
+  }
 
-    #icono-buscar-anaranjado {
-        display: block;
-        position: fixed;
-        bottom: 0%;
-        left: 7%;
-        width: 12%;
-        height: auto;
-        z-index: 3;
-    } 
+  #icono-notificacion {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 80%;
+    width: 11%;
+    height: auto;
+    z-index: 3;
+  }
 
-    #icono-mascota {
-        display: block;
-        position: fixed;
-        top: 93.5%;
-        left: 30%;
-        width: 12%;
-        height: auto;
-        z-index: 3;
-    }
+  #icono-salir {
+    display: none;
+  }
 
-    #icono-inicio {
-        display: block;
-        position: fixed;
-        top: 93.5%;
-        left: 55%;
-        width: 10%;
-        height: auto;
-        z-index: 3;
-    }
+  #icono-perfil {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 30%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
 
-    #icono-notificacion {
-        display: block;
-        position: fixed;
-        top: 93.5%;
-        left: 80%;
-        width: 11%;
-        height: auto;
-        z-index: 3;
-    }
+  #icono-mensaje {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 47%;
+    width: 10%;
+    height: auto;
+    z-index: 3;
+  }
 
-    #icono-salir {
-        display: none;
-    }
+  #icono-buscar-anaranjado1 {
+    display: block;
+    position: fixed;
+    bottom: 0%;
+    left: 4%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
 
-    #icono-perfil {
-        display: block;
-        position: fixed;
-        top: 93.5%;
-        left: 30%;
-        width: 12%;
-        height: auto;
-        z-index: 3;
-    }
+  #icono-perfil1 {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 25%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
 
-    #icono-mensaje {
-        display: block;
-        position: fixed;
-        top: 93.5%;
-        left: 47%;
-        width: 10%;
-        height: auto;
-        z-index: 3;
-    }
+  #icono-inicio1 {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 67%;
+    width: 10%;
+    height: auto;
+    z-index: 3;
+  }
 
-    #icono-buscar-anaranjado1 {
-        display: block;
-        position: fixed;
-        bottom: 0%;
-        left: 4%;
-        width: 12%;
-        height: auto;
-        z-index: 3;
-    } 
-
-    #icono-perfil1 {
-        display: block;
-        position: fixed;
-        top: 93.5%;
-        left: 25%;
-        width: 12%;
-        height: auto;
-        z-index: 3;
-    }
-
-    #icono-inicio1 {
-        display: block;
-        position: fixed;
-        top: 93.5%;
-        left: 67%;
-        width: 10%;
-        height: auto;
-        z-index: 3;
-    }
-
-    #icono-notificacion1 {
-        display: block;
-        position: fixed;
-        top: 93.5%;
-        left: 85%;
-        width: 11%;
-        height: auto;
-        z-index: 3;
-    }
-
+  #icono-notificacion1 {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 85%;
+    width: 11%;
+    height: auto;
+    z-index: 3;
+  }
 }

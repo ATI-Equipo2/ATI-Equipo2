@@ -2,11 +2,8 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 
-def hello_world(request):
-    return HttpResponse("¡Hola Mundo desde Django!")
-
-def hola_mundo(request):
-    return render(request, 'index.html')
+def registro(request):
+    return render(request, 'registro.html', {'nombre': 'Registrarse'})
 
 def inicio(request):
     return render(request, 'index.html', {'nombre': 'Registrarse'})
