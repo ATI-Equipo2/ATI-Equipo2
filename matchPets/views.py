@@ -9,7 +9,7 @@ def inicio(request):
     return render(request, 'index.html', {'nombre': 'Registrarse'})
 
 def inicio_sesion(request):
-    return render(request, 'index.html', {'nombre': 'Iniciar Sesión'})
+    return render(request, 'inicio_sesion.html', {'nombre': 'Iniciar Sesión'})
 
 def agregar_mascota(request):
     return render(request, 'index.html', {'nombre': 'Agregar Mascota'})
