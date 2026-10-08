@@ -39,6 +39,7 @@ body {
 }
 
 .contenedor {
+  padding-top: 1rem;
   border-radius: 35px;
   position: fixed;
   top: 10%;
