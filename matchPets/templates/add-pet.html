@@ -1,68 +1,79 @@
 {% extends 'base-feed-mobile.html' %}
 {% load static %}
+
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/add-pet.css' %}" />
 
-<form class="form-signup" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="field-group">
-        <label for="first-name">Nombre</label>
-        <input type="text" id="first-name" name="first_name" placeholder="Nombre" required />
-    </div>
-
-    <div class="field-group">
-        <label for="last-name">Apellido</label>
-        <input type="text" id="last-name" name="last_name" placeholder="Apellido" required />
-    </div>
-
-    <div class="field-group">
-        <label for="id-card">Cédula</label>
-        <input type="text" id="id-card" name="id_card" placeholder="V-123456789" required />
-    </div>
-
-    <div class="field-group">
-        <label for="email">Correo</label>
-        <input type="email" id="email" name="email" placeholder="ej: nombre@gmail.com" required />
-    </div>
-
-    <div class="field-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" name="password" placeholder="**********" required />
-    </div>
-
-    <div class="field-group">
-        <label for="birthdate">Fecha</label>
-        <div class="date-wrapper">
-            <input type="date" id="birthdate" name="birthdate" required />
+<div class="add-pet-container">
+    <a href="javascript:history.back()" class="btn-back" aria-label="Volver">
+        <svg class="back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </a>
+    <div class="add-pet-header">
+        <div class="logo-circle">
+            <img src="{% static 'img/logo.jpeg' %}" alt="Match Pets" />
         </div>
     </div>
 
-    <div class="field-group">
-        <label for="gender">Género</label>
-        <div class="select-wrapper">
-            <select id="gender" name="gender" required>
-                <option value="" disabled selected hidden>Género</option>
-                <option value="M">Masculino</option>
-                <option value="F">Femenino</option>
-                <option value="O">Otro</option>
-            </select>
-        </div>
-    </div>
+    <div class="card-add-pet">
+        <h1 class="card-title">Agregar Mascota</h1>
 
-    <div class="field-group">
-        <label for="profile-picture">Foto de perfil</label>
-        <label class="btn-photo" for="profile-picture">
-            <svg class="clip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-            </svg>
-            <span id="photo-label-text" class="btn-text-photo">Agregar foto</span>
-        </label>
-        <input type="file" id="profile-picture" name="profile_picture" accept="image/*" style="display: none" />
-    </div>
+        <form class="form-add-pet" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
 
-    <div class="btn-submit-wrapper">
-        <button type="submit" class="btn-signup">Crear Cuenta</button>
+            <div class="field-group">
+                <label for="name">Nombre</label>
+                <input type="text" id="name" name="name" placeholder="Nombre" required />
+            </div>
+
+            <div class="field-group">
+                <label for="gender">Sexo</label>
+                <input type="text" id="gender" name="gender" placeholder="ej: macho" required />
+            </div>
+
+            <div class="field-group">
+                <label for="temperament">Temperamento</label>
+                <input type="text" id="temperament" name="temperament" placeholder="ej: alegre" required />
+            </div>
+
+            <div class="field-group">
+                <label for="species">Especie</label>
+                <input type="text" id="species" name="species" placeholder="ej: perro" required />
+            </div>
+
+            <div class="field-group">
+                <label for="age">Edad</label>
+                <div class="date-input-wrapper">
+                    <input type="text" id="age" name="age" placeholder="dd/mm/yyyy" required />
+                    <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" stroke="#f97206" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="photo-group">
+                <label class="btn-photo" for="pet-photo">
+                    <svg class="clip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                    </svg>
+                    <span id="photo-label-text">Agregar foto</span>
+                </label>
+                <input type="file" id="pet-photo" name="pet_photo" accept="image/*" style="display: none;"
+                    onchange="if(this.files[0]) document.getElementById('photo-label-text').textContent = this.files[0].name;" />
+            </div>
+
+            <div class="btn-submit-wrapper">
+                <button type="submit" class="btn-submit">Agregar</button>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 {% endblock %}
