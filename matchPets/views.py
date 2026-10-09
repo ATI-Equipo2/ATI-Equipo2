@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from django.http import HttpResponse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext
 
 # Datos de ejemplo para las vistas de perfil (aún no hay modelos)
 USUARIOS = {
@@ -69,13 +69,13 @@ MASCOTAS = {
 }
 
 def signup(request):
-    return render(request, 'signup.html', {'name': 'Registrarse'})
+    return render(request, 'signup.html', {'name': gettext('Registrarse')})
 
 def login(request):
-    return render(request, 'login.html', {'name': 'Iniciar Sesión'})
+    return render(request, 'login.html', {'name': gettext('Iniciar Sesión')})
 
 def add_pet(request):
-    return render(request, 'add-pet.html', {'name': 'Agregar Mascota'})
+    return render(request, 'add-pet.html', {'name': gettext('Agregar Mascota')})
 
 def base_navigation(request):
     return render(request, 'base-navigation-desktop.html')
@@ -87,21 +87,21 @@ def base_perfil(request):
     return render(request, 'base-perfil.html')
 
 def perfil_usuario(request):
-    return render(request, 'perfil_usuario.html', {'title': _('Perfil de Usuario'), 'usuario': USUARIOS['rolando']})
+    return render(request, 'perfil_usuario.html', {'title': gettext('Perfil de Usuario'), 'usuario': USUARIOS['rolando']})
 
 def ver_dueno(request):
-    return render(request, 'ver_dueno.html', {'title': _('Ver Dueño'), 'usuario': USUARIOS['jesus']})
+    return render(request, 'ver_dueno.html', {'title': gettext('Ver Dueño'), 'usuario': USUARIOS['jesus']})
 
 def perfil_mascota(request):
-    return render(request, 'perfil_mascota.html', {'title': _('Perfil de Mascota'), 'mascota': MASCOTAS['ronaldo']})
+    return render(request, 'perfil_mascota.html', {'title': gettext('Perfil de Mascota'), 'mascota': MASCOTAS['ronaldo']})
 
 def ver_mascota(request):
-    return render(request, 'ver_mascota.html', {'title': _('Ver Mascota'), 'mascota': MASCOTAS['brown']})
+    return render(request, 'ver_mascota.html', {'title': gettext('Ver Mascota'), 'mascota': MASCOTAS['brown']})
 
 def tus_mascotas(request):
     mascotas = [MASCOTAS['ronaldo'], MASCOTAS['orlando'], MASCOTAS['bruno']]
-    return render(request, 'lista_mascotas.html', {'title': _('Tus Mascotas'), 'mascotas': mascotas, 'es_propia': True})
+    return render(request, 'lista_mascotas.html', {'title': gettext('Tus Mascotas'), 'mascotas': mascotas, 'es_propia': True})
 
 def sus_mascotas(request):
     mascotas = [MASCOTAS['brown'], MASCOTAS['lucia']]
-    return render(request, 'lista_mascotas.html', {'title': _('Sus Mascotas'), 'mascotas': mascotas, 'es_propia': False})
+    return render(request, 'lista_mascotas.html', {'title': gettext('Sus Mascotas'), 'mascotas': mascotas, 'es_propia': False})

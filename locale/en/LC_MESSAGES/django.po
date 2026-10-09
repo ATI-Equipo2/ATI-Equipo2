@@ -112,3 +112,81 @@ msgstr "Your Pets"
 
 msgid "Sus Mascotas"
 msgstr "Their Pets"
+
+msgid "Registrarse"
+msgstr "Sign Up"
+
+msgid "Iniciar Sesión"
+msgstr "Log In"
+
+msgid "Agregar Mascota"
+msgstr "Add Pet"
+
+msgid "Nombre"
+msgstr "Name"
+
+msgid "Apellido"
+msgstr "Last Name"
+
+msgid "Cédula"
+msgstr "ID Number"
+
+msgid "Correo"
+msgstr "Email"
+
+msgid "ej: nombre@gmail.com"
+msgstr "e.g.: name@gmail.com"
+
+msgid "Contraseña"
+msgstr "Password"
+
+msgid "Fecha"
+msgstr "Date"
+
+msgid "Género"
+msgstr "Gender"
+
+msgid "Masculino"
+msgstr "Male"
+
+msgid "Femenino"
+msgstr "Female"
+
+msgid "Otro"
+msgstr "Other"
+
+msgid "Foto de perfil"
+msgstr "Profile picture"
+
+msgid "Agregar foto"
+msgstr "Add photo"
+
+msgid "Crear Cuenta"
+msgstr "Create Account"
+
+msgid "¿Olvidaste tu contraseña?"
+msgstr "Forgot your password?"
+
+msgid "No tienes cuenta? Regístrate"
+msgstr "Don't have an account? Sign up"
+
+msgid "Sexo"
+msgstr "Sex"
+
+msgid "ej: macho"
+msgstr "e.g.: male"
+
+msgid "Temperamento"
+msgstr "Temperament"
+
+msgid "ej: alegre"
+msgstr "e.g.: cheerful"
+
+msgid "Especie"
+msgstr "Species"
+
+msgid "ej: perro"
+msgstr "e.g.: dog"
+
+msgid "Agregar"
+msgstr "Add"
