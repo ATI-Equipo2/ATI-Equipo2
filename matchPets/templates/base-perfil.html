@@ -23,8 +23,8 @@
 <body>
 
     <header>
-        <!-- Apunta a "#" hasta que exista la ruta de Inicio (Persona 3) -->
-        <a href="#"><img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="{% translate 'Ir al inicio de matchPets' %}"></a>
+        <!-- Apunta al Inicio/Feed, la pantalla principal del sistema -->
+        <a href="{% url 'feed' %}"><img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="{% translate 'Ir al inicio de matchPets' %}"></a>
         <input id="input-buscar" type="text" placeholder="{% translate 'Buscar' %}" aria-label="{% translate 'Buscar por nombre o especie' %}">
         <img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="{% translate 'Buscar' %}">
 

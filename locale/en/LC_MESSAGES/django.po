@@ -230,3 +230,33 @@ msgstr "No results for that search."
 #, python-format
 msgid "Tienes una solicitud de %(solicitante)s"
 msgstr "You have a request from %(solicitante)s"
+
+msgid "Perro"
+msgstr "Dog"
+
+msgid "Gato"
+msgstr "Cat"
+
+msgid "Ave"
+msgstr "Bird"
+
+msgid "Macho"
+msgstr "Male"
+
+msgid "Hembra"
+msgstr "Female"
+
+msgid "Edad en años"
+msgstr "Age in years"
+
+msgid "Sin foto"
+msgstr "No photo"
+
+msgid "Feed"
+msgstr "Feed"
+
+#, python-format
+msgid "%(count)s año"
+msgid_plural "%(count)s años"
+msgstr[0] "%(count)s year"
+msgstr[1] "%(count)s years"

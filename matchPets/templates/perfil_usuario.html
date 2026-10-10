@@ -46,8 +46,8 @@
 {% endblock %}
 
 {% block nav_mobile %}
-<a href="#"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'buscar_mascotas' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
 <a href="{% url 'tus_mascotas' %}"><img src="{% static 'img/perfil/nav-mascota.svg' %}" alt="{% translate 'Mis mascotas' %}"></a>
-<a href="#"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
-<a href="#"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
+<a href="{% url 'feed' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
 {% endblock %}

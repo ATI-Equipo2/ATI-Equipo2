@@ -1,0 +1,62 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/feed.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="feed">
+    <!-- Encabezado desktop: coincide con la foto "‹ Inicio" -->
+    <div class="feed-encabezado">
+        <a href="{% url 'feed' %}" class="feed-atras" aria-label="{% translate 'Volver' %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+        <h1 class="feed-titulo">{% translate "Inicio" %}</h1>
+    </div>
+
+    <!-- Buscador por nombre/especie -->
+    <form class="feed-buscar" method="get" action="{% url 'feed' %}" role="search">
+        <span class="feed-lupa" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
+        <label class="solo-lectores" for="feed-q">{% translate "Buscar por nombre o especie" %}</label>
+        <input id="feed-q" name="q" type="search" value="{{ q }}" placeholder="{% translate 'Buscar por nombre/especie' %}" autocomplete="off">
+        {% if q %}
+        <a class="feed-limpiar" href="{% url 'feed' %}" aria-label="{% translate 'Limpiar búsqueda' %}">✕</a>
+        {% endif %}
+    </form>
+
+    <!-- Lista general de mascotas -->
+    <div class="feed-grid">
+        {% for tarjeta in mascotas %}
+            {% include 'pet_card.html' with tarjeta=tarjeta %}
+        {% empty %}
+        <p class="feed-vacia">{% translate "Sin resultados para esa búsqueda." %}</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+(function () {
+    // El buscador del encabezado desktop filtra el feed (misma vista).
+    var headerInput = document.getElementById('input-buscar');
+    if (headerInput) {
+        headerInput.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Enter') {
+                ev.preventDefault();
+                var q = headerInput.value.trim();
+                window.location.href = "{% url 'feed' %}" + (q ? ("?q=" + encodeURIComponent(q)) : "");
+            }
+        });
+    }
+})();
+</script>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}" aria-label="{% translate 'Buscar' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}" aria-label="{% translate 'Mi perfil' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="{% url 'feed' %}" aria-label="{% translate 'Inicio' %}" aria-current="page"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}" class="nav-notif-activa" aria-label="{% translate 'Notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"><span class="nav-punto" aria-hidden="true"></span></a>
+{% endblock %}

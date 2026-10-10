@@ -1,7 +1,10 @@
 from django.shortcuts import render
 
 from django.http import HttpResponse
-from django.utils.translation import gettext
+from django.db.models import Q
+from django.utils.translation import gettext, ngettext
+
+from .models import Pet
 
 # Datos de ejemplo para las vistas de perfil (aún no hay modelos)
 USUARIOS = {
@@ -196,11 +199,8 @@ def buscar_mascotas(request):
     """Pantalla Buscar Mascotas (datos falsos, filtro por nombre/especie)."""
     q = request.GET.get('q', '').strip()
     mascotas = [MASCOTAS['brown'], MASCOTAS['ronaldo'], MASCOTAS['lucia']]
-    # Añadimos Daisy y Úrsula como datos falsos solo para esta pantalla.
-    extras = [
-        {'nombre': 'Daisy', 'especie': 'Perro', 'foto': MASCOTAS['brown']['foto']},
-        {'nombre': 'Ursula', 'especie': 'Perro', 'foto': MASCOTAS['lucia']['foto']},
-    ]
+    # Daisy y Úrsula comparten la ficha del Inicio/Feed.
+    extras = [m for m in MASCOTAS_INICIO if m['nombre'] in ('Daisy', 'Ursula')]
     todas = [{'nombre': m['nombre'], 'especie': m['especie'], 'foto': m['foto']} for m in mascotas] + extras
     if q:
         q_low = q.lower()
@@ -210,3 +210,114 @@ def buscar_mascotas(request):
         'mascotas': todas,
         'q': q,
     })
+
+
+# ---------------------------------------------------------------------------
+# Inicio / Feed: lista general de mascotas (modelo Pet del compañero).
+# Si la tabla está vacía, se usan las fichas de las fotos (mismos datos
+# falsos del resto de pantallas). El buscador filtra por nombre/especie.
+# ---------------------------------------------------------------------------
+MASCOTAS_INICIO = [
+    {
+        'nombre': 'Brown',
+        'especie': 'Perro',
+        'sexo': 'Macho',
+        'temperamento': 'Juguetón',
+        'edad': '2 meses',
+        'foto': 'img/perfil/brown.png',
+    },
+    {
+        'nombre': 'Daisy',
+        'especie': 'Perro',
+        'sexo': 'Hembra',
+        'temperamento': 'Dormilona',
+        'edad': '2 años',
+        'foto': 'img/perfil/ronaldo.png',
+    },
+    {
+        'nombre': 'Ursula',
+        'especie': 'Perro',
+        'sexo': 'Hembra',
+        'temperamento': 'Floja',
+        'edad': '3 años',
+        'foto': 'img/perfil/bruno.png',
+    },
+    {
+        'nombre': 'Lucia',
+        'especie': 'Gata',
+        'sexo': 'Hembra',
+        'temperamento': 'Cariñosa',
+        'edad': '1 año',
+        'foto': 'img/perfil/lucia.png',
+    },
+]
+
+
+def _edad_anos(cantidad):
+    return ngettext('%(count)s año', '%(count)s años', cantidad) % {'count': cantidad}
+
+
+def _tarjeta_desde_pet(pet):
+    """Normaliza una instancia del modelo Pet al formato de la tarjeta."""
+    foto_url = pet.img.url if getattr(pet, 'img', None) and pet.img else ''
+    return {
+        'nombre': pet.name,
+        'especie': pet.get_species_display(),
+        'temperamento': (pet.description or '').strip(),
+        'edad': _edad_anos(pet.age),
+        'sexo': pet.get_gender_display(),
+        'foto_url': foto_url,
+        'foto_static': '',
+    }
+
+
+def _tarjeta_desde_dict(mascota):
+    return {
+        'nombre': mascota['nombre'],
+        'especie': mascota['especie'],
+        'temperamento': mascota.get('temperamento', ''),
+        'edad': mascota.get('edad', ''),
+        'sexo': mascota.get('sexo', ''),
+        'foto_url': '',
+        'foto_static': mascota.get('foto', ''),
+    }
+
+
+def _mascotas_feed(q=''):
+    """Devuelve (tarjetas, usando_datos_reales).
+
+    Usa el modelo Pet cuando hay registros; si no, las fichas falsas.
+    """
+    try:
+        pets = Pet.objects.filter(availableForAdoption=True).order_by('id')
+        if q:
+            pets = pets.filter(Q(name__icontains=q) | Q(description__icontains=q))
+        tarjetas = [_tarjeta_desde_pet(p) for p in pets]
+        if tarjetas:
+            return tarjetas, True
+    except Exception:
+        # La tabla aún no existe (BD sin migrar): se usan datos falsos.
+        pass
+    tarjetas = [_tarjeta_desde_dict(m) for m in MASCOTAS_INICIO]
+    if q:
+        q_low = q.lower()
+        tarjetas = [t for t in tarjetas
+                    if q_low in t['nombre'].lower() or q_low in t['especie'].lower()]
+    return tarjetas, False
+
+
+def feed(request):
+    """Pantalla principal: Inicio / Feed con buscador y tarjetas."""
+    q = request.GET.get('q', '').strip()
+    tarjetas, usando_datos_reales = _mascotas_feed(q)
+    return render(request, 'feed.html', {
+        'title': gettext('Inicio'),
+        'mascotas': tarjetas,
+        'q': q,
+        'usando_datos_reales': usando_datos_reales,
+    })
+
+
+def inicio(request):
+    """Alias de la pantalla principal (la vista Home del sistema)."""
+    return feed(request)
