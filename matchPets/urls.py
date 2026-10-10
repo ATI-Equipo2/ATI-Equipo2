@@ -3,6 +3,7 @@ from .views import login, signup, add_pet, base_navigation, base_feed_mobile, ba
 from .views import perfil_usuario, ver_dueno, perfil_mascota, ver_mascota, tus_mascotas, sus_mascotas
 from .views import notificaciones, buscar_mascotas
 from .views import feed, inicio
+from .views import LoginView, LogoutView, vista_protegida
 
 urlpatterns = [
     path('', signup, name='registro'),
@@ -21,5 +22,8 @@ urlpatterns = [
     path('notificaciones/', notificaciones, name='notificaciones'),
     path('buscar_mascotas/', buscar_mascotas, name='buscar_mascotas'),
     path('inicio/', inicio, name='inicio'),
-    path('feed/', feed, name='feed')
+    path('feed/', feed, name='feed'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('protegida/', vista_protegida, name='vista_protegida'),
 ]

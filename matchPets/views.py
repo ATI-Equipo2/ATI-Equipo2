@@ -1,10 +1,23 @@
+from django.apps import apps
 from django.shortcuts import render
-
-from django.http import HttpResponse
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, request
 from django.db.models import Q
 from django.utils.translation import gettext, ngettext
 
-from .models import Pet
+Pet = apps.get_model('matchPets', 'Pet')
+
+class LoginView(auth_views.LoginView):
+    template_name = 'matchPets/login.html'
+    
+class LogoutView(auth_views.LogoutView):
+    template_name = 'matchPets/logout.html'
+    
+
+@login_required(login_url='login')
+def vista_protegida(request):
+    return render(request, 'matchPets/protegida.html')
 
 # Datos de ejemplo para las vistas de perfil (aún no hay modelos)
 USUARIOS = {
@@ -321,3 +334,5 @@ def feed(request):
 def inicio(request):
     """Alias de la pantalla principal (la vista Home del sistema)."""
     return feed(request)
+
+
