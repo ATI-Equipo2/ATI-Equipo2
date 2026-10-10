@@ -3,9 +3,13 @@
 
 {% block estilos %}
 <link rel="stylesheet" href="{% static 'css/perfil_detalle.css' %}">
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
 {% endblock %}
 
 {% block content %}
+{% if aviso_solicitud %}
+<div class="notif-toast visible" role="status" aria-live="polite" style="opacity:1;position:static;transform:none;display:inline-block;margin:12px 0;">{{ aviso_solicitud }}</div>
+{% endif %}
 <article class="perfil perfil--mascota">
     <div class="perfil-foto">
         <img src="{% static mascota.foto %}" alt="{% blocktranslate with nombre=mascota.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
@@ -15,8 +19,8 @@
         <div class="perfil-encabezado">
             <h1 class="perfil-nombre">{{ mascota.nombre }}</h1>
             <div class="perfil-acciones">
-                <!-- Enviar solicitud para socializar -->
-                <a href="#" class="perfil-accion perfil-accion--circulo" aria-label="{% translate 'Enviar solicitud de amistad' %}" title="{% translate 'Enviar solicitud de amistad' %}">
+                <!-- Enviar solicitud para socializar (dato falso: ?solicitud=enviada muestra el aviso) -->
+                <a href="{% url 'ver_mascota' %}?solicitud=enviada" class="perfil-accion perfil-accion--circulo" aria-label="{% translate 'Enviar solicitud de amistad' %}" title="{% translate 'Enviar solicitud de amistad' %}">
                     <img src="{% static 'img/perfil/icono-agregar-usuario.svg' %}" alt="">
                 </a>
             </div>
@@ -49,9 +53,9 @@
 {% endblock %}
 
 {% block nav_mobile %}
-<a href="#"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'buscar_mascotas' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
 <a href="{% url 'perfil_usuario' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
 <a href="#"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
 <a href="#"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
-<a href="#"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
+<a href="{% url 'notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
 {% endblock %}

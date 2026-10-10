@@ -1,0 +1,58 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/buscar.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="buscar-page">
+    <!-- Encabezado mobile: coincide con la foto "Mobile - Buscar Mascotas" -->
+    <div class="buscar-top">
+        <a href="{% url 'notificaciones' %}" class="buscar-back" aria-label="{% translate 'Volver' %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+    </div>
+
+    <ul class="buscar-resultados" id="buscar-resultados">
+        {% for m in mascotas %}
+        <li>
+            <a class="buscar-item" href="{% url 'ver_mascota' %}">
+                <img src="{% static m.foto %}" alt="{% blocktranslate with nombre=m.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
+                <span class="buscar-info">
+                    <strong>{{ m.nombre }}</strong>
+                    <small>{{ m.especie }}</small>
+                </span>
+            </a>
+        </li>
+        {% empty %}
+        <li class="buscar-vacia">{% translate "Sin resultados para esa búsqueda." %}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+(function () {
+    var input = document.getElementById('buscar-q');
+    var clearBtn = document.getElementById('buscar-limpiar');
+    if (!input || !clearBtn) return;
+    function toggle() { clearBtn.hidden = !input.value; }
+    input.addEventListener('input', toggle);
+    clearBtn.addEventListener('click', function () {
+        input.value = '';
+        toggle();
+        input.focus();
+        var items = document.querySelectorAll('#buscar-resultados li');
+        items.forEach(function (li) { li.style.display = ''; });
+    });
+    toggle();
+})();
+</script>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}" aria-label="{% translate 'Buscar' %}" aria-current="page"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}" aria-label="{% translate 'Mi perfil' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="#" aria-label="{% translate 'Inicio' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}" class="nav-notif-activa" aria-label="{% translate 'Notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"><span class="nav-punto" aria-hidden="true"></span></a>
+{% endblock %}

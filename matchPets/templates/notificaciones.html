@@ -1,0 +1,137 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="notif-page" data-aviso-inicial="{{ aviso_inicial }}">
+    <div class="notif-top">
+        <a href="{% url 'buscar_mascotas' %}" class="notif-back" aria-label="{% translate 'Volver' %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+        <h1 class="notif-title">{% translate "Notificaciones" %}</h1>
+    </div>
+
+    <section class="notif-panel" aria-label="{% translate 'Notificaciones' %}">
+        <div class="notif-list" id="notif-list">
+            {% for n in notificaciones %}
+            <article class="notif-card" data-tipo="{{ n.tipo }}" data-id="{{ n.id }}">
+                <span class="notif-icono" aria-hidden="true">
+                    {% if n.tipo == 'nuevo_mensaje' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    {% elif n.tipo == 'solicitud_aceptada' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+                    {% else %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    {% endif %}
+                </span>
+                <div class="notif-texto">
+                    {% if n.tipo == 'solicitud_recibida' %}
+                    <p class="notif-linea">{% blocktranslate with solicitante=n.solicitante %}Tienes una solicitud de {{ solicitante }}{% endblocktranslate %}</p>
+                    <div class="notif-botones">
+                        <button type="button" class="btn-aceptar" data-accion="aceptar">{% translate "Aceptar" %}</button>
+                        <button type="button" class="btn-denegar" data-accion="denegar">{% translate "Denegar" %}</button>
+                    </div>
+                    <p class="notif-estado" hidden></p>
+                    {% elif n.tipo == 'nuevo_mensaje' %}
+                    <a class="notif-linea notif-enlace" href="#">{% translate "Nuevo mensaje" %}</a>
+                    {% if n.detalle %}<p class="notif-detalle">{{ n.detalle }}</p>{% endif %}
+                    {% elif n.tipo == 'solicitud_aceptada' %}
+                    <p class="notif-linea">{% translate "Solicitud aceptada" %}</p>
+                    {% if n.detalle %}<p class="notif-detalle">{{ n.detalle }}</p>{% endif %}
+                    {% else %}
+                    <p class="notif-linea">{{ n.titulo }}</p>
+                    {% endif %}
+                </div>
+                <button type="button" class="notif-cerrar" aria-label="{% translate 'Descartar notificación' %}">✕</button>
+            </article>
+            {% empty %}
+            <p class="notif-vacia">{% translate "No tienes notificaciones por ahora." %}</p>
+            {% endfor %}
+        </div>
+        <p class="notif-vacia" id="notif-vacia" hidden>{% translate "No tienes notificaciones por ahora." %}</p>
+    </section>
+
+    <!-- Aviso flotante para los estados: solicitud enviada / aceptada / denegada -->
+    <div class="notif-toast" id="notif-toast" role="status" aria-live="polite" hidden></div>
+</div>
+
+<script>
+(function () {
+    var list = document.getElementById('notif-list');
+    var empty = document.getElementById('notif-vacia');
+    var toast = document.getElementById('notif-toast');
+    var page = document.querySelector('.notif-page');
+    var timer = null;
+
+    function showToast(text) {
+        if (!text) return;
+        toast.textContent = text;
+        toast.hidden = false;
+        toast.classList.add('visible');
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            toast.classList.remove('visible');
+            toast.hidden = true;
+        }, 2600);
+    }
+
+    function checkEmpty() {
+        if (list && list.querySelectorAll('.notif-card').length === 0) {
+            empty.hidden = false;
+        }
+    }
+
+    if (page && page.dataset.avisoInicial) {
+        showToast(page.dataset.avisoInicial);
+    }
+
+    if (list) {
+        list.addEventListener('click', function (ev) {
+            var card = ev.target.closest('.notif-card');
+            if (!card) return;
+
+            var btnAccion = ev.target.closest('[data-accion]');
+            if (btnAccion) {
+                var estado = card.querySelector('.notif-estado');
+                var botones = card.querySelector('.notif-botones');
+                if (btnAccion.dataset.accion === 'aceptar') {
+                    if (botones) botones.hidden = true;
+                    if (estado) {
+                        estado.hidden = false;
+                        estado.textContent = '{% translate "Solicitud aceptada" %}';
+                        estado.classList.add('ok');
+                    }
+                    showToast('{% translate "Solicitud aceptada" %}');
+                } else {
+                    if (botones) botones.hidden = true;
+                    if (estado) {
+                        estado.hidden = false;
+                        estado.textContent = '{% translate "Solicitud denegada" %}';
+                        estado.classList.add('ko');
+                    }
+                    showToast('{% translate "Solicitud denegada" %}');
+                }
+                return;
+            }
+
+            if (ev.target.closest('.notif-cerrar')) {
+                card.remove();
+                checkEmpty();
+            }
+        });
+    }
+
+    window.mostrarAvisoNotificacion = showToast;
+})();
+</script>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}" aria-label="{% translate 'Buscar' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}" aria-label="{% translate 'Mi perfil' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="#" aria-label="{% translate 'Inicio' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}" class="nav-notif-activa" aria-label="{% translate 'Notificaciones' %}" aria-current="page"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"><span class="nav-punto" aria-hidden="true"></span></a>
+{% endblock %}

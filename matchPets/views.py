@@ -96,7 +96,13 @@ def perfil_mascota(request):
     return render(request, 'perfil_mascota.html', {'title': gettext('Perfil de Mascota'), 'mascota': MASCOTAS['ronaldo']})
 
 def ver_mascota(request):
-    return render(request, 'ver_mascota.html', {'title': gettext('Ver Mascota'), 'mascota': MASCOTAS['brown']})
+    solicitud_enviada = request.GET.get('solicitud') == 'enviada'
+    return render(request, 'ver_mascota.html', {
+        'title': gettext('Ver Mascota'),
+        'mascota': MASCOTAS['brown'],
+        'solicitud_enviada': solicitud_enviada,
+        'aviso_solicitud': gettext('Solicitud enviada') if solicitud_enviada else '',
+    })
 
 def tus_mascotas(request):
     mascotas = [MASCOTAS['ronaldo'], MASCOTAS['orlando'], MASCOTAS['bruno']]
@@ -105,3 +111,102 @@ def tus_mascotas(request):
 def sus_mascotas(request):
     mascotas = [MASCOTAS['brown'], MASCOTAS['lucia']]
     return render(request, 'lista_mascotas.html', {'title': gettext('Sus Mascotas'), 'mascotas': mascotas, 'es_propia': False})
+
+
+# ---------------------------------------------------------------------------
+# Datos falsos para Notificaciones / Mensajes / Solicitudes (sin backend).
+# La fuente está en español; las plantillas usan {% translate %} para i18n.
+# ---------------------------------------------------------------------------
+NOTIFICACIONES_FALSAS = [
+    {
+        'id': 1,
+        'tipo': 'nuevo_mensaje',
+        'titulo': 'Nuevo mensaje',
+        'detalle': 'Brown te envió un mensaje',
+        'mascota': MASCOTAS['brown'],
+    },
+    {
+        'id': 2,
+        'tipo': 'solicitud_aceptada',
+        'titulo': 'Solicitud aceptada',
+        'detalle': 'Daisy aceptó tu solicitud',
+        'mascota': None,
+    },
+    {
+        'id': 3,
+        'tipo': 'solicitud_recibida',
+        'titulo': 'Tienes una solicitud de Nora',
+        'detalle': 'Nora quiere socializar con Brown',
+        'mascota': None,
+        'solicitante': 'Nora',
+    },
+]
+
+MENSAJES_RECIENTES_FALSOS = [
+    {
+        'nombre': 'Brown',
+        'texto': 'Hola, soy Brown. Se que no soy de la raza más grande, pero mi…',
+        'foto': MASCOTAS['brown']['foto'],
+    },
+    {
+        'nombre': 'Daisy',
+        'texto': 'Hola, soy Daisy. Se que no soy de la raza más grande, pero mi coraz…',
+        'foto': MASCOTAS['brown']['foto'],
+    },
+    {
+        'nombre': 'Ronaldo',
+        'texto': 'Estoy buscando a alguien que me quiera, que me huela y se emocion…',
+        'foto': MASCOTAS['ronaldo']['foto'],
+    },
+    {
+        'nombre': 'Ursula',
+        'texto': 'Hola, soy Úrsula. Se que no soy de la raza más grande, pero mi…',
+        'foto': MASCOTAS['lucia']['foto'],
+    },
+]
+
+
+def notificaciones(request):
+    """Pantalla de Notificaciones / Solicitudes / Mensajes (datos falsos).
+
+    Query params (solo para previsualizar estados sin backend):
+      ?estado=solicitud_enviada  -> muestra aviso "Solicitud enviada"
+      ?estado=solicitud_aceptada -> muestra aviso "Solicitud aceptada"
+      ?estado=solicitud_denegada -> muestra aviso "Solicitud denegada"
+    La interacción Aceptar/Denegar/Cerrar también funciona en el navegador
+    con JavaScript, sin recargar.
+    """
+    estado = request.GET.get('estado', '')
+    avisos = {
+        'solicitud_enviada': gettext('Solicitud enviada'),
+        'solicitud_aceptada': gettext('Solicitud aceptada'),
+        'solicitud_denegada': gettext('Solicitud denegada'),
+        'mensaje_nuevo': gettext('Nuevo mensaje'),
+    }
+    return render(request, 'notificaciones.html', {
+        'title': gettext('Notificaciones'),
+        'notificaciones': NOTIFICACIONES_FALSAS,
+        'mensajes_recientes': MENSAJES_RECIENTES_FALSOS,
+        'aviso_inicial': avisos.get(estado, ''),
+        'hay_no_leidas': True,
+    })
+
+
+def buscar_mascotas(request):
+    """Pantalla Buscar Mascotas (datos falsos, filtro por nombre/especie)."""
+    q = request.GET.get('q', '').strip()
+    mascotas = [MASCOTAS['brown'], MASCOTAS['ronaldo'], MASCOTAS['lucia']]
+    # Añadimos Daisy y Úrsula como datos falsos solo para esta pantalla.
+    extras = [
+        {'nombre': 'Daisy', 'especie': 'Perro', 'foto': MASCOTAS['brown']['foto']},
+        {'nombre': 'Ursula', 'especie': 'Perro', 'foto': MASCOTAS['lucia']['foto']},
+    ]
+    todas = [{'nombre': m['nombre'], 'especie': m['especie'], 'foto': m['foto']} for m in mascotas] + extras
+    if q:
+        q_low = q.lower()
+        todas = [m for m in todas if q_low in m['nombre'].lower() or q_low in m['especie'].lower()]
+    return render(request, 'buscar_mascotas.html', {
+        'title': gettext('Buscar Mascotas'),
+        'mascotas': todas,
+        'q': q,
+    })

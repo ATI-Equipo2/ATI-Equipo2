@@ -32,7 +32,7 @@
         {% block iconos_header %}
         <a href="{% url 'perfil_usuario' %}"><img id="icono-perfil" src="{% static 'img/icono-perfil.png' %}" alt="{% translate 'Mi perfil' %}"></a>
         {% endblock %}
-        <a href="#"><img id="icono-notificacion" src="{% static 'img/icono-notificacion.png' %}" alt="{% translate 'Notificaciones' %}"></a>
+        <a href="{% url 'notificaciones' %}"><img id="icono-notificacion" src="{% static 'img/icono-notificacion.png' %}" alt="{% translate 'Notificaciones' %}"></a>
         <a href="{% url 'inicio_sesion' %}"><img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="{% translate 'Cerrar sesión' %}"></a>
     </header>
 

@@ -190,3 +190,43 @@ msgstr "e.g.: dog"
 
 msgid "Agregar"
 msgstr "Add"
+
+msgid "Nuevo mensaje"
+msgstr "New message"
+
+msgid "Solicitud aceptada"
+msgstr "Request accepted"
+
+msgid "Solicitud enviada"
+msgstr "Request sent"
+
+msgid "Solicitud denegada"
+msgstr "Request denied"
+
+msgid "Aceptar"
+msgstr "Accept"
+
+msgid "Denegar"
+msgstr "Decline"
+
+msgid "Descartar notificación"
+msgstr "Dismiss notification"
+
+msgid "No tienes notificaciones por ahora."
+msgstr "You have no notifications for now."
+
+msgid "Buscar Mascotas"
+msgstr "Search Pets"
+
+msgid "Buscar por nombre/especie"
+msgstr "Search by name/species"
+
+msgid "Limpiar búsqueda"
+msgstr "Clear search"
+
+msgid "Sin resultados para esa búsqueda."
+msgstr "No results for that search."
+
+#, python-format
+msgid "Tienes una solicitud de %(solicitante)s"
+msgstr "You have a request from %(solicitante)s"

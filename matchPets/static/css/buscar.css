@@ -1,0 +1,196 @@
+/* Buscar Mascotas — réplica de la foto mobile + adaptación desktop. */
+
+.buscar-page {
+  --u: min(calc(100vw / 1440), calc(100vh / 1024));
+  --naranja: var(--accent-color, #f97206);
+  box-sizing: border-box;
+  padding: calc(24 * var(--u)) calc(40 * var(--u));
+  min-height: 100%;
+}
+
+.buscar-top {
+  display: none;
+}
+
+.buscar-barra {
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  background: #e9e5f6;
+  border-radius: 999px;
+  padding: calc(10 * var(--u)) calc(20 * var(--u));
+  max-width: calc(620 * var(--u));
+  margin: 0 auto;
+}
+
+.buscar-lupa {
+  color: #fff;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.buscar-lupa svg {
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
+}
+
+.buscar-barra input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: calc(22 * var(--u));
+  color: #4a4644;
+}
+
+.buscar-barra input::placeholder {
+  color: #7d7875;
+}
+
+.buscar-limpiar {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  color: #1c1a19;
+  font-size: calc(22 * var(--u));
+  line-height: 1;
+  padding: calc(4 * var(--u));
+}
+
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.buscar-resultados {
+  list-style: none;
+  margin: calc(22 * var(--u)) auto 0;
+  padding: 0;
+  max-width: calc(620 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--u));
+}
+
+.buscar-item {
+  display: flex;
+  align-items: center;
+  gap: calc(16 * var(--u));
+  text-decoration: none;
+  color: inherit;
+}
+
+.buscar-item img {
+  width: calc(72 * var(--u));
+  height: calc(72 * var(--u));
+  object-fit: cover;
+  border-radius: calc(12 * var(--u));
+  flex-shrink: 0;
+  background: #eee;
+}
+
+.buscar-info {
+  display: flex;
+  flex-direction: column;
+  gap: calc(2 * var(--u));
+}
+
+.buscar-info strong {
+  font-size: calc(24 * var(--u));
+  font-weight: 600;
+  color: #1c1a19;
+}
+
+.buscar-info small {
+  font-size: calc(19 * var(--u));
+  color: #4a4644;
+}
+
+.buscar-vacia {
+  color: var(--grey-400, #8b8b8b);
+  font-size: calc(20 * var(--u));
+  text-align: center;
+}
+
+.nav-notif-activa {
+  position: relative;
+}
+
+.nav-punto {
+  position: absolute;
+  top: calc(2 * var(--u));
+  right: calc(2 * var(--u));
+  width: calc(12 * var(--u));
+  height: calc(12 * var(--u));
+  background: #e11d48;
+  border-radius: 50%;
+  border: 2px solid var(--accent-color, #f97206);
+}
+
+@media (max-width: 640px) {
+  .buscar-page {
+    --u: calc(100vw / 360);
+    padding: calc(10 * var(--u)) calc(14 * var(--u)) 0;
+  }
+
+  .buscar-top {
+    display: flex;
+    padding: calc(4 * var(--u)) 0 calc(10 * var(--u)) calc(2 * var(--u));
+  }
+
+  .buscar-back {
+    color: var(--naranja);
+    display: flex;
+  }
+
+  .buscar-back svg {
+    width: calc(24 * var(--u));
+    height: calc(24 * var(--u));
+  }
+
+  .buscar-barra {
+    max-width: none;
+    padding: calc(10 * var(--u)) calc(14 * var(--u));
+  }
+
+  .buscar-lupa svg {
+    width: calc(26 * var(--u));
+    height: calc(26 * var(--u));
+  }
+
+  .buscar-barra input {
+    font-size: calc(15 * var(--u));
+  }
+
+  .buscar-limpiar {
+    font-size: calc(16 * var(--u));
+  }
+
+  .buscar-resultados {
+    max-width: none;
+    gap: calc(16 * var(--u));
+    margin-top: calc(14 * var(--u));
+  }
+
+  .buscar-item {
+    gap: calc(10 * var(--u));
+  }
+
+  .buscar-item img {
+    width: calc(52 * var(--u));
+    height: calc(52 * var(--u));
+    border-radius: calc(8 * var(--u));
+  }
+
+  .buscar-info strong {
+    font-size: calc(16 * var(--u));
+  }
+
+  .buscar-info small {
+    font-size: calc(13 * var(--u));
+  }
+}

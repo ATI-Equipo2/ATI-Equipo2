@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import login, signup, add_pet, base_navigation, base_feed_mobile, base_perfil
 from .views import perfil_usuario, ver_dueno, perfil_mascota, ver_mascota, tus_mascotas, sus_mascotas
+from .views import notificaciones, buscar_mascotas
 
 urlpatterns = [
     path('', signup, name='registro'),
@@ -14,5 +15,7 @@ urlpatterns = [
     path('perfil_mascota/', perfil_mascota, name='perfil_mascota'),
     path('ver_mascota/', ver_mascota, name='ver_mascota'),
     path('tus_mascotas/', tus_mascotas, name='tus_mascotas'),
-    path('sus_mascotas/', sus_mascotas, name='sus_mascotas')
+    path('sus_mascotas/', sus_mascotas, name='sus_mascotas'),
+    path('notificaciones/', notificaciones, name='notificaciones'),
+    path('buscar_mascotas/', buscar_mascotas, name='buscar_mascotas')
 ]
