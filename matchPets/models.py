@@ -24,6 +24,13 @@ class Pet(models.Model):
     gender = models.CharField(max_length=20, choices=GENEROS, default='male')
     img = models.ImageField(upload_to='pets/', blank=True, null=True)
     availableForAdoption = models.BooleanField(default=True)
+    owner = models.ForeignKey(
+        'matchPets.User',
+        on_delete=models.CASCADE,
+        related_name='pets',
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.name} ({self.species})"
@@ -31,5 +38,10 @@ class Pet(models.Model):
     
 class User(AbstractUser):
     nombre = models.CharField(max_length=100, blank=True)
+    edad = models.PositiveIntegerField(null=True, blank=True)
+    ubicacion = models.CharField(max_length=150, blank=True, default='')
+    descripcion = models.TextField(blank=True, default='')
+    foto = models.ImageField(upload_to='users/', null=True, blank=True)
+
 
 
