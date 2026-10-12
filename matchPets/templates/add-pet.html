@@ -23,38 +23,36 @@
         <form class="form-add-pet" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
+            {% for error in form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+
             <div class="field-group">
-                <label for="name">{% translate "Nombre" %}</label>
-                <input type="text" id="name" name="name" placeholder="{% translate 'Nombre' %}" autocomplete="off" required />
+                <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                {{ form.name }}
+                {% for error in form.name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
             </div>
 
             <div class="field-group">
-                <label for="gender">{% translate "Sexo" %}</label>
-                <input type="text" id="gender" name="gender" placeholder="{% translate 'ej: macho' %}" autocomplete="off" required />
+                <label for="{{ form.species.id_for_label }}">{{ form.species.label }}</label>
+                {{ form.species }}
+                {% for error in form.species.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
             </div>
 
             <div class="field-group">
-                <label for="temperament">{% translate "Temperamento" %}</label>
-                <input type="text" id="temperament" name="temperament" placeholder="{% translate 'ej: alegre' %}" autocomplete="off" required />
+                <label for="{{ form.gender.id_for_label }}">{{ form.gender.label }}</label>
+                {{ form.gender }}
+                {% for error in form.gender.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
             </div>
 
             <div class="field-group">
-                <label for="species">{% translate "Especie" %}</label>
-                <input type="text" id="species" name="species" placeholder="{% translate 'ej: perro' %}" autocomplete="off" required />
+                <label for="{{ form.age.id_for_label }}">{{ form.age.label }}</label>
+                {{ form.age }}
+                {% for error in form.age.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
             </div>
 
             <div class="field-group">
-                <label for="age">{% translate "Edad" %}</label>
-                <div class="date-input-wrapper">
-                    <input type="text" id="age" name="age" placeholder="dd/mm/yyyy" autocomplete="off" required />
-                    <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" stroke="#f97206" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                </div>
+                <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                {{ form.description }}
+                {% for error in form.description.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
             </div>
 
             <div class="photo-group">
@@ -66,8 +64,8 @@
                     </svg>
                     <span id="photo-label-text">{% translate "Agregar foto" %}</span>
                 </label>
-                <input type="file" id="pet-photo" name="pet_photo" accept="image/*" style="display: none;"
-                    onchange="if(this.files[0]) document.getElementById('photo-label-text').textContent = this.files[0].name;" />
+                {{ form.img }}
+                {% for error in form.img.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
             </div>
 
             <div class="btn-submit-wrapper">

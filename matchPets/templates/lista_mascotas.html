@@ -7,6 +7,9 @@
 
 {% block content %}
 <div class="lista-mascotas">
+    {% for message in messages %}
+    <p class="lista-mensaje lista-mensaje--{{ message.tags }}" role="status">{{ message }}</p>
+    {% endfor %}
     <div class="lista-encabezado">
         <a href="{% if es_propia %}{% url 'perfil_usuario' %}{% else %}{% url 'ver_dueno' dueno.id %}{% endif %}" class="lista-atras" aria-label="{% translate 'Volver' %}">
             <img src="{% static 'img/perfil/icono-atras.svg' %}" alt="">

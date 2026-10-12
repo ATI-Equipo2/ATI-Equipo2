@@ -162,3 +162,18 @@
     display: none;
   }
 }
+
+/* Mensajes flash (django.contrib.messages) */
+.lista-mensaje {
+  margin: 0 0 12px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #e8f6ec;
+  color: #1e6b3a;
+  font-size: 1rem;
+}
+
+.lista-mensaje--error {
+  background: #fdecea;
+  color: #c0392b;
+}

@@ -239,3 +239,44 @@
     margin-top: 1rem;
   }
 }
+
+/* Selects y textarea de PetForm (mismo aspecto que los inputs) */
+.field-group select,
+.field-group textarea {
+  width: 100%;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.88rem;
+  color: #333333;
+  border: 1.2px solid #e2e2e2;
+  border-radius: 8px;
+  outline: none;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  font-family: var(--primary-font, "Roboto", sans-serif);
+}
+
+.field-group select {
+  height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.field-group textarea {
+  resize: vertical;
+}
+
+.field-group select:focus,
+.field-group textarea:focus {
+  border-color: #f26e00;
+  box-shadow: 0 0 0 2px rgba(242, 110, 0, 0.15);
+}
+
+.field-group textarea::placeholder {
+  color: #b5b5b5;
+}
+
+.field-error {
+  margin: 0;
+  color: #c0392b;
+  font-size: 0.8rem;
+}

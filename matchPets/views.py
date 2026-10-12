@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import login as auth_login
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import DatabaseError
 from django.utils.translation import gettext, ngettext
 
 from . import mock_data, services
-from .forms import RegistroForm
+from .forms import PetForm, RegistroForm
 from .models import Pet, User
 
 
@@ -97,7 +98,17 @@ def signup(request):
 
 @login_required(login_url='login')
 def add_pet(request):
-    return render(request, 'add-pet.html', {'name': gettext('Agregar Mascota')})
+    if request.method == 'POST':
+        form = PetForm(request.POST, request.FILES)
+        if form.is_valid():
+            pet = form.save(commit=False)
+            pet.owner = request.user
+            pet.save()
+            messages.success(request, gettext('Mascota agregada correctamente'))
+            return redirect('tus_mascotas')
+    else:
+        form = PetForm()
+    return render(request, 'add-pet.html', {'name': gettext('Agregar Mascota'), 'form': form})
 
 
 def base_navigation(request):
