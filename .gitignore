@@ -8,3 +8,8 @@ db.sqlite3
 .venv/
 .env
 local_settings.py
+
+# Base de datos y archivos subidos
+*.sqlite3
+media/
+venv/

@@ -87,9 +87,6 @@ MASCOTAS = {
 def signup(request):
     return render(request, 'signup.html', {'name': gettext('Registrarse')})
 
-def login(request):
-    return render(request, 'login.html', {'name': gettext('Iniciar Sesión')})
-
 def add_pet(request):
     return render(request, 'add-pet.html', {'name': gettext('Agregar Mascota')})
 
