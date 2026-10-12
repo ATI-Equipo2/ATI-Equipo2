@@ -9,7 +9,7 @@ from django.utils.translation import gettext, ngettext
 Pet = apps.get_model('matchPets', 'Pet')
 
 class LoginView(auth_views.LoginView):
-    template_name = 'matchPets/login.html'
+    template_name = 'login.html'
     
 class LogoutView(auth_views.LogoutView):
     template_name = 'matchPets/logout.html'
