@@ -306,7 +306,7 @@ msgid "¿Olvidaste tu contraseña?"
 msgstr "Forgot your password?"
 
 #: .\matchPets\templates\login.html:28
-msgid "No tienes cuenta? Regístrate"
+msgid "¿No tienes una cuenta? Regístrate"
 msgstr "Don't have an account? Sign up"
 
 #: .\matchPets\templates\matchPets\partials\_foto.html:3

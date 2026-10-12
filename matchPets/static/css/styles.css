@@ -47,7 +47,6 @@ body {
   transform: translateX(-50%);
   width: 90%;
   max-width: 500px;
-  height: 87%;
   z-index: 20;
   background-color: var(--white);
   overflow-y: auto;
@@ -316,7 +315,6 @@ footer {
   }
 }
 
-
 /* Botón de cerrar sesión (formulario POST) con aspecto de ícono */
 .form-logout {
   margin: 0;
@@ -330,7 +328,6 @@ footer {
   font: inherit;
   color: inherit;
 }
-
 
 /* Notificaciones: badge de no leídas y popup (visibles en todas las pantallas) */
 .notif-badge {

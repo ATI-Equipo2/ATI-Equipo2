@@ -11,12 +11,14 @@
 
     <div class="field-group">
         <label for="username">{% translate "Usuario" %}</label>
-        <input type="text" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="{% translate 'Usuario' %}" autocomplete="username" required />
+        <input type="text" id="username" name="username" value="{{ form.username.value|default:'' }}"
+            placeholder="{% translate 'Usuario' %}" autocomplete="username" required />
     </div>
 
     <div class="field-group">
         <label for="password">{% translate "Contraseña" %}</label>
-        <input type="password" id="password" name="password" placeholder="**********" autocomplete="current-password" required />
+        <input type="password" id="password" name="password" placeholder="**********" autocomplete="current-password"
+            required />
     </div>
 
     <div class="btn-submit-wrapper">
@@ -25,7 +27,7 @@
 
     <div class="auth-links">
         <a href="#" class="auth-link">{% translate "¿Olvidaste tu contraseña?" %}</a>
-        <a href="{% url 'registro' %}" class="auth-link">{% translate "No tienes cuenta? Regístrate" %}</a>
+        <a href="{% url 'registro' %}" class="auth-link">{% translate "¿No tienes una cuenta? Regístrate" %}</a>
     </div>
 </form>
-{% endblock %}
+{% endblock %}r

@@ -5,7 +5,6 @@
   gap: 1.3rem;
   padding: 1rem 1.6rem 2.5rem;
   box-sizing: border-box;
-  min-height: 80%;
 }
 
 .field-group {
@@ -16,7 +15,7 @@
 }
 
 .field-group label {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 400;
   color: var(--grey-950, #222222);
   font-family: var(--primary-font, inherit);
@@ -99,7 +98,6 @@
   text-decoration: underline;
   opacity: 0.85;
 }
-
 
 /* Errores de validación del inicio de sesión */
 .form-errors {

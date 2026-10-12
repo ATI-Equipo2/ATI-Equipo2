@@ -15,7 +15,7 @@
 }
 
 .field-group label {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 400;
   color: var(--grey-950, #222222);
   font-family: var(--primary-font, inherit);
@@ -168,7 +168,6 @@
 .btn-signup:active {
   transform: translateY(0);
 }
-
 
 /* Errores de validación de los formularios */
 .field-error,
