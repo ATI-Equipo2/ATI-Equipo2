@@ -111,7 +111,7 @@ def add_pet(request):
 
 
 def base_navigation(request):
-    return render(request, 'base-navigation-desktop.html')
+    return render(request, 'base-navegacion-desktop.html')
 
 
 def base_feed_mobile(request):

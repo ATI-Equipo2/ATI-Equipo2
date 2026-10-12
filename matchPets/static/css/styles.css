@@ -330,3 +330,135 @@ footer {
   font: inherit;
   color: inherit;
 }
+
+
+/* Notificaciones: badge de no leídas y popup (visibles en todas las pantallas) */
+.notif-badge {
+  position: fixed;
+  top: 1.6%;
+  left: 92.2%;
+  z-index: 31;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  border-radius: 9px;
+  background: #e11d48;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* En la maqueta mobile el ícono está en la barra inferior */
+.notif-badge--movil {
+  display: none;
+}
+
+.notif-popup {
+  position: fixed;
+  top: 92px;
+  right: 4%;
+  z-index: 60;
+  width: min(340px, 92vw);
+  max-height: 70vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #eee3de;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  font-family: var(--primary-font, inherit);
+}
+
+.notif-popup[hidden] {
+  display: none;
+}
+
+.notif-popup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee3de;
+  color: #1c1a19;
+  font-size: 1rem;
+}
+
+.notif-popup-contador {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: #e11d48;
+  color: #ffffff;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.notif-popup-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notif-popup-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1ebe8;
+  color: #1c1a19;
+  font-size: 0.9rem;
+}
+
+.notif-popup-item--nueva {
+  background: #fff7f4;
+  border-left: 3px solid var(--accent-color, #f97206);
+}
+
+.notif-popup-detalle {
+  color: #6f6a66;
+  font-size: 0.8rem;
+}
+
+.notif-popup-vacia {
+  padding: 18px 16px;
+  text-align: center;
+  color: #8b8b8b;
+  font-size: 0.9rem;
+}
+
+.notif-popup-ver {
+  display: block;
+  padding: 10px 16px;
+  text-align: center;
+  color: var(--accent-color, #f97206);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (min-width: 360px) and (max-width: 640px) {
+  .notif-badge--movil {
+    display: flex;
+    top: 92.2%;
+    left: 93%;
+  }
+}
+
+@media (max-width: 640px) {
+  .notif-badge:not(.notif-badge--movil) {
+    display: none;
+  }
+
+  .notif-popup {
+    top: auto;
+    right: 8px;
+    bottom: 84px;
+    left: 8px;
+    width: auto;
+  }
+}
