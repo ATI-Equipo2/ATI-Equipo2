@@ -274,3 +274,30 @@
     height: calc(10 * var(--u));
   }
 }
+
+/* Formularios POST dentro de las tarjetas (aceptar, denegar, leer, descartar) */
+.notif-form {
+  margin: 0;
+  display: inline;
+}
+
+.notif-acciones {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+}
+
+.notif-leer {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--verde);
+  font-size: calc(22 * var(--u));
+  line-height: 1;
+  padding: calc(4 * var(--u));
+}
+
+.notif-card--nueva {
+  background: #fff7f4;
+  border-left: calc(4 * var(--u)) solid var(--naranja);
+}

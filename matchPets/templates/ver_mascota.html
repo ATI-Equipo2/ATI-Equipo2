@@ -7,9 +7,9 @@
 {% endblock %}
 
 {% block content %}
-{% if aviso_solicitud %}
-<div class="notif-toast visible" role="status" aria-live="polite" style="opacity:1;position:static;transform:none;display:inline-block;margin:12px 0;">{{ aviso_solicitud }}</div>
-{% endif %}
+{% for message in messages %}
+<div class="notif-toast visible notif-toast--{{ message.tags }}" role="status" aria-live="polite" style="opacity:1;position:static;transform:none;display:inline-block;margin:12px 0;">{{ message }}</div>
+{% endfor %}
 <article class="perfil perfil--mascota">
     <div class="perfil-foto">
         {% include 'matchPets/partials/_foto.html' with item=mascota %}
@@ -19,10 +19,26 @@
         <div class="perfil-encabezado">
             <h1 class="perfil-nombre">{{ mascota.nombre }}</h1>
             <div class="perfil-acciones">
-                <!-- Enviar solicitud para socializar (dato falso: ?solicitud=enviada muestra el aviso) -->
-                <a href="{% url 'ver_mascota' mascota.id %}?solicitud=enviada" class="perfil-accion perfil-accion--circulo" aria-label="{% translate 'Enviar solicitud de amistad' %}" title="{% translate 'Enviar solicitud de amistad' %}">
-                    <img src="{% static 'img/perfil/icono-agregar-usuario.svg' %}" alt="">
-                </a>
+                {% if not es_propia %}
+                {% if mis_mascotas %}
+                <!-- Enviar solicitud para socializar (POST con csrf) -->
+                <form method="post" action="{% url 'enviar_solicitud' mascota.id %}" class="form-solicitud">
+                    {% csrf_token %}
+                    {% if mis_mascotas|length > 1 %}
+                    <select name="from_pet" class="solicitud-select" aria-label="{% translate 'Tu mascota' %}" required>
+                        {% for p in mis_mascotas %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+                    </select>
+                    {% else %}
+                    <input type="hidden" name="from_pet" value="{{ mis_mascotas.0.id }}">
+                    {% endif %}
+                    <button type="submit" class="perfil-accion perfil-accion--circulo btn-icono" aria-label="{% translate 'Enviar solicitud de amistad' %}" title="{% translate 'Enviar solicitud de amistad' %}">
+                        <img src="{% static 'img/perfil/icono-agregar-usuario.svg' %}" alt="">
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'agregar_mascota' %}" class="solicitud-aviso">{% translate "Agrega una mascota para enviar solicitudes" %}</a>
+                {% endif %}
+                {% endif %}
             </div>
         </div>
 

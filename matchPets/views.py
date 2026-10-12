@@ -4,11 +4,13 @@ from django.contrib.auth import login as auth_login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import DatabaseError
+from django.http import Http404
+from django.views.decorators.http import require_POST
 from django.utils.translation import gettext, ngettext
 
 from . import mock_data, services
 from .forms import PetForm, RegistroForm
-from .models import Pet, User
+from .models import FriendshipRequest, Notification, Pet, User
 
 
 class LoginView(auth_views.LoginView):
@@ -154,13 +156,41 @@ def perfil_mascota(request, pet_id):
 @login_required(login_url='login')
 def ver_mascota(request, pet_id):
     pet = get_object_or_404(Pet, pk=pet_id)
-    solicitud_enviada = request.GET.get('solicitud') == 'enviada'
+    es_propia = pet.owner_id == request.user.id
     return render(request, 'ver_mascota.html', {
         'title': gettext('Ver Mascota'),
         'mascota': _tarjeta_desde_pet(pet),
-        'solicitud_enviada': solicitud_enviada,
-        'aviso_solicitud': gettext('Solicitud enviada') if solicitud_enviada else '',
+        'es_propia': es_propia,
+        'mis_mascotas': [] if es_propia else list(services.mascotas_de(request.user)),
     })
+
+
+@login_required(login_url='login')
+@require_POST
+def enviar_solicitud(request, pet_id):
+    """Envía una solicitud de socialización a una mascota ajena."""
+    to_pet = get_object_or_404(Pet.objects.select_related('owner'), pk=pet_id)
+    destino = redirect('ver_mascota', pet_id=to_pet.id)
+    if to_pet.owner_id is None or to_pet.owner_id == request.user.id:
+        messages.error(request, gettext('No puedes enviar una solicitud a esta mascota'))
+        return destino
+
+    mis_mascotas = list(services.mascotas_de(request.user))
+    elegida = request.POST.get('from_pet', '')
+    from_pet = next((p for p in mis_mascotas if str(p.id) == elegida), None)
+    if from_pet is None and len(mis_mascotas) == 1:
+        from_pet = mis_mascotas[0]
+    if from_pet is None:
+        messages.error(request, gettext('Elige una de tus mascotas para enviar la solicitud'))
+        return destino
+
+    if FriendshipRequest.objects.filter(from_pet=from_pet, to_pet=to_pet, status='pending').exists():
+        messages.info(request, gettext('Ya enviaste una solicitud pendiente a esta mascota'))
+        return destino
+
+    services.crear_solicitud(request.user, from_pet, to_pet)
+    messages.success(request, gettext('Solicitud enviada'))
+    return destino
 
 
 @login_required(login_url='login')
@@ -198,84 +228,48 @@ def buscar_mascotas(request):
 
 
 # ---------------------------------------------------------------------------
-# Datos falsos para Notificaciones / Mensajes / Solicitudes (sin backend).
-# Se reemplazan por el ORM en la fase de notificaciones.
-# La fuente está en español; las plantillas usan {% translate %} para i18n.
+# Notificaciones y solicitudes
 # ---------------------------------------------------------------------------
-NOTIFICACIONES_FALSAS = [
-    {
-        'id': 1,
-        'tipo': 'nuevo_mensaje',
-        'titulo': 'Nuevo mensaje',
-        'detalle': 'Brown te envió un mensaje',
-        'mascota': None,
-    },
-    {
-        'id': 2,
-        'tipo': 'solicitud_aceptada',
-        'titulo': 'Solicitud aceptada',
-        'detalle': 'Daisy aceptó tu solicitud',
-        'mascota': None,
-    },
-    {
-        'id': 3,
-        'tipo': 'solicitud_recibida',
-        'titulo': 'Tienes una solicitud de Nora',
-        'detalle': 'Nora quiere socializar con Brown',
-        'mascota': None,
-        'solicitante': 'Nora',
-    },
-]
-
-MENSAJES_RECIENTES_FALSOS = [
-    {
-        'nombre': 'Brown',
-        'texto': 'Hola, soy Brown. Se que no soy de la raza más grande, pero mi…',
-        'foto': 'img/perfil/brown.png',
-    },
-    {
-        'nombre': 'Daisy',
-        'texto': 'Hola, soy Daisy. Se que no soy de la raza más grande, pero mi coraz…',
-        'foto': 'img/perfil/brown.png',
-    },
-    {
-        'nombre': 'Ronaldo',
-        'texto': 'Estoy buscando a alguien que me quiera, que me huela y se emocion…',
-        'foto': 'img/perfil/ronaldo.png',
-    },
-    {
-        'nombre': 'Ursula',
-        'texto': 'Hola, soy Úrsula. Se que no soy de la raza más grande, pero mi…',
-        'foto': 'img/perfil/lucia.png',
-    },
-]
+@login_required(login_url='login')
+def notificaciones(request):
+    """Pantalla de Notificaciones / Solicitudes del usuario."""
+    lista = (Notification.objects.filter(user=request.user)
+             .select_related('pet', 'solicitud').order_by('-created_at'))
+    return render(request, 'notificaciones.html', {
+        'title': gettext('Notificaciones'),
+        'notificaciones': lista,
+        'no_leidas': lista.filter(leida=False).count(),
+    })
 
 
 @login_required(login_url='login')
-def notificaciones(request):
-    """Pantalla de Notificaciones / Solicitudes / Mensajes (datos falsos).
+@require_POST
+def responder_solicitud(request, req_id, accion):
+    """El destinatario acepta o deniega una solicitud pendiente."""
+    if accion not in ('aceptar', 'denegar'):
+        raise Http404
+    solicitud = get_object_or_404(FriendshipRequest, pk=req_id, to_user=request.user)
+    if solicitud.status != 'pending':
+        messages.info(request, gettext('Esta solicitud ya fue respondida'))
+    else:
+        services.resolver_solicitud(solicitud, aceptar=(accion == 'aceptar'))
+        messages.success(request, gettext('Solicitud aceptada') if accion == 'aceptar'
+                         else gettext('Solicitud denegada'))
+    return redirect('notificaciones')
 
-    Query params (solo para previsualizar estados sin backend):
-      ?estado=solicitud_enviada  -> muestra aviso "Solicitud enviada"
-      ?estado=solicitud_aceptada -> muestra aviso "Solicitud aceptada"
-      ?estado=solicitud_denegada -> muestra aviso "Solicitud denegada"
-    La interacción Aceptar/Denegar/Cerrar también funciona en el navegador
-    con JavaScript, sin recargar.
-    """
-    estado = request.GET.get('estado', '')
-    avisos = {
-        'solicitud_enviada': gettext('Solicitud enviada'),
-        'solicitud_aceptada': gettext('Solicitud aceptada'),
-        'solicitud_denegada': gettext('Solicitud denegada'),
-        'mensaje_nuevo': gettext('Nuevo mensaje'),
-    }
-    return render(request, 'notificaciones.html', {
-        'title': gettext('Notificaciones'),
-        'notificaciones': NOTIFICACIONES_FALSAS,
-        'mensajes_recientes': MENSAJES_RECIENTES_FALSOS,
-        'aviso_inicial': avisos.get(estado, ''),
-        'hay_no_leidas': True,
-    })
+
+@login_required(login_url='login')
+@require_POST
+def marcar_leida(request, notif_id):
+    Notification.objects.filter(id=notif_id, user=request.user).update(leida=True)
+    return redirect('notificaciones')
+
+
+@login_required(login_url='login')
+@require_POST
+def descartar_notificacion(request, notif_id):
+    Notification.objects.filter(id=notif_id, user=request.user).delete()
+    return redirect('notificaciones')
 
 
 # ---------------------------------------------------------------------------
