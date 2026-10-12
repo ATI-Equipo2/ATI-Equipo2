@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: matchPets\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 00:53-0400\n"
+"POT-Creation-Date: 2026-10-12 01:09-0400\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,7 +22,7 @@ msgid "Correo"
 msgstr "Email"
 
 #: .\matchPets\forms.py:14 .\matchPets\forms.py:27 .\matchPets\forms.py:40
-#: .\matchPets\forms.py:48
+#: .\matchPets\forms.py:50
 msgid "Nombre"
 msgstr "Name"
 
@@ -53,23 +53,41 @@ msgstr "Age"
 msgid "Descripción"
 msgstr "Description"
 
-#: .\matchPets\forms.py:44
+#: .\matchPets\forms.py:44 .\matchPets\models.py:24
+msgid "Temperamento"
+msgstr "Temperament"
+
+#: .\matchPets\forms.py:45 .\matchPets\models.py:25
+#: .\matchPets\templates\perfil_mascota.html:41
+#: .\matchPets\templates\ver_mascota.html:51
+msgid "En busca de socializar"
+msgstr "Looking to socialize"
+
+#: .\matchPets\forms.py:46
 msgid "Sexo"
 msgstr "Sex"
 
-#: .\matchPets\forms.py:45
+#: .\matchPets\forms.py:47
 msgid "Foto"
 msgstr "Photo"
 
-#: .\matchPets\forms.py:49 .\matchPets\models.py:22
+#: .\matchPets\forms.py:51 .\matchPets\models.py:22
 msgid "Edad en años"
 msgstr "Age in years"
 
-#: .\matchPets\forms.py:50
-msgid "ej: alegre y juguetón"
-msgstr "e.g.: cheerful and playful"
+#: .\matchPets\forms.py:52
+msgid "ej: alegre"
+msgstr "e.g.: cheerful"
 
-#: .\matchPets\forms.py:62
+#: .\matchPets\forms.py:53
+msgid "Cuéntanos sobre tu mascota"
+msgstr "Tell us about your pet"
+
+#: .\matchPets\forms.py:54
+msgid "ej: busca un compañero para jugar en el parque"
+msgstr "e.g.: looking for a playmate at the park"
+
+#: .\matchPets\forms.py:66
 msgid "La edad no puede ser negativa."
 msgstr "Age cannot be negative."
 
@@ -105,19 +123,19 @@ msgstr "Female"
 msgid "Volver"
 msgstr "Back"
 
-#: .\matchPets\templates\add-pet.html:21 .\matchPets\views.py:111
+#: .\matchPets\templates\add-pet.html:21 .\matchPets\views.py:110
 msgid "Agregar Mascota"
 msgstr "Add Pet"
 
-#: .\matchPets\templates\add-pet.html:65
+#: .\matchPets\templates\add-pet.html:77
 msgid "Agregar foto"
 msgstr "Add photo"
 
-#: .\matchPets\templates\add-pet.html:72
+#: .\matchPets\templates\add-pet.html:84
 msgid "Agregar"
 msgstr "Add"
 
-#: .\matchPets\templates\base-perfil.html:13 .\matchPets\views.py:131
+#: .\matchPets\templates\base-perfil.html:13 .\matchPets\views.py:130
 msgid "Perfil de Usuario"
 msgstr "User Profile"
 
@@ -162,7 +180,7 @@ msgstr "My profile"
 #: .\matchPets\templates\perfil_mascota.html:53
 #: .\matchPets\templates\perfil_usuario.html:60
 #: .\matchPets\templates\ver_dueno.html:55
-#: .\matchPets\templates\ver_mascota.html:64 .\matchPets\views.py:274
+#: .\matchPets\templates\ver_mascota.html:64 .\matchPets\views.py:273
 msgid "Notificaciones"
 msgstr "Notifications"
 
@@ -199,7 +217,7 @@ msgstr "No results for that search."
 #: .\matchPets\templates\perfil_mascota.html:52
 #: .\matchPets\templates\perfil_usuario.html:59
 #: .\matchPets\templates\ver_dueno.html:54
-#: .\matchPets\templates\ver_mascota.html:63 .\matchPets\views.py:308
+#: .\matchPets\templates\ver_mascota.html:63 .\matchPets\views.py:307
 msgid "Inicio"
 msgstr "Home"
 
@@ -266,13 +284,13 @@ msgstr "Accept"
 msgid "Denegar"
 msgstr "Decline"
 
-#: .\matchPets\templates\notificaciones.html:39 .\matchPets\views.py:271
+#: .\matchPets\templates\notificaciones.html:39 .\matchPets\views.py:270
 msgid "Nuevo mensaje"
 msgstr "New message"
 
 #: .\matchPets\templates\notificaciones.html:42
 #: .\matchPets\templates\notificaciones.html:104
-#: .\matchPets\templates\notificaciones.html:107 .\matchPets\views.py:269
+#: .\matchPets\templates\notificaciones.html:107 .\matchPets\views.py:268
 msgid "Solicitud aceptada"
 msgstr "Request accepted"
 
@@ -286,7 +304,7 @@ msgid "No tienes notificaciones por ahora."
 msgstr "You have no notifications for now."
 
 #: .\matchPets\templates\notificaciones.html:112
-#: .\matchPets\templates\notificaciones.html:115 .\matchPets\views.py:270
+#: .\matchPets\templates\notificaciones.html:115 .\matchPets\views.py:269
 msgid "Solicitud denegada"
 msgstr "Request denied"
 
@@ -301,11 +319,6 @@ msgstr "Edit profile"
 #: .\matchPets\templates\ver_mascota.html:41
 msgid "Especie y sexo"
 msgstr "Species and sex"
-
-#: .\matchPets\templates\perfil_mascota.html:41
-#: .\matchPets\templates\ver_mascota.html:51
-msgid "En busca de socializar"
-msgstr "Looking to socialize"
 
 #: .\matchPets\templates\perfil_usuario.html:9
 #: .\matchPets\templates\perfil_usuario.html:58
@@ -353,39 +366,39 @@ msgid_plural "%(count)s años"
 msgstr[0] "%(count)s year"
 msgstr[1] "%(count)s years"
 
-#: .\matchPets\views.py:96
+#: .\matchPets\views.py:95
 msgid "Registrarse"
 msgstr "Sign Up"
 
-#: .\matchPets\views.py:107
+#: .\matchPets\views.py:106
 msgid "Mascota agregada correctamente"
 msgstr "Pet added successfully"
 
-#: .\matchPets\views.py:137
+#: .\matchPets\views.py:136
 msgid "Ver Dueño"
 msgstr "Owner"
 
-#: .\matchPets\views.py:150
+#: .\matchPets\views.py:149
 msgid "Perfil de Mascota"
 msgstr "Pet Profile"
 
-#: .\matchPets\views.py:160
+#: .\matchPets\views.py:159
 msgid "Ver Mascota"
 msgstr "Pet"
 
-#: .\matchPets\views.py:163 .\matchPets\views.py:268
+#: .\matchPets\views.py:162 .\matchPets\views.py:267
 msgid "Solicitud enviada"
 msgstr "Request sent"
 
-#: .\matchPets\views.py:171
+#: .\matchPets\views.py:170
 msgid "Tus Mascotas"
 msgstr "Your Pets"
 
-#: .\matchPets\views.py:182
+#: .\matchPets\views.py:181
 msgid "Sus Mascotas"
 msgstr "Their Pets"
 
-#: .\matchPets\views.py:195
+#: .\matchPets\views.py:194
 msgid "Buscar Mascotas"
 msgstr "Search Pets"
 
@@ -1613,14 +1626,11 @@ msgstr ""
 msgid "Connect, get help, or contribute"
 msgstr ""
 
+#~ msgid "ej: alegre y juguetón"
+#~ msgstr "e.g.: cheerful and playful"
+
 #~ msgid "ej: macho"
 #~ msgstr "e.g.: male"
-
-#~ msgid "Temperamento"
-#~ msgstr "Temperament"
-
-#~ msgid "ej: perro"
-#~ msgstr "e.g.: dog"
 
 #~ msgid "Apellido"
 #~ msgstr "Last Name"

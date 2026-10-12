@@ -46,10 +46,9 @@ def _tarjeta_desde_pet(pet):
         'especie': pet.get_species_display(),
         'sexo': pet.get_gender_display(),
         'edad': _edad_anos(pet.age),
-        # El modelo aún no tiene temperamento: se reutiliza la descripción.
-        'temperamento': descripcion,
+        'temperamento': pet.temperament,
         'descripcion': descripcion,
-        'socializar': '',
+        'socializar': (pet.socialization or '').strip(),
         'dueno_id': pet.owner_id,
         'foto_url': pet.img.url if pet.img else '',
         'foto_static': '',

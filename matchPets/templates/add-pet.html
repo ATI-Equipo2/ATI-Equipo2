@@ -50,9 +50,21 @@
             </div>
 
             <div class="field-group">
+                <label for="{{ form.temperament.id_for_label }}">{{ form.temperament.label }}</label>
+                {{ form.temperament }}
+                {% for error in form.temperament.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="field-group">
                 <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
                 {{ form.description }}
                 {% for error in form.description.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+
+            <div class="field-group">
+                <label for="{{ form.socialization.id_for_label }}">{{ form.socialization.label }}</label>
+                {{ form.socialization }}
+                {% for error in form.socialization.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
             </div>
 
             <div class="photo-group">

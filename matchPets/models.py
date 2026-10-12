@@ -21,6 +21,8 @@ class Pet(models.Model):
     species = models.CharField(max_length=20, choices=ESPECIES, default='dog')
     age = models.IntegerField(help_text=_("Edad en años"))
     description = models.TextField(blank=True, null=True)
+    temperament = models.CharField(_("Temperamento"), max_length=100, blank=True, default='')
+    socialization = models.TextField(_("En busca de socializar"), blank=True, default='')
     gender = models.CharField(max_length=20, choices=GENEROS, default='male')
     img = models.ImageField(upload_to='pets/', blank=True, null=True)
     availableForAdoption = models.BooleanField(default=True)

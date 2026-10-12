@@ -35,19 +35,23 @@ class RegistroForm(UserCreationForm):
 class PetForm(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ['name', 'species', 'age', 'description', 'gender', 'img']
+        fields = ['name', 'species', 'gender', 'age', 'temperament', 'description', 'socialization', 'img']
         labels = {
             'name': _('Nombre'),
             'species': _('Especie'),
             'age': _('Edad'),
             'description': _('Descripción'),
+            'temperament': _('Temperamento'),
+            'socialization': _('En busca de socializar'),
             'gender': _('Sexo'),
             'img': _('Foto'),
         }
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': _('Nombre'), 'autocomplete': 'off'}),
             'age': forms.NumberInput(attrs={'placeholder': _('Edad en años'), 'min': 0}),
-            'description': forms.Textarea(attrs={'placeholder': _('ej: alegre y juguetón'), 'rows': 3}),
+            'temperament': forms.TextInput(attrs={'placeholder': _('ej: alegre'), 'autocomplete': 'off'}),
+            'description': forms.Textarea(attrs={'placeholder': _('Cuéntanos sobre tu mascota'), 'rows': 3}),
+            'socialization': forms.Textarea(attrs={'placeholder': _('ej: busca un compañero para jugar en el parque'), 'rows': 3}),
             'img': forms.FileInput(attrs={
                 'id': 'pet-photo',
                 'accept': 'image/*',
