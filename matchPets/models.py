@@ -47,3 +47,60 @@ class User(AbstractUser):
 
 
 
+
+
+class FriendshipRequest(models.Model):
+    ESTADOS = [
+        ('pending', _('Pendiente')),
+        ('accepted', _('Aceptada')),
+        ('rejected', _('Rechazada')),
+    ]
+
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_requests')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_requests')
+    from_pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='sent_requests')
+    to_pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='received_requests')
+    status = models.CharField(max_length=10, choices=ESTADOS, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.from_pet} -> {self.to_pet} ({self.status})"
+
+
+class Notification(models.Model):
+    TIPOS = [
+        ('mensaje', _('Mensaje')),
+        ('solicitud_recibida', _('Solicitud recibida')),
+        ('solicitud_aceptada', _('Solicitud aceptada')),
+        ('solicitud_denegada', _('Solicitud denegada')),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    tipo = models.CharField(max_length=20, choices=TIPOS)
+    titulo = models.CharField(max_length=200)
+    detalle = models.TextField(blank=True, default='')
+    leida = models.BooleanField(default=False)
+    pet = models.ForeignKey(Pet, on_delete=models.SET_NULL, null=True, blank=True)
+    # Solicitud asociada (permite aceptar/denegar desde la notificación).
+    solicitud = models.ForeignKey(
+        FriendshipRequest,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='notifications',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user}: {self.titulo}"
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField()
+    read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender} -> {self.receiver}"
