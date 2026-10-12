@@ -1,7 +1,7 @@
 {% load static i18n %}
 {# Tarjeta de mascota del Inicio/Feed. Recibe `tarjeta` con: nombre, especie, #}
 {# temperamento, edad, sexo, foto_url (subida) o foto_static (fichero local). #}
-<a class="tarjeta-mascota tarjeta-inicio" href="{% url 'ver_mascota' %}">
+<a class="tarjeta-mascota tarjeta-inicio" href="{% if tarjeta.id %}{% url 'ver_mascota' tarjeta.id %}{% else %}#{% endif %}">
     <span class="tarjeta-foto">
         {% if tarjeta.foto_url %}
         <img src="{{ tarjeta.foto_url }}" alt="{% blocktranslate with nombre=tarjeta.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">

@@ -10,14 +10,19 @@
 {% endblock %}
 
 {% block content %}
+{% firstof usuario.nombre usuario.username as nombre_usuario %}
 <article class="perfil">
     <div class="perfil-foto">
-        <img src="{% static usuario.foto %}" alt="{% blocktranslate with nombre=usuario.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
+        {% if usuario.foto %}
+        <img src="{{ usuario.foto.url }}" alt="{% blocktranslate with nombre=nombre_usuario %}Foto de {{ nombre }}{% endblocktranslate %}">
+        {% else %}
+        <img src="{% static 'img/logo.jpeg' %}" alt="{% translate 'Sin foto' %}">
+        {% endif %}
     </div>
 
     <div class="perfil-info">
         <div class="perfil-encabezado">
-            <h1 class="perfil-nombre">{{ usuario.nombre }}</h1>
+            <h1 class="perfil-nombre">{{ nombre_usuario }}</h1>
             <div class="perfil-acciones">
                 <a href="#" class="perfil-accion" aria-label="{% translate 'Editar perfil' %}">
                     <img src="{% static 'img/perfil/icono-editar.svg' %}" alt="">
@@ -35,7 +40,7 @@
         <ul class="perfil-datos">
             <li class="perfil-dato">
                 <img src="{% static 'img/perfil/icono-calendario.svg' %}" alt="{% translate 'Edad' %}">
-                <span>{{ usuario.edad }}</span>
+                <span>{{ edad_texto }}</span>
             </li>
             <li class="perfil-dato">
                 <img src="{% static 'img/perfil/icono-ubicacion.svg' %}" alt="{% translate 'Ubicación' %}">

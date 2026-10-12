@@ -1,15 +1,14 @@
-from django.apps import apps
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, request
-from django.db.models import Q
+from django.db import DatabaseError
 from django.utils.translation import gettext, ngettext
 
+from . import mock_data, services
 from .forms import RegistroForm
+from .models import Pet, User
 
-Pet = apps.get_model('matchPets', 'Pet')
 
 class LoginView(auth_views.LoginView):
     template_name = 'login.html'
@@ -29,71 +28,61 @@ class LogoutView(auth_views.LogoutView):
 def vista_protegida(request):
     return render(request, 'matchPets/protegida.html')
 
-# Datos de ejemplo para las vistas de perfil (aún no hay modelos)
-USUARIOS = {
-    'rolando': {
-        'nombre': 'Rolando',
-        'edad': '20 años',
-        'ubicacion': 'Los Teques',
-        'descripcion': 'Soy Amante de los animales. Mi color favorito es el naranja, mi libro favorito es El hobbit, en mi tiempo libre disfruto escuchar Los fantasmas del Caribe y jugar The forest',
-        'foto': 'img/perfil/rolando.png',
-    },
-    'jesus': {
-        'nombre': 'Jesús',
-        'edad': '21 años',
-        'ubicacion': 'Catia',
-        'descripcion': 'Considero que los humanos también somo animales, mis mascotas son compañeros de vida los cuales tienen problemas con socializar porque me da pereza pacearlos, si quieres socializar con mis mascotas tienes que ser una mamá soltera',
-        'foto': 'img/perfil/jesus.png',
-    },
-}
 
-MASCOTAS = {
-    'ronaldo': {
-        'nombre': 'Ronaldo',
-        'especie': 'Perro',
-        'sexo': 'Macho',
-        'temperamento': 'Pansón',
-        'edad': '5 años',
-        'descripcion': 'Estoy Buscando a alguien que me quiera, que me huela y se emocione, que se orine por mí. Me gustan los paseos, las caricias y compartir unas chelas con mis amigos caninos.',
-        'socializar': 'Estoy interesado en una perra en celo, con más de dos años, que quiera algo temporal, nada de tener familia porque me desaparezco, algo tranqui.',
-        'foto': 'img/perfil/ronaldo.png',
-    },
-    'orlando': {
-        'nombre': 'Orlando',
-        'especie': 'Gato',
-        'sexo': 'Macho',
-        'temperamento': 'Furioso',
-        'edad': '2 años',
-        'foto': 'img/perfil/orlando.png',
-    },
-    'bruno': {
-        'nombre': 'Bruno Andrés',
-        'especie': 'Perro',
-        'sexo': 'Macho',
-        'temperamento': 'Amigable',
-        'edad': '4 años',
-        'foto': 'img/perfil/bruno.png',
-    },
-    'brown': {
-        'nombre': 'Brown',
-        'especie': 'Perro',
-        'sexo': 'Macho',
-        'temperamento': 'Juguetón',
-        'edad': '2 meses',
-        'descripcion': 'Hola, soy Brown. Se que no soy de la raza más grande, pero mi corazón lo es. Estoy en búsqueda de un amigo que pueda jugar conmigo sin lastimarme ya que tengo solo un par de meses de edad.',
-        'socializar': 'Me gustaría conocer a un compañero canino para poder pasar el rato y compartir aventuras en el parque del este.',
-        'foto': 'img/perfil/brown.png',
-    },
-    'lucia': {
-        'nombre': 'Lucia',
-        'especie': 'Gata',
-        'sexo': 'Hembra',
-        'temperamento': 'Cariñosa',
-        'edad': '1 año',
-        'foto': 'img/perfil/lucia.png',
-    },
-}
+# ---------------------------------------------------------------------------
+# Helpers para presentar modelos en las plantillas
+# ---------------------------------------------------------------------------
+def _edad_anos(cantidad):
+    return ngettext('%(count)s año', '%(count)s años', cantidad) % {'count': cantidad}
 
+
+def _tarjeta_desde_pet(pet):
+    """Normaliza una instancia del modelo Pet al formato que esperan las plantillas."""
+    descripcion = (pet.description or '').strip()
+    return {
+        'id': pet.id,
+        'nombre': pet.name,
+        'especie': pet.get_species_display(),
+        'sexo': pet.get_gender_display(),
+        'edad': _edad_anos(pet.age),
+        # El modelo aún no tiene temperamento: se reutiliza la descripción.
+        'temperamento': descripcion,
+        'descripcion': descripcion,
+        'socializar': '',
+        'dueno_id': pet.owner_id,
+        'foto_url': pet.img.url if pet.img else '',
+        'foto_static': '',
+    }
+
+
+def _tarjeta_desde_mock(mascota):
+    """Normaliza una ficha de mock_data (fallback sin base de datos)."""
+    return {
+        'id': None,
+        'nombre': mascota['nombre'],
+        'especie': mascota['especie'],
+        'sexo': '',
+        'edad': _edad_anos(mascota['edad']),
+        'temperamento': mascota.get('descripcion', ''),
+        'descripcion': mascota.get('descripcion', ''),
+        'socializar': '',
+        'dueno_id': None,
+        'foto_url': mascota.get('foto', ''),
+        'foto_static': '',
+    }
+
+
+def _contexto_usuario(usuario, title):
+    return {
+        'title': title,
+        'usuario': usuario,
+        'edad_texto': _edad_anos(usuario.edad) if usuario.edad is not None else '',
+    }
+
+
+# ---------------------------------------------------------------------------
+# Autenticación y páginas base
+# ---------------------------------------------------------------------------
 def signup(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST, request.FILES)
@@ -105,54 +94,102 @@ def signup(request):
         form = RegistroForm()
     return render(request, 'signup.html', {'name': gettext('Registrarse'), 'form': form})
 
+
 @login_required(login_url='login')
 def add_pet(request):
     return render(request, 'add-pet.html', {'name': gettext('Agregar Mascota')})
 
+
 def base_navigation(request):
     return render(request, 'base-navigation-desktop.html')
+
 
 def base_feed_mobile(request):
     return render(request, 'base-feed-mobile.html')
 
+
 def base_perfil(request):
     return render(request, 'base-perfil.html')
 
+
+# ---------------------------------------------------------------------------
+# Perfiles de usuario
+# ---------------------------------------------------------------------------
 @login_required(login_url='login')
 def perfil_usuario(request):
-    return render(request, 'perfil_usuario.html', {'title': gettext('Perfil de Usuario'), 'usuario': USUARIOS['rolando']})
+    return render(request, 'perfil_usuario.html', _contexto_usuario(request.user, gettext('Perfil de Usuario')))
+
 
 @login_required(login_url='login')
-def ver_dueno(request):
-    return render(request, 'ver_dueno.html', {'title': gettext('Ver Dueño'), 'usuario': USUARIOS['jesus']})
+def ver_dueno(request, user_id):
+    usuario = get_object_or_404(User, pk=user_id)
+    return render(request, 'ver_dueno.html', _contexto_usuario(usuario, gettext('Ver Dueño')))
+
+
+# ---------------------------------------------------------------------------
+# Mascotas
+# ---------------------------------------------------------------------------
+@login_required(login_url='login')
+def perfil_mascota(request, pet_id):
+    """Perfil de una mascota propia; si es ajena se muestra la vista pública."""
+    pet = get_object_or_404(Pet, pk=pet_id)
+    if pet.owner_id != request.user.id:
+        return redirect('ver_mascota', pet_id=pet.id)
+    return render(request, 'perfil_mascota.html', {
+        'title': gettext('Perfil de Mascota'),
+        'mascota': _tarjeta_desde_pet(pet),
+    })
+
 
 @login_required(login_url='login')
-def perfil_mascota(request):
-    return render(request, 'perfil_mascota.html', {'title': gettext('Perfil de Mascota'), 'mascota': MASCOTAS['ronaldo']})
-
-@login_required(login_url='login')
-def ver_mascota(request):
+def ver_mascota(request, pet_id):
+    pet = get_object_or_404(Pet, pk=pet_id)
     solicitud_enviada = request.GET.get('solicitud') == 'enviada'
     return render(request, 'ver_mascota.html', {
         'title': gettext('Ver Mascota'),
-        'mascota': MASCOTAS['brown'],
+        'mascota': _tarjeta_desde_pet(pet),
         'solicitud_enviada': solicitud_enviada,
         'aviso_solicitud': gettext('Solicitud enviada') if solicitud_enviada else '',
     })
 
-@login_required(login_url='login')
-def tus_mascotas(request):
-    mascotas = [MASCOTAS['ronaldo'], MASCOTAS['orlando'], MASCOTAS['bruno']]
-    return render(request, 'lista_mascotas.html', {'title': gettext('Tus Mascotas'), 'mascotas': mascotas, 'es_propia': True})
 
 @login_required(login_url='login')
-def sus_mascotas(request):
-    mascotas = [MASCOTAS['brown'], MASCOTAS['lucia']]
-    return render(request, 'lista_mascotas.html', {'title': gettext('Sus Mascotas'), 'mascotas': mascotas, 'es_propia': False})
+def tus_mascotas(request):
+    mascotas = [_tarjeta_desde_pet(p) for p in services.mascotas_de(request.user)]
+    return render(request, 'lista_mascotas.html', {
+        'title': gettext('Tus Mascotas'),
+        'mascotas': mascotas,
+        'es_propia': True,
+    })
+
+
+@login_required(login_url='login')
+def sus_mascotas(request, user_id):
+    dueno = get_object_or_404(User, pk=user_id)
+    mascotas = [_tarjeta_desde_pet(p) for p in services.mascotas_de(dueno)]
+    return render(request, 'lista_mascotas.html', {
+        'title': gettext('Sus Mascotas'),
+        'mascotas': mascotas,
+        'es_propia': False,
+        'dueno': dueno,
+    })
+
+
+@login_required(login_url='login')
+def buscar_mascotas(request):
+    """Pantalla Buscar Mascotas: filtra por nombre o especie."""
+    q = request.GET.get('q', '').strip()
+    mascotas = [_tarjeta_desde_pet(p) for p in services.buscar_mascotas(q)]
+    return render(request, 'buscar_mascotas.html', {
+        'title': gettext('Buscar Mascotas'),
+        'mascotas': mascotas,
+        'q': q,
+    })
 
 
 # ---------------------------------------------------------------------------
 # Datos falsos para Notificaciones / Mensajes / Solicitudes (sin backend).
+# Se reemplazan por el ORM en la fase de notificaciones.
 # La fuente está en español; las plantillas usan {% translate %} para i18n.
 # ---------------------------------------------------------------------------
 NOTIFICACIONES_FALSAS = [
@@ -161,7 +198,7 @@ NOTIFICACIONES_FALSAS = [
         'tipo': 'nuevo_mensaje',
         'titulo': 'Nuevo mensaje',
         'detalle': 'Brown te envió un mensaje',
-        'mascota': MASCOTAS['brown'],
+        'mascota': None,
     },
     {
         'id': 2,
@@ -184,22 +221,22 @@ MENSAJES_RECIENTES_FALSOS = [
     {
         'nombre': 'Brown',
         'texto': 'Hola, soy Brown. Se que no soy de la raza más grande, pero mi…',
-        'foto': MASCOTAS['brown']['foto'],
+        'foto': 'img/perfil/brown.png',
     },
     {
         'nombre': 'Daisy',
         'texto': 'Hola, soy Daisy. Se que no soy de la raza más grande, pero mi coraz…',
-        'foto': MASCOTAS['brown']['foto'],
+        'foto': 'img/perfil/brown.png',
     },
     {
         'nombre': 'Ronaldo',
         'texto': 'Estoy buscando a alguien que me quiera, que me huela y se emocion…',
-        'foto': MASCOTAS['ronaldo']['foto'],
+        'foto': 'img/perfil/ronaldo.png',
     },
     {
         'nombre': 'Ursula',
         'texto': 'Hola, soy Úrsula. Se que no soy de la raza más grande, pero mi…',
-        'foto': MASCOTAS['lucia']['foto'],
+        'foto': 'img/perfil/lucia.png',
     },
 ]
 
@@ -231,111 +268,20 @@ def notificaciones(request):
     })
 
 
-@login_required(login_url='login')
-def buscar_mascotas(request):
-    """Pantalla Buscar Mascotas (datos falsos, filtro por nombre/especie)."""
-    q = request.GET.get('q', '').strip()
-    mascotas = [MASCOTAS['brown'], MASCOTAS['ronaldo'], MASCOTAS['lucia']]
-    # Daisy y Úrsula comparten la ficha del Inicio/Feed.
-    extras = [m for m in MASCOTAS_INICIO if m['nombre'] in ('Daisy', 'Ursula')]
-    todas = [{'nombre': m['nombre'], 'especie': m['especie'], 'foto': m['foto']} for m in mascotas] + extras
-    if q:
-        q_low = q.lower()
-        todas = [m for m in todas if q_low in m['nombre'].lower() or q_low in m['especie'].lower()]
-    return render(request, 'buscar_mascotas.html', {
-        'title': gettext('Buscar Mascotas'),
-        'mascotas': todas,
-        'q': q,
-    })
-
-
 # ---------------------------------------------------------------------------
-# Inicio / Feed: lista general de mascotas (modelo Pet del compañero).
-# Si la tabla está vacía, se usan las fichas de las fotos (mismos datos
-# falsos del resto de pantallas). El buscador filtra por nombre/especie.
+# Inicio / Feed: lista general de mascotas disponibles.
+# Si no hay mascotas (o la tabla aún no existe) se usan las fichas de
+# mock_data como fallback temporal; esas tarjetas no enlazan a ningún perfil.
 # ---------------------------------------------------------------------------
-MASCOTAS_INICIO = [
-    {
-        'nombre': 'Brown',
-        'especie': 'Perro',
-        'sexo': 'Macho',
-        'temperamento': 'Juguetón',
-        'edad': '2 meses',
-        'foto': 'img/perfil/brown.png',
-    },
-    {
-        'nombre': 'Daisy',
-        'especie': 'Perro',
-        'sexo': 'Hembra',
-        'temperamento': 'Dormilona',
-        'edad': '2 años',
-        'foto': 'img/perfil/ronaldo.png',
-    },
-    {
-        'nombre': 'Ursula',
-        'especie': 'Perro',
-        'sexo': 'Hembra',
-        'temperamento': 'Floja',
-        'edad': '3 años',
-        'foto': 'img/perfil/bruno.png',
-    },
-    {
-        'nombre': 'Lucia',
-        'especie': 'Gata',
-        'sexo': 'Hembra',
-        'temperamento': 'Cariñosa',
-        'edad': '1 año',
-        'foto': 'img/perfil/lucia.png',
-    },
-]
-
-
-def _edad_anos(cantidad):
-    return ngettext('%(count)s año', '%(count)s años', cantidad) % {'count': cantidad}
-
-
-def _tarjeta_desde_pet(pet):
-    """Normaliza una instancia del modelo Pet al formato de la tarjeta."""
-    foto_url = pet.img.url if getattr(pet, 'img', None) and pet.img else ''
-    return {
-        'nombre': pet.name,
-        'especie': pet.get_species_display(),
-        'temperamento': (pet.description or '').strip(),
-        'edad': _edad_anos(pet.age),
-        'sexo': pet.get_gender_display(),
-        'foto_url': foto_url,
-        'foto_static': '',
-    }
-
-
-def _tarjeta_desde_dict(mascota):
-    return {
-        'nombre': mascota['nombre'],
-        'especie': mascota['especie'],
-        'temperamento': mascota.get('temperamento', ''),
-        'edad': mascota.get('edad', ''),
-        'sexo': mascota.get('sexo', ''),
-        'foto_url': '',
-        'foto_static': mascota.get('foto', ''),
-    }
-
-
 def _mascotas_feed(q=''):
-    """Devuelve (tarjetas, usando_datos_reales).
-
-    Usa el modelo Pet cuando hay registros; si no, las fichas falsas.
-    """
+    """Devuelve (tarjetas, usando_datos_reales)."""
     try:
-        pets = Pet.objects.filter(availableForAdoption=True).order_by('id')
-        if q:
-            pets = pets.filter(Q(name__icontains=q) | Q(description__icontains=q))
-        tarjetas = [_tarjeta_desde_pet(p) for p in pets]
-        if tarjetas:
-            return tarjetas, True
-    except Exception:
+        if Pet.objects.exists():
+            return [_tarjeta_desde_pet(p) for p in services.obtener_feed(q)], True
+    except DatabaseError:
         # La tabla aún no existe (BD sin migrar): se usan datos falsos.
         pass
-    tarjetas = [_tarjeta_desde_dict(m) for m in MASCOTAS_INICIO]
+    tarjetas = [_tarjeta_desde_mock(m) for m in mock_data.MASCOTAS_FALSAS]
     if q:
         q_low = q.lower()
         tarjetas = [t for t in tarjetas
@@ -358,5 +304,3 @@ def feed(request):
 def inicio(request):
     """Alias de la pantalla principal (la vista Home del sistema)."""
     return feed(request)
-
-

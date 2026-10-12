@@ -8,7 +8,7 @@
 {% block content %}
 <div class="lista-mascotas">
     <div class="lista-encabezado">
-        <a href="{% if es_propia %}{% url 'perfil_usuario' %}{% else %}{% url 'ver_dueno' %}{% endif %}" class="lista-atras" aria-label="{% translate 'Volver' %}">
+        <a href="{% if es_propia %}{% url 'perfil_usuario' %}{% else %}{% url 'ver_dueno' dueno.id %}{% endif %}" class="lista-atras" aria-label="{% translate 'Volver' %}">
             <img src="{% static 'img/perfil/icono-atras.svg' %}" alt="">
         </a>
         <h1 class="lista-titulo">{{ title }}</h1>
@@ -16,8 +16,8 @@
 
     <div class="lista-grid">
         {% for mascota in mascotas %}
-        <a href="{% if es_propia %}{% url 'perfil_mascota' %}{% else %}{% url 'ver_mascota' %}{% endif %}" class="tarjeta-mascota">
-            <img src="{% static mascota.foto %}" alt="{% blocktranslate with nombre=mascota.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
+        <a href="{% if es_propia %}{% url 'perfil_mascota' mascota.id %}{% else %}{% url 'ver_mascota' mascota.id %}{% endif %}" class="tarjeta-mascota">
+            {% include 'matchPets/partials/_foto.html' with item=mascota %}
             <div class="tarjeta-info">
                 <h2 class="tarjeta-nombre">{{ mascota.nombre }}</h2>
                 <div class="tarjeta-datos">

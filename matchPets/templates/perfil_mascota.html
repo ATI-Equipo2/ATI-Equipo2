@@ -8,7 +8,7 @@
 {% block content %}
 <article class="perfil perfil--mascota perfil--mascota-propia">
     <div class="perfil-foto">
-        <img src="{% static mascota.foto %}" alt="{% blocktranslate with nombre=mascota.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
+        {% include 'matchPets/partials/_foto.html' with item=mascota %}
     </div>
 
     <div class="perfil-info">
@@ -35,11 +35,13 @@
 
         <p class="perfil-descripcion">{{ mascota.descripcion }}</p>
 
+        {% if mascota.socializar %}
         <h2 class="perfil-socializar">
             <img src="{% static 'img/perfil/icono-socializar.png' %}" alt="">
             <span>{% translate "En busca de socializar" %}</span>
         </h2>
         <p class="perfil-descripcion">{{ mascota.socializar }}</p>
+        {% endif %}
     </div>
 </article>
 {% endblock %}

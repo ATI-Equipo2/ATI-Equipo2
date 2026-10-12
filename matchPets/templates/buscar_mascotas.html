@@ -17,8 +17,8 @@
     <ul class="buscar-resultados" id="buscar-resultados">
         {% for m in mascotas %}
         <li>
-            <a class="buscar-item" href="{% url 'ver_mascota' %}">
-                <img src="{% static m.foto %}" alt="{% blocktranslate with nombre=m.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
+            <a class="buscar-item" href="{% url 'ver_mascota' m.id %}">
+                {% include 'matchPets/partials/_foto.html' with item=m %}
                 <span class="buscar-info">
                     <strong>{{ m.nombre }}</strong>
                     <small>{{ m.especie }}</small>

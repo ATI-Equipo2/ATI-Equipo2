@@ -1,0 +1,8 @@
+{% load static i18n %}{# Foto de una mascota normalizada: `item` con foto_url (subida) o foto_static (estática). #}
+{% if item.foto_url %}
+<img src="{{ item.foto_url }}" alt="{% blocktranslate with nombre=item.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
+{% elif item.foto_static %}
+<img src="{% static item.foto_static %}" alt="{% blocktranslate with nombre=item.nombre %}Foto de {{ nombre }}{% endblocktranslate %}">
+{% else %}
+<img src="{% static 'img/logo.jpeg' %}" alt="{% translate 'Sin foto' %}">
+{% endif %}
