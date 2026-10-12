@@ -168,3 +168,12 @@
 .btn-signup:active {
   transform: translateY(0);
 }
+
+
+/* Errores de validación de los formularios */
+.field-error,
+.form-errors {
+  margin: 0;
+  color: #c0392b;
+  font-size: 0.85rem;
+}

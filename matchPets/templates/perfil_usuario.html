@@ -23,9 +23,12 @@
                     <img src="{% static 'img/perfil/icono-editar.svg' %}" alt="">
                     <span>{% translate "Editar perfil" %}</span>
                 </a>
-                <a href="{% url 'login' %}" class="perfil-accion solo-movil" aria-label="{% translate 'Cerrar sesión' %}">
-                    <img src="{% static 'img/perfil/icono-logout.svg' %}" alt="">
-                </a>
+                <form method="post" action="{% url 'logout' %}" class="form-logout solo-movil">
+                    {% csrf_token %}
+                    <button type="submit" class="perfil-accion btn-logout" aria-label="{% translate 'Cerrar sesión' %}">
+                        <img src="{% static 'img/perfil/icono-logout.svg' %}" alt="">
+                    </button>
+                </form>
             </div>
         </div>
 

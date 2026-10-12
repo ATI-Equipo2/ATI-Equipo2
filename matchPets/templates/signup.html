@@ -6,64 +6,36 @@
 
 <form class="form-signup" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+    {% for error in form.non_field_errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+
     <div class="field-group">
-        <label for="first-name">{% translate "Nombre" %}</label>
-        <input type="text" id="first-name" name="first_name" placeholder="{% translate 'Nombre' %}"
-            autocomplete="given-name" required />
+        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+        {{ form.username }}
+        {% for error in form.username.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
     </div>
 
     <div class="field-group">
-        <label for="last-name">{% translate "Apellido" %}</label>
-        <input type="text" id="last-name" name="last_name" placeholder="{% translate 'Apellido' %}"
-            autocomplete="family-name" required />
+        <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
+        {{ form.nombre }}
+        {% for error in form.nombre.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
     </div>
 
     <div class="field-group">
-        <label for="id-card">{% translate "Cédula" %}</label>
-        <input type="text" id="id-card" name="id_card" placeholder="V-123456789" autocomplete="off" required />
+        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+        {{ form.email }}
+        {% for error in form.email.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
     </div>
 
     <div class="field-group">
-        <label for="email">{% translate "Correo" %}</label>
-        <input type="email" id="email" name="email" placeholder="{% translate 'ej: nombre@gmail.com' %}"
-            autocomplete="email" required />
+        <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+        {{ form.password1 }}
+        {% for error in form.password1.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
     </div>
 
     <div class="field-group">
-        <label for="password">{% translate "Contraseña" %}</label>
-        <input type="password" id="password" name="password" placeholder="**********" autocomplete="new-password"
-            required />
-    </div>
-
-    <div class="field-group">
-        <label for="birthdate">{% translate "Fecha" %}</label>
-        <div class="date-wrapper">
-            <input type="date" id="birthdate" name="birthdate" required />
-        </div>
-    </div>
-
-    <div class="field-group">
-        <label for="gender">{% translate "Género" %}</label>
-        <div class="select-wrapper">
-            <select id="gender" name="gender" autocomplete="sex" required>
-                <option value="" disabled selected hidden>{% translate "Género" %}</option>
-                <option value="M">{% translate "Masculino" %}</option>
-                <option value="F">{% translate "Femenino" %}</option>
-                <option value="O">{% translate "Otro" %}</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="field-group">
-        <label for="profile-picture">{% translate "Foto de perfil" %}</label>
-        <label class="btn-photo" for="profile-picture">
-            <svg class="clip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-            </svg>
-            <span id="photo-label-text" class="btn-text-photo">{% translate "Agregar foto" %}</span>
-        </label>
-        <input type="file" id="profile-picture" name="profile_picture" accept="image/*" style="display: none" />
+        <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+        {{ form.password2 }}
+        {% for error in form.password2.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
     </div>
 
     <div class="btn-submit-wrapper">

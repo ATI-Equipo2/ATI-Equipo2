@@ -6,9 +6,12 @@
 
 <form class="form-login" method="POST">
     {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}" />
+    {% for error in form.non_field_errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+
     <div class="field-group">
-        <label for="email">{% translate "Correo" %}</label>
-        <input type="email" id="email" name="email" placeholder="{% translate 'ej: nombre@gmail.com' %}" autocomplete="email" required />
+        <label for="username">{% translate "Usuario" %}</label>
+        <input type="text" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="{% translate 'Usuario' %}" autocomplete="username" required />
     </div>
 
     <div class="field-group">

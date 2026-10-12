@@ -99,3 +99,12 @@
   text-decoration: underline;
   opacity: 0.85;
 }
+
+
+/* Errores de validación del inicio de sesión */
+.form-errors {
+  margin: 0;
+  color: #c0392b;
+  font-size: 0.85rem;
+  text-align: center;
+}

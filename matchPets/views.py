@@ -1,19 +1,29 @@
 from django.apps import apps
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import views as auth_views
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, request
 from django.db.models import Q
 from django.utils.translation import gettext, ngettext
 
+from .forms import RegistroForm
+
 Pet = apps.get_model('matchPets', 'Pet')
 
 class LoginView(auth_views.LoginView):
     template_name = 'login.html'
-    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['name'] = gettext('Iniciar Sesión')
+        return context
+
+
+# Django 5 exige POST para cerrar sesión; redirige a LOGOUT_REDIRECT_URL.
 class LogoutView(auth_views.LogoutView):
-    template_name = 'matchPets/logout.html'
-    
+    pass
+
 
 @login_required(login_url='login')
 def vista_protegida(request):
@@ -85,8 +95,17 @@ MASCOTAS = {
 }
 
 def signup(request):
-    return render(request, 'signup.html', {'name': gettext('Registrarse')})
+    if request.method == 'POST':
+        form = RegistroForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect('feed')
+    else:
+        form = RegistroForm()
+    return render(request, 'signup.html', {'name': gettext('Registrarse'), 'form': form})
 
+@login_required(login_url='login')
 def add_pet(request):
     return render(request, 'add-pet.html', {'name': gettext('Agregar Mascota')})
 
@@ -99,15 +118,19 @@ def base_feed_mobile(request):
 def base_perfil(request):
     return render(request, 'base-perfil.html')
 
+@login_required(login_url='login')
 def perfil_usuario(request):
     return render(request, 'perfil_usuario.html', {'title': gettext('Perfil de Usuario'), 'usuario': USUARIOS['rolando']})
 
+@login_required(login_url='login')
 def ver_dueno(request):
     return render(request, 'ver_dueno.html', {'title': gettext('Ver Dueño'), 'usuario': USUARIOS['jesus']})
 
+@login_required(login_url='login')
 def perfil_mascota(request):
     return render(request, 'perfil_mascota.html', {'title': gettext('Perfil de Mascota'), 'mascota': MASCOTAS['ronaldo']})
 
+@login_required(login_url='login')
 def ver_mascota(request):
     solicitud_enviada = request.GET.get('solicitud') == 'enviada'
     return render(request, 'ver_mascota.html', {
@@ -117,10 +140,12 @@ def ver_mascota(request):
         'aviso_solicitud': gettext('Solicitud enviada') if solicitud_enviada else '',
     })
 
+@login_required(login_url='login')
 def tus_mascotas(request):
     mascotas = [MASCOTAS['ronaldo'], MASCOTAS['orlando'], MASCOTAS['bruno']]
     return render(request, 'lista_mascotas.html', {'title': gettext('Tus Mascotas'), 'mascotas': mascotas, 'es_propia': True})
 
+@login_required(login_url='login')
 def sus_mascotas(request):
     mascotas = [MASCOTAS['brown'], MASCOTAS['lucia']]
     return render(request, 'lista_mascotas.html', {'title': gettext('Sus Mascotas'), 'mascotas': mascotas, 'es_propia': False})
@@ -179,6 +204,7 @@ MENSAJES_RECIENTES_FALSOS = [
 ]
 
 
+@login_required(login_url='login')
 def notificaciones(request):
     """Pantalla de Notificaciones / Solicitudes / Mensajes (datos falsos).
 
@@ -205,6 +231,7 @@ def notificaciones(request):
     })
 
 
+@login_required(login_url='login')
 def buscar_mascotas(request):
     """Pantalla Buscar Mascotas (datos falsos, filtro por nombre/especie)."""
     q = request.GET.get('q', '').strip()

@@ -33,7 +33,10 @@
         <a href="{% url 'perfil_usuario' %}"><img id="icono-perfil" src="{% static 'img/icono-perfil.png' %}" alt="{% translate 'Mi perfil' %}"></a>
         {% endblock %}
         <a href="{% url 'notificaciones' %}"><img id="icono-notificacion" src="{% static 'img/icono-notificacion.png' %}" alt="{% translate 'Notificaciones' %}"></a>
-        <a href="{% url 'login' %}"><img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="{% translate 'Cerrar sesión' %}"></a>
+        <form method="post" action="{% url 'logout' %}" class="form-logout">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout" aria-label="{% translate 'Cerrar sesión' %}"><img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="{% translate 'Cerrar sesión' %}"></button>
+        </form>
     </header>
 
 
