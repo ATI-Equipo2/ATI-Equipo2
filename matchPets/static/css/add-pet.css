@@ -1,6 +1,6 @@
 .add-pet-container {
-  width: 100%;
-  max-width: 380px;
+  width: 90%;
+  max-width: 500px;
   margin: 1.5rem auto 3rem;
   padding: 0 1rem;
   box-sizing: border-box;
@@ -8,6 +8,7 @@
   flex-direction: column;
   align-items: center;
   position: relative;
+  z-index: 10;
 }
 
 .add-pet-header {
@@ -110,10 +111,10 @@
   font-family: var(--primary-font, "Roboto", sans-serif);
 }
 
-.field-group input {
+.field-group input,
+.field-group select,
+.field-group textarea {
   width: 100%;
-  height: 38px;
-  padding: 0 0.85rem;
   font-size: 0.88rem;
   color: #333333;
   border: 1.2px solid #e2e2e2;
@@ -127,14 +128,40 @@
   font-family: var(--primary-font, "Roboto", sans-serif);
 }
 
-.field-group input:focus {
+.field-group input,
+.field-group select {
+  height: 38px;
+  padding: 0 0.85rem;
+}
+
+.field-group select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 16px;
+  padding-right: 2.2rem;
+}
+
+.field-group textarea {
+  padding: 0.5rem 0.7rem;
+}
+
+.field-group input:focus,
+.field-group select:focus,
+.field-group textarea:focus {
   border-color: #f26e00;
   box-shadow: 0 0 0 2px rgba(242, 110, 0, 0.15);
 }
 
-.field-group input::placeholder {
+.field-group input::placeholder,
+.field-group textarea::placeholder {
   color: #b5b5b5;
   font-weight: 400;
+  font-family: var(--primary-font, "Roboto", sans-serif);
 }
 
 .date-input-wrapper {
@@ -240,43 +267,35 @@
   }
 }
 
-/* Selects y textarea de PetForm (mismo aspecto que los inputs) */
-.field-group select,
-.field-group textarea {
-  width: 100%;
-  padding: 0.5rem 0.85rem;
-  font-size: 0.88rem;
-  color: #333333;
-  border: 1.2px solid #e2e2e2;
-  border-radius: 8px;
-  outline: none;
-  background-color: #ffffff;
-  box-sizing: border-box;
-  font-family: var(--primary-font, "Roboto", sans-serif);
-}
-
-.field-group select {
-  height: 38px;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.field-group textarea {
-  resize: vertical;
-}
-
-.field-group select:focus,
-.field-group textarea:focus {
-  border-color: #f26e00;
-  box-shadow: 0 0 0 2px rgba(242, 110, 0, 0.15);
-}
-
-.field-group textarea::placeholder {
-  color: #b5b5b5;
-}
-
 .field-error {
   margin: 0;
   color: #c0392b;
   font-size: 0.8rem;
+}
+
+/* Ocultar en escritorio el header, footer y alinear la tarjeta a la misma altura de login/signup */
+@media (min-width: 641px) {
+  .add-pet-container {
+    margin: calc(10vh - 20px) auto 3rem;
+  }
+
+  header,
+  footer,
+  #logo-inicio,
+  #icono-buscar-anaranjado1,
+  #icono-perfil1,
+  #icono-mascota-feed,
+  #icono-mensaje,
+  #icono-notificacion1,
+  .notif-badge--movil,
+  #icono-salir,
+  #icono-salir-marron,
+  #icono-inicio1 {
+    display: none !important;
+  }
+
+  .btn-back {
+    top: 24px;
+    left: 24px;
+  }
 }
