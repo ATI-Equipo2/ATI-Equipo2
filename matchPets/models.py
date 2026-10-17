@@ -46,9 +46,6 @@ class User(AbstractUser):
     foto = models.ImageField(upload_to='users/', null=True, blank=True)
 
 
-
-
-
 class FriendshipRequest(models.Model):
     ESTADOS = [
         ('pending', _('Pendiente')),

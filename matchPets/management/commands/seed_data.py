@@ -52,10 +52,10 @@ MASCOTAS = [
      'brown.png'),
     ('jesus', 'Lucia', 'cat', 'female', 1, 'Cariñosa',
      'Una gata muy dulce a la que le encanta dormir en tu regazo.', '', 'lucia.png'),
-    ('jesus', 'Daisy', 'dog', 'female', 2, 'Dormilona',
-     'Pasa el día durmiendo, pero despierta para los paseos.', '', 'ronaldo.png'),
+    ('jesus', 'Daisy', 'cat', 'female', 2, 'Dormilona',
+     'Pasa el día durmiendo, pero despierta para los paseos.', '', 'daisy.png'),
     ('jesus', 'Ursula', 'dog', 'female', 3, 'Floja',
-     'Prefiere el sofá antes que el parque.', '', 'bruno.png'),
+     'Prefiere el sofá antes que el parque.', '', 'ursula.png'),
 ]
 
 
@@ -96,8 +96,8 @@ class Command(BaseCommand):
 
         mascotas = {}
         for (dueno, nombre, especie, sexo, edad, temperamento,
-             descripcion, socializar, foto) in MASCOTAS:
-            pet, _ = Pet.objects.get_or_create(
+            descripcion, socializar, foto) in MASCOTAS:
+            pet, _ = Pet._default_manager.get_or_create(
                 name=nombre, owner=usuarios[dueno],
                 defaults={'species': especie, 'gender': sexo, 'age': edad},
             )
