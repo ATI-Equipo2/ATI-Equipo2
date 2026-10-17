@@ -32,9 +32,7 @@ def vista_protegida(request):
     return render(request, 'matchPets/protegida.html')
 
 
-# ---------------------------------------------------------------------------
 # Helpers para presentar modelos en las plantillas
-# ---------------------------------------------------------------------------
 def _edad_anos(cantidad):
     return ngettext('%(count)s año', '%(count)s años', cantidad) % {'count': cantidad}
 
@@ -82,9 +80,7 @@ def _contexto_usuario(usuario, title):
     }
 
 
-# ---------------------------------------------------------------------------
 # Autenticación y páginas base
-# ---------------------------------------------------------------------------
 def signup(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST, request.FILES)
@@ -124,9 +120,7 @@ def base_perfil(request):
     return render(request, 'base-perfil.html')
 
 
-# ---------------------------------------------------------------------------
 # Perfiles de usuario
-# ---------------------------------------------------------------------------
 @login_required(login_url='login')
 def perfil_usuario(request):
     return render(request, 'perfil_usuario.html', _contexto_usuario(request.user, gettext('Perfil de Usuario')))
@@ -138,9 +132,7 @@ def ver_dueno(request, user_id):
     return render(request, 'ver_dueno.html', _contexto_usuario(usuario, gettext('Ver Dueño')))
 
 
-# ---------------------------------------------------------------------------
 # Mascotas
-# ---------------------------------------------------------------------------
 @login_required(login_url='login')
 def perfil_mascota(request, pet_id):
     """Perfil de una mascota propia; si es ajena se muestra la vista pública."""
@@ -157,6 +149,8 @@ def perfil_mascota(request, pet_id):
 def ver_mascota(request, pet_id):
     pet = get_object_or_404(Pet, pk=pet_id)
     es_propia = pet.owner_id == request.user.id
+    if es_propia:
+        return redirect('perfil_mascota', pet_id=pet.id)
     return render(request, 'ver_mascota.html', {
         'title': gettext('Ver Mascota'),
         'mascota': _tarjeta_desde_pet(pet),
