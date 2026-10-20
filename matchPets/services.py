@@ -11,7 +11,14 @@ def obtener_feed(q=''):
     """Mascotas disponibles para adopción; si hay `q`, filtra por nombre o descripción."""
     pets = Pet.objects.filter(availableForAdoption=True).select_related('owner')
     if q:
-        pets = pets.filter(Q(name__icontains=q) | Q(description__icontains=q))
+        q_low = q.lower()
+        especies = [clave for clave, etiqueta in Pet.ESPECIES
+            if q_low in clave.lower() or q_low in str(etiqueta).lower()]
+        pets = pets.filter(
+            Q(name__icontains=q)
+            | Q(description__icontains=q)
+            | Q(species__in=especies)
+        )
     return pets.order_by('id')
 
 
