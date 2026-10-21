@@ -578,3 +578,108 @@ class SolicitudFlowTests(TestCase):
             ).count(),
             1,
         )
+
+
+class EditPerfilTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='rolando',
+            email='rolando@example.com',
+            password='test1234',
+            nombre='Rolando',
+            edad=20,
+            ubicacion='Los Teques',
+        )
+
+    def test_editar_perfil_get_renderiza_formulario(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.get(reverse('editar_perfil'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Editar Perfil')
+        self.assertContains(resp, 'Rolando')
+
+    def test_editar_perfil_post_actualiza_datos(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.post(reverse('editar_perfil'), {
+            'nombre': 'Rolando Actualizado',
+            'edad': 25,
+            'ubicacion': 'Caracas',
+            'descripcion': 'Nueva bio',
+        })
+        self.assertRedirects(resp, reverse('perfil_usuario'))
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.nombre, 'Rolando Actualizado')
+        self.assertEqual(self.user.edad, 25)
+        self.assertEqual(self.user.ubicacion, 'Caracas')
+
+    def test_editar_perfil_post_invalido_no_actualiza(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.post(reverse('editar_perfil'), {
+            'nombre': '',
+            'edad': -5,
+            'ubicacion': '',
+            'descripcion': '',
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.nombre, 'Rolando')
+
+    def test_editar_perfil_requiere_login(self):
+        resp = self.client.get(reverse('editar_perfil'))
+        self.assertRedirects(
+            resp,
+            f"{reverse('login')}?next={reverse('editar_perfil')}",
+        )
+
+
+class EditPetTests(TestCase):
+    def setUp(self):
+        self.dueno = User.objects.create_user(
+            username='rolando', email='r@x.com',
+            password='test1234', nombre='Rolando',
+        )
+        self.otro = User.objects.create_user(
+            username='jesus', email='j@x.com',
+            password='test1234', nombre='Jesús',
+        )
+        self.pet = Pet.objects.create(
+            name='Ronaldo', species='dog', age=5, owner=self.dueno,
+        )
+
+    def test_editar_mascota_get_precarga_datos(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.get(reverse('editar_mascota', args=[self.pet.id]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Editar Mascota')
+        self.assertContains(resp, 'Ronaldo')
+
+    def test_editar_mascota_post_actualiza_datos(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.post(
+            reverse('editar_mascota', args=[self.pet.id]),
+            {
+                'name': 'Ronaldo II',
+                'species': 'dog',
+                'gender': 'male',
+                'age': 6,
+                'temperament': 'Tranquilo',
+                'description': '',
+                'socialization': '',
+            },
+        )
+        self.assertRedirects(resp, reverse('tus_mascotas'))
+        self.pet.refresh_from_db()
+        self.assertEqual(self.pet.name, 'Ronaldo II')
+        self.assertEqual(self.pet.age, 6)
+
+    def test_editar_mascota_ajena_devuelve_404(self):
+        self.client.login(username='jesus', password='test1234')
+        resp = self.client.get(reverse('editar_mascota', args=[self.pet.id]))
+        self.assertEqual(resp.status_code, 404)
+
+    def test_editar_mascota_requiere_login(self):
+        resp = self.client.get(reverse('editar_mascota', args=[self.pet.id]))
+        self.assertRedirects(
+            resp,
+            f"{reverse('login')}?next={reverse('editar_mascota', args=[self.pet.id])}",
+        )
