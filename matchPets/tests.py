@@ -212,4 +212,65 @@ class ProtectedViewsTests(TestCase):
         resp = self.client.get(reverse('feed'))
         self.assertEqual(resp.status_code, 200)
 
+# Tests de  feed y búsqueda
+class FeedTests(TestCase):
+    def setUp(self):
+        self.pet_perro = Pet.objects.create(
+            name='Firulais',
+            species='dog',
+            age=3,
+            description='Un perro jugueton',
+            availableForAdoption=True,
+        )
+        self.pet_gato = Pet.objects.create(
+            name='Michi',
+            species='cat',
+            age=2,
+            description='Una gata tranquila',
+            availableForAdoption=True,
+        )
+        self.pet_no_disponible = Pet.objects.create(
+            name='Rex',
+            species='dog',
+            age=5,
+            availableForAdoption=False,
+        )
+
+    def test_feed_sin_q_muestra_solo_disponibles(self):
+        resp = self.client.get(reverse('feed'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Firulais')
+        self.assertContains(resp, 'Michi')
+        self.assertNotContains(resp, 'Rex') #No deberia atrapar a Rex porque no tiene availableForAdoption y el feed sólo muestra ésas
+
+    def test_feed_filtra_por_nombre(self):
+        resp = self.client.get(reverse('feed'), {'q': 'Firulais'})
+        self.assertContains(resp, 'Firulais')
+        self.assertNotContains(resp, 'Michi')
+        self.assertNotContains(resp, 'Rex')
+
+    def test_feed_filtra_por_especie_etiqueta_espanol(self):
+        """Regresión: buscar 'perro' debe encontrar species='dog'."""
+        resp = self.client.get(reverse('feed'), {'q': 'perro'})
+        self.assertContains(resp, 'Firulais')
+        self.assertNotContains(resp, 'Michi')
+
+    def test_feed_filtra_por_especie_etiqueta_ingles(self):
+        with override('en'):
+            resp = self.client.get(reverse('feed'), {'q': 'dog'}) #Forzamos el idioma a EN y verificamos, para probar idioams
+        self.assertContains(resp, 'Firulais')
+        self.assertNotContains(resp, 'Michi')
+
+    #Misma prueba anterior pero en el idioma defecto actual
+    def test_feed_filtra_por_especie_clave_cruda(self):
+        resp = self.client.get(reverse('feed'), {'q': 'dog'})
+        self.assertContains(resp, 'Firulais')
+        self.assertNotContains(resp, 'Michi')
+
+    def test_feed_sin_resultados_no_rompe(self):
+        resp = self.client.get(reverse('feed'), {'q': 'ornitorrinco'})
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, 'Firulais')
+        self.assertNotContains(resp, 'Michi')
+        self.assertContains(resp, 'Sin resultados')
 
