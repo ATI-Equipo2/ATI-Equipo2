@@ -71,13 +71,19 @@
             </div>
 
             <div class="photo-group">
+                <!-- Al editar se muestra la foto actual; al elegir otra se previsualiza la nueva -->
+                {% if form.instance.img %}
+                <img class="photo-preview" id="pet-photo-preview" src="{{ form.instance.img.url }}" alt="{% translate 'Foto actual' %}">
+                {% else %}
+                <img class="photo-preview" id="pet-photo-preview" alt="{% translate 'Vista previa de la foto' %}" hidden>
+                {% endif %}
                 <label class="btn-photo" for="pet-photo">
                     <svg class="clip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path
                             d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                     </svg>
-                    <span id="photo-label-text">{% translate "Agregar foto" %}</span>
+                    <span id="photo-label-text">{% if form.instance.img %}{% translate "Cambiar foto" %}{% else %}{% translate "Agregar foto" %}{% endif %}</span>
                 </label>
                 {{ form.img }}
                 {% for error in form.img.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
@@ -89,4 +95,17 @@
         </form>
     </div>
 </div>
+
+<script>
+(function () {
+    var input = document.getElementById('pet-photo');
+    var preview = document.getElementById('pet-photo-preview');
+    if (!input || !preview) return;
+    input.addEventListener('change', function () {
+        if (!input.files[0]) return;
+        preview.src = URL.createObjectURL(input.files[0]);
+        preview.hidden = false;
+    });
+})();
+</script>
 {% endblock %}
