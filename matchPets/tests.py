@@ -274,3 +274,84 @@ class FeedTests(TestCase):
         self.assertNotContains(resp, 'Michi')
         self.assertContains(resp, 'Sin resultados')
 
+
+#PNG mínimo para probar las fotos
+PNG_MINIMO = (
+    b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01'
+    b'\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\rIDATx\x9cc\x00'
+    b'\x01\x00\x00\x05\x00\x01\x0d\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82'
+)
+
+# Tests de agregar mascota
+class AddPetTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='rolando',
+            email='rolando@example.com',
+            password='test1234',
+            nombre='Rolando',
+        )
+        self.temp_media = tempfile.mkdtemp() #Creamos un directorio para no ensuciar el directorio de la aplicación en cada ejecución de los tests
+        self.addCleanup(shutil.rmtree, self.temp_media, True) #Agregamos un cleanup para ése directorio
+        self.media_override = override_settings(MEDIA_ROOT=self.temp_media) #Hacemos override a la configuración para que use ese directorio
+        self.media_override.enable()
+        self.addCleanup(self.media_override.disable)
+
+    def test_agregar_mascota_get_renderiza_formulario(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.get(reverse('agregar_mascota'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Agregar Mascota')
+
+    def test_agregar_mascota_post_crea_pet_con_owner(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.post(reverse('agregar_mascota'), {
+            'name': 'Firulais',
+            'species': 'dog',
+            'gender': 'male',
+            'age': 3,
+            'temperament': 'Juguetón',
+            'description': 'Un perro',
+            'socialization': '',
+        })
+        self.assertRedirects(resp, reverse('tus_mascotas'))
+        self.assertEqual(Pet.objects.count(), 1)
+        pet = Pet.objects.get(name='Firulais')
+        self.assertEqual(pet.owner, self.user)
+
+    def test_agregar_mascota_post_invalido_no_crea(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.post(reverse('agregar_mascota'), {
+            'name': '',
+            'species': 'dog',
+            'gender': 'male',
+            'age': 3,
+            'temperament': '',
+            'description': '',
+            'socialization': '',
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Pet.objects.count(), 0)
+
+
+    def test_agregar_mascota_acepta_imagen(self):
+        self.client.login(username='rolando', password='test1234')
+        imagen = SimpleUploadedFile(
+            'firulais.png',
+            PNG_MINIMO,
+            content_type='image/png',
+        )
+        resp = self.client.post(reverse('agregar_mascota'), {
+            'name': 'Firulais',
+            'species': 'dog',
+            'gender': 'male',
+            'age': 3,
+            'temperament': 'Juguetón',
+            'description': '',
+            'socialization': '',
+            'img': imagen,
+        })
+        self.assertRedirects(resp, reverse('tus_mascotas'))
+        pet = Pet.objects.get(name='Firulais')
+        self.assertTrue(pet.img)
+        self.assertTrue(pet.img.name.startswith('pets/'))
