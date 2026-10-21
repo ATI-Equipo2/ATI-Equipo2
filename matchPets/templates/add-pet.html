@@ -21,7 +21,7 @@
     </div>
 
     <div class="card-add-pet">
-        <h1 class="card-title">{% translate "Agregar Mascota" %}</h1>
+        <h1 class="card-title">{% if editando %}{% translate "Editar Mascota" %}{% else %}{% translate "Agregar Mascota" %}{% endif %}</h1>
 
         <form class="form-add-pet" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -84,7 +84,7 @@
             </div>
 
             <div class="btn-submit-wrapper">
-                <button type="submit" class="btn-submit">{% translate "Agregar" %}</button>
+                <button type="submit" class="btn-submit">{% if editando %}{% translate "Guardar" %}{% else %}{% translate "Agregar" %}{% endif %}</button>
             </div>
         </form>
     </div>

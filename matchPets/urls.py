@@ -10,6 +10,7 @@ urlpatterns = [
     path('', signup, name='registro'),
     path('signup/', signup, name='signup'),
     path('agregar_mascota/', add_pet, name='agregar_mascota'),
+    path('editar_mascota/<int:pet_id>', add_pet,name='editar_mascota'),
     path('base_navegacion/', base_navigation, name='base_navegacion'),
     path('base_feed_mobile/', base_feed_mobile, name='base_feed_mobile'),
     path('base_perfil/', base_perfil, name='base_perfil'),

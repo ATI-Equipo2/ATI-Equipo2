@@ -95,18 +95,22 @@ def signup(request):
 
 
 @login_required(login_url='login')
-def add_pet(request):
+def add_pet(request, pet_id=None):
+    pet = None
+    if pet_id is not None:
+        pet = get_object_or_404(Pet, pk=pet_id, owner=request.user) #Buscamos la mascota del usuario si existe, si no, retornamos 404
+
     if request.method == 'POST':
-        form = PetForm(request.POST, request.FILES)
+        form = PetForm(request.POST, request.FILES,instance=pet)
         if form.is_valid():
             pet = form.save(commit=False)
             pet.owner = request.user
             pet.save()
-            messages.success(request, gettext('Mascota agregada correctamente'))
+            messages.success(request, gettext('Mascota actualizada') if pet_id else gettext('Mascota agregada correctamente'))
             return redirect('tus_mascotas')
     else:
-        form = PetForm()
-    return render(request, 'add-pet.html', {'name': gettext('Agregar Mascota'), 'form': form})
+        form = PetForm(instance=pet)
+    return render(request, 'add-pet.html', {'name': gettext('Editar Mascota') if pet_id else gettext('Agregar Mascota'), 'form': form, 'editando': pet_id is not None})
 
 
 def base_navigation(request):
