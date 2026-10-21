@@ -110,6 +110,15 @@
   color: #4a4644;
 }
 
+/* Descripción: máximo dos líneas para que la lista no crezca demasiado */
+.buscar-info .buscar-descripcion {
+  color: #7d7875;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .buscar-vacia {
   color: var(--grey-400, #8b8b8b);
   font-size: calc(20 * var(--u));

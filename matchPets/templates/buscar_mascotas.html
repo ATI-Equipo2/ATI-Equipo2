@@ -22,6 +22,7 @@
                 <span class="buscar-info">
                     <strong>{{ m.nombre }}</strong>
                     <small>{{ m.especie }}</small>
+                    {% if m.descripcion %}<small class="buscar-descripcion">{{ m.descripcion }}</small>{% endif %}
                 </span>
             </a>
         </li>

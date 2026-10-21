@@ -244,7 +244,7 @@ def sus_mascotas(request, user_id):
 
 @login_required(login_url='login')
 def buscar_mascotas(request):
-    """Pantalla Buscar Mascotas: filtra por nombre o especie."""
+    """Pantalla Buscar Mascotas: filtra por nombre, descripción o especie."""
     q = request.GET.get('q', '').strip()
     mascotas = [_tarjeta_desde_pet(p) for p in services.buscar_mascotas(q)]
     return render(request, 'buscar_mascotas.html', {

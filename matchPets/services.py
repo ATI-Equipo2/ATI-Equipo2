@@ -28,13 +28,17 @@ def mascotas_de(user):
 
 
 def buscar_mascotas(q=''):
-    """Busca por nombre o por especie (acepta la etiqueta traducida, p. ej. «perro»)."""
+    """Busca por nombre, descripción o especie (acepta la etiqueta traducida, p. ej. «perro»)."""
     pets = Pet.objects.select_related('owner')
     if q:
         q_low = q.lower()
         especies = [clave for clave, etiqueta in Pet.ESPECIES
                     if q_low in clave or q_low in str(etiqueta).lower()]
-        pets = pets.filter(Q(name__icontains=q) | Q(species__in=especies))
+        pets = pets.filter(
+            Q(name__icontains=q)
+            | Q(description__icontains=q)
+            | Q(species__in=especies)
+        )
     return pets.order_by('id')
 
 
