@@ -25,8 +25,11 @@
     <header>
         <!-- Apunta al Inicio/Feed, la pantalla principal del sistema -->
         <a href="{% url 'feed' %}"><img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="{% translate 'Ir al inicio de matchPets' %}"></a>
-        <input id="input-buscar" type="text" placeholder="{% translate 'Buscar' %}" aria-label="{% translate 'Buscar por nombre o especie' %}">
-        <img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="{% translate 'Buscar' %}">
+        <!-- Buscador: por defecto lleva a Buscar Mascotas; el feed lo cambia para filtrarse a sí mismo -->
+        <form method="get" action="{% block accion_buscar %}{% url 'buscar_mascotas' %}{% endblock %}" role="search" class="form-buscar">
+            <input id="input-buscar" name="q" type="text" value="{{ q }}" placeholder="{% translate 'Buscar' %}" aria-label="{% translate 'Buscar por nombre o especie' %}">
+            <button type="submit" class="btn-icono"><img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="{% translate 'Buscar' %}"></button>
+        </form>
 
         <!-- El primer ícono cambia según la pantalla (perfil o mascotas) -->
         {% block iconos_header %}

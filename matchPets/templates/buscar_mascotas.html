@@ -14,6 +14,18 @@
         </a>
     </div>
 
+    <!-- Buscador propio (en mobile no hay encabezado) -->
+    <form class="buscar-barra" method="get" action="{% url 'buscar_mascotas' %}" role="search">
+        <span class="buscar-lupa" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
+        <label class="solo-lectores" for="buscar-q">{% translate "Buscar por nombre o especie" %}</label>
+        <input id="buscar-q" name="q" type="search" value="{{ q }}" placeholder="{% translate 'Buscar por nombre/especie' %}" autocomplete="off">
+        {% if q %}
+        <a class="buscar-limpiar" href="{% url 'buscar_mascotas' %}" aria-label="{% translate 'Limpiar búsqueda' %}">✕</a>
+        {% endif %}
+    </form>
+
     <ul class="buscar-resultados" id="buscar-resultados">
         {% for m in mascotas %}
         <li>
@@ -31,24 +43,6 @@
         {% endfor %}
     </ul>
 </div>
-
-<script>
-(function () {
-    var input = document.getElementById('buscar-q');
-    var clearBtn = document.getElementById('buscar-limpiar');
-    if (!input || !clearBtn) return;
-    function toggle() { clearBtn.hidden = !input.value; }
-    input.addEventListener('input', toggle);
-    clearBtn.addEventListener('click', function () {
-        input.value = '';
-        toggle();
-        input.focus();
-        var items = document.querySelectorAll('#buscar-resultados li');
-        items.forEach(function (li) { li.style.display = ''; });
-    });
-    toggle();
-})();
-</script>
 {% endblock %}
 
 {% block nav_mobile %}

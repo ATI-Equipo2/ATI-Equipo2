@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="{% static 'css/feed.css' %}">
 {% endblock %}
 
+{% block accion_buscar %}{% url 'feed' %}{% endblock %}
+
 {% block content %}
 <div class="feed">
     <!-- Encabezado desktop: coincide con la foto "‹ Inicio" -->
@@ -34,22 +36,6 @@
         {% endfor %}
     </div>
 </div>
-
-<script>
-(function () {
-    // El buscador del encabezado desktop filtra el feed (misma vista).
-    var headerInput = document.getElementById('input-buscar');
-    if (headerInput) {
-        headerInput.addEventListener('keydown', function (ev) {
-            if (ev.key === 'Enter') {
-                ev.preventDefault();
-                var q = headerInput.value.trim();
-                window.location.href = "{% url 'feed' %}" + (q ? ("?q=" + encodeURIComponent(q)) : "");
-            }
-        });
-    }
-})();
-</script>
 {% endblock %}
 
 {% block nav_mobile %}
