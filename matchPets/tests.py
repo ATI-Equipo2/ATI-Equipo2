@@ -1,11 +1,21 @@
-from django.test import TestCase
+import tempfile
+import shutil
+
+from django.test import TestCase, override_settings
 from django.contrib.auth import get_user_model
-from matchPets.models import Pet
+from matchPets.models import Pet, Notification, FriendshipRequest
+from matchPets import services
 from matchPets.forms import RegistroForm
+from django.urls import reverse
+from django.utils.translation import override
+
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+
 
 User = get_user_model()
 
-
+#Tests para modelos
 class PetModelTests(TestCase):
 
     def setUp(self):
@@ -34,7 +44,7 @@ class PetModelTests(TestCase):
         
         self.assertEqual(str(pet), 'Firulais (dog)')
 
-
+#Tests para Formularios de Registro
 class RegistroFormTests(TestCase):
     def setUp(self):
         self.valid_data = {
@@ -91,3 +101,115 @@ class RegistroFormTests(TestCase):
         form = RegistroForm(data=self.valid_data)
         self.assertFalse(form.is_valid())
         self.assertIn('username', form.errors)
+
+# Tests para autenticación
+class LoginTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='rolando',
+            email='rolando@example.com',
+            password='test1234',
+            nombre='Rolando',
+        )
+
+    def test_login_get_renderiza_formulario(self):
+        resp = self.client.get(reverse('login'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Usuario')
+        self.assertContains(resp, 'Contraseña')
+
+    def test_login_post_valido_autentica_y_redirige(self):
+        resp = self.client.post(reverse('login'), {
+            'username': 'rolando',
+            'password': 'test1234',
+        })
+        self.assertRedirects(resp, reverse('feed'))
+        self.assertEqual(int(self.client.session['_auth_user_id']), self.user.pk)
+
+    def test_login_post_password_incorrecta_no_autentica(self):
+        resp = self.client.post(reverse('login'), {
+            'username': 'rolando',
+            'password': 'incorrecta',
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_login_post_username_inexistente_no_autentica(self):
+        resp = self.client.post(reverse('login'), {
+            'username': 'noexiste',
+            'password': 'test1234',
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_login_respeta_parametro_next(self): #Verifica que despues del login vaya (segun el next) a la pagina especificada (tus_mascotas)
+        resp = self.client.post(
+            reverse('login') + '?next=' + reverse('tus_mascotas'),
+            {'username': 'rolando', 'password': 'test1234'},
+        )
+        self.assertRedirects(resp, reverse('tus_mascotas'))
+
+    def test_login_ya_autenticado_redirige_al_feed(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.get(reverse('login'))
+        self.assertRedirects(resp, reverse('feed'))
+
+
+class LogoutTests(TestCase):
+    def setUp(self):
+        User.objects.create_user(
+            username='rolando',
+            email='rolando@example.com',
+            password='test1234',
+            nombre='Rolando',
+        )
+
+    def test_logout_por_get_devuelve_405(self):
+        # Django 5 exige POST para cerrar sesión; GET debe rechazarse.
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.get(reverse('logout'))
+        self.assertEqual(resp.status_code, 405)
+
+    def test_logout_por_post_cierra_sesion(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.post(reverse('logout'))
+        self.assertRedirects(resp, reverse('login'))
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+
+class ProtectedViewsTests(TestCase):
+    #Cada vista privada debe redirigir a login con ?next= cuando no hay sesión.
+
+    def test_agregar_mascota_requiere_login(self):
+        resp = self.client.get(reverse('agregar_mascota'))
+        self.assertRedirects(
+            resp,
+            f"{reverse('login')}?next={reverse('agregar_mascota')}",
+        )
+
+    def test_tus_mascotas_requiere_login(self):
+        resp = self.client.get(reverse('tus_mascotas'))
+        self.assertRedirects(
+            resp,
+            f"{reverse('login')}?next={reverse('tus_mascotas')}",
+        )
+
+    def test_notificaciones_requiere_login(self):
+        resp = self.client.get(reverse('notificaciones'))
+        self.assertRedirects(
+            resp,
+            f"{reverse('login')}?next={reverse('notificaciones')}",
+        )
+
+    def test_perfil_usuario_requiere_login(self):
+        resp = self.client.get(reverse('perfil_usuario'))
+        self.assertRedirects(
+            resp,
+            f"{reverse('login')}?next={reverse('perfil_usuario')}",
+        )
+
+    def test_feed_es_publico(self): #Dejamos el feed público por si un usuario le interesa ver el veed antes de registrarse
+        resp = self.client.get(reverse('feed'))
+        self.assertEqual(resp.status_code, 200)
+
+
