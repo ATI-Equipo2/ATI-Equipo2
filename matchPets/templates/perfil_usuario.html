@@ -24,7 +24,7 @@
         <div class="perfil-encabezado">
             <h1 class="perfil-nombre">{{ nombre_usuario }}</h1>
             <div class="perfil-acciones">
-                <a href="#" class="perfil-accion" aria-label="{% translate 'Editar perfil' %}">
+                <a href="{% url 'editar_perfil' %}" class="perfil-accion" aria-label="{% translate 'Editar perfil' %}">
                     <img src="{% static 'img/perfil/icono-editar.svg' %}" alt="">
                     <span>{% translate "Editar perfil" %}</span>
                 </a>

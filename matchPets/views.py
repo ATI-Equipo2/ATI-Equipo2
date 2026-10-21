@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST
 from django.utils.translation import gettext, ngettext
 
 from . import mock_data, services
-from .forms import PetForm, RegistroForm
+from .forms import PetForm, RegistroForm, UserEditForm
 from .models import FriendshipRequest, Notification, Pet, User
 
 
@@ -135,6 +135,22 @@ def perfil_usuario(request):
 def ver_dueno(request, user_id):
     usuario = get_object_or_404(User, pk=user_id)
     return render(request, 'ver_dueno.html', _contexto_usuario(usuario, gettext('Ver Dueño')))
+
+
+@login_required(login_url='login')
+def editar_perfil(request):
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, gettext('Perfil actualizado correctamente'))
+            return redirect('perfil_usuario')
+    else:
+        form = UserEditForm(instance=request.user)
+    return render(request, 'editar_perfil.html', {
+        'name': gettext('Editar Perfil'),
+        'form': form,
+    })
 
 
 # Mascotas

@@ -65,3 +65,27 @@ class PetForm(forms.ModelForm):
         if age < 0:
             raise forms.ValidationError(_('La edad no puede ser negativa.'))
         return age
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['nombre', 'edad', 'ubicacion', 'descripcion', 'foto']
+        labels = {
+            'nombre': _('Nombre'),
+            'edad': _('Edad'),
+            'ubicacion': _('Ubicación'),
+            'descripcion': _('Descripción'),
+            'foto': _('Foto de perfil'),
+        }
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': _('Nombre'), 'autocomplete': 'given-name'}),
+            'edad': forms.NumberInput(attrs={'placeholder': _('Edad'), 'min': 0}),
+            'ubicacion': forms.TextInput(attrs={'placeholder': _('Ubicación'), 'autocomplete': 'address-level2'}),
+            'descripcion': forms.Textarea(attrs={'placeholder': _('Cuéntanos sobre ti'), 'rows': 4}),
+        }
+
+    def clean_edad(self):
+        edad = self.cleaned_data.get('edad')
+        if edad is not None and edad < 0:
+            raise forms.ValidationError(_('La edad no puede ser negativa.'))
+        return edad
