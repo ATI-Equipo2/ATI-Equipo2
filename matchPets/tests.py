@@ -683,3 +683,175 @@ class EditPetTests(TestCase):
             resp,
             f"{reverse('login')}?next={reverse('editar_mascota', args=[self.pet.id])}",
         )
+
+
+def _imagen_png(nombre):
+    """Imagen PNG mínima para simular la foto subida de una mascota."""
+    buf = io.BytesIO()
+    Image.new('RGB', (1, 1), color='red').save(buf, format='PNG')
+    return SimpleUploadedFile(nombre, buf.getvalue(), content_type='image/png')
+
+
+# Tests de la foto actual al editar una mascota
+class EditPetFotoTests(TestCase):
+    def setUp(self):
+        self.dueno = User.objects.create_user(
+            username='rolando', email='r@x.com',
+            password='test1234', nombre='Rolando',
+        )
+        self.temp_media = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.temp_media, True)
+        self.media_override = override_settings(MEDIA_ROOT=self.temp_media)
+        self.media_override.enable()
+        self.addCleanup(self.media_override.disable)
+        self.pet = Pet.objects.create(
+            name='Ronaldo', species='dog', age=5, owner=self.dueno,
+            img=_imagen_png('ronaldo.png'),
+        )
+        self.client.login(username='rolando', password='test1234')
+
+    def test_editar_mascota_muestra_foto_actual(self):
+        resp = self.client.get(reverse('editar_mascota', args=[self.pet.id]))
+        self.assertContains(resp, self.pet.img.url)
+        self.assertContains(resp, 'Cambiar foto')
+
+    def test_agregar_mascota_no_muestra_foto_actual(self):
+        resp = self.client.get(reverse('agregar_mascota'))
+        self.assertContains(resp, 'Agregar foto')
+        self.assertNotContains(resp, 'Cambiar foto')
+
+
+# Tests de eliminar mascota
+class EliminarMascotaTests(TestCase):
+    def setUp(self):
+        self.dueno = User.objects.create_user(
+            username='rolando', email='r@x.com',
+            password='test1234', nombre='Rolando',
+        )
+        self.otro = User.objects.create_user(
+            username='jesus', email='j@x.com',
+            password='test1234', nombre='Jesús',
+        )
+        self.temp_media = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.temp_media, True)
+        self.media_override = override_settings(MEDIA_ROOT=self.temp_media)
+        self.media_override.enable()
+        self.addCleanup(self.media_override.disable)
+        self.pet = Pet.objects.create(
+            name='Ronaldo', species='dog', age=5, owner=self.dueno,
+            img=_imagen_png('ronaldo.png'),
+        )
+
+    def test_eliminar_mascota_propia_la_borra_junto_con_su_foto(self):
+        nombre_foto = self.pet.img.name
+        storage = self.pet.img.storage
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.post(
+            reverse('eliminar_mascota', args=[self.pet.id]), follow=True,
+        )
+        self.assertRedirects(resp, reverse('tus_mascotas'))
+        self.assertContains(resp, 'Mascota eliminada')
+        self.assertFalse(Pet.objects.filter(pk=self.pet.id).exists())
+        self.assertFalse(storage.exists(nombre_foto)) #La foto no debe quedar huérfana en media/
+
+    def test_eliminar_mascota_ajena_devuelve_404(self):
+        self.client.login(username='jesus', password='test1234')
+        resp = self.client.post(reverse('eliminar_mascota', args=[self.pet.id]))
+        self.assertEqual(resp.status_code, 404)
+        self.assertTrue(Pet.objects.filter(pk=self.pet.id).exists())
+
+    def test_eliminar_mascota_por_get_no_la_borra(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.get(reverse('eliminar_mascota', args=[self.pet.id]))
+        self.assertEqual(resp.status_code, 405)
+        self.assertTrue(Pet.objects.filter(pk=self.pet.id).exists())
+
+    def test_eliminar_mascota_requiere_login(self):
+        url = reverse('eliminar_mascota', args=[self.pet.id])
+        resp = self.client.post(url)
+        self.assertRedirects(resp, f"{reverse('login')}?next={url}")
+        self.assertTrue(Pet.objects.filter(pk=self.pet.id).exists())
+
+    def test_boton_eliminar_solo_aparece_al_editar(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.get(reverse('editar_mascota', args=[self.pet.id]))
+        self.assertContains(resp, reverse('eliminar_mascota', args=[self.pet.id]))
+        resp = self.client.get(reverse('agregar_mascota'))
+        self.assertNotContains(resp, 'Eliminar mascota')
+
+
+# Tests de la pantalla Buscar Mascotas y del buscador del encabezado
+class BuscarMascotasTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='rolando', email='r@x.com',
+            password='test1234', nombre='Rolando',
+        )
+        Pet.objects.create(
+            name='Firulais', species='dog', age=3,
+            description='Le encanta jugar en el parque',
+        )
+        Pet.objects.create(
+            name='Michi', species='cat', age=2,
+            description='Una gata tranquila',
+        )
+        self.client.login(username='rolando', password='test1234')
+
+    def test_buscar_por_descripcion(self):
+        resp = self.client.get(reverse('buscar_mascotas'), {'q': 'parque'})
+        self.assertContains(resp, 'Firulais')
+        self.assertNotContains(resp, 'Michi')
+
+    def test_resultados_muestran_la_descripcion(self):
+        resp = self.client.get(reverse('buscar_mascotas'))
+        self.assertContains(resp, 'Le encanta jugar en el parque')
+        self.assertContains(resp, 'Una gata tranquila')
+
+    def test_pantalla_buscar_tiene_buscador_con_la_busqueda_actual(self):
+        #En mobile no hay encabezado, así que la pantalla necesita su propio buscador
+        resp = self.client.get(reverse('buscar_mascotas'), {'q': 'Michi'})
+        self.assertContains(resp, 'id="buscar-q" name="q" type="search" value="Michi"')
+
+    def test_buscador_del_encabezado_lleva_a_buscar_mascotas(self):
+        resp = self.client.get(reverse('tus_mascotas'))
+        self.assertContains(
+            resp,
+            f'action="{reverse("buscar_mascotas")}" role="search" class="form-buscar"',
+        )
+
+    def test_buscador_del_encabezado_en_el_feed_filtra_el_feed(self):
+        resp = self.client.get(reverse('feed'))
+        self.assertContains(
+            resp,
+            f'action="{reverse("feed")}" role="search" class="form-buscar"',
+        )
+
+
+# Tests del mini popup de confirmación al enviar una solicitud
+class ConfirmacionSolicitudTests(TestCase):
+    def setUp(self):
+        self.rolando = User.objects.create_user(
+            username='rolando', email='r@x.com',
+            password='test1234', nombre='Rolando',
+        )
+        self.jesus = User.objects.create_user(
+            username='jesus', email='j@x.com',
+            password='test1234', nombre='Jesús',
+        )
+        self.pet_rolando = Pet.objects.create(
+            name='Ronaldo', species='dog', age=5, owner=self.rolando,
+        )
+        self.pet_jesus = Pet.objects.create(
+            name='Brown', species='dog', age=1, owner=self.jesus,
+        )
+
+    def test_solicitud_enviada_se_muestra_en_mini_popup(self):
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.post(
+            reverse('enviar_solicitud', args=[self.pet_jesus.id]),
+            {'from_pet': self.pet_rolando.id},
+            follow=True,
+        )
+        self.assertRedirects(resp, reverse('ver_mascota', args=[self.pet_jesus.id]))
+        self.assertContains(resp, 'notif-toast--esquina')
+        self.assertContains(resp, 'Solicitud enviada')
