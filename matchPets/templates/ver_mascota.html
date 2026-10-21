@@ -7,9 +7,23 @@
 {% endblock %}
 
 {% block content %}
-{% for message in messages %}
-<div class="notif-toast visible notif-toast--{{ message.tags }}" role="status" aria-live="polite" style="opacity:1;position:static;transform:none;display:inline-block;margin:12px 0;">{{ message }}</div>
-{% endfor %}
+{% if messages %}
+<!-- Mini popup de confirmación (solicitud enviada, ya enviada, etc.) abajo a la derecha -->
+<div class="toast-esquina" id="toast-esquina" role="status" aria-live="polite">
+    {% for message in messages %}
+    <p class="notif-toast notif-toast--esquina visible notif-toast--{{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+</div>
+<script>
+(function () {
+    var pila = document.getElementById('toast-esquina');
+    setTimeout(function () {
+        pila.querySelectorAll('.notif-toast').forEach(function (t) { t.classList.remove('visible'); });
+        setTimeout(function () { pila.remove(); }, 300);
+    }, 3000);
+})();
+</script>
+{% endif %}
 <article class="perfil perfil--mascota">
     <div class="perfil-foto">
         {% include 'matchPets/partials/_foto.html' with item=mascota %}

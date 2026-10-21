@@ -301,3 +301,53 @@
   background: #fff7f4;
   border-left: calc(4 * var(--u)) solid var(--naranja);
 }
+
+/* Mini popup de confirmación abajo a la derecha (Ver mascota: solicitud enviada) */
+.toast-esquina {
+  position: fixed;
+  right: calc(32 * var(--u));
+  bottom: calc(7% + 24 * var(--u));
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.notif-toast--esquina {
+  position: static;
+  margin: 0;
+  max-width: min(360px, calc(100vw - 32px));
+  white-space: normal;
+  border-radius: 12px;
+  transform: translateY(10px);
+  animation: toast-entrada 0.2s ease;
+}
+
+.notif-toast--esquina.visible {
+  transform: translateY(0);
+}
+
+.notif-toast--error {
+  background: #c1272d;
+}
+
+@keyframes toast-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .toast-esquina {
+    right: calc(12 * var(--u));
+    bottom: calc(85 * var(--u));
+  }
+}
