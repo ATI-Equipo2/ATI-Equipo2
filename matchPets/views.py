@@ -15,6 +15,7 @@ from .models import FriendshipRequest, Notification, Pet, User
 
 class LoginView(auth_views.LoginView):
     template_name = 'login.html'
+    redirect_authenticated_user = True #Si el usuario ya está logueado, redirigido al feed
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

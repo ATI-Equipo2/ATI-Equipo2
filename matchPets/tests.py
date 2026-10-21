@@ -1,3 +1,5 @@
+import io
+from PIL import Image
 import tempfile
 import shutil
 
@@ -275,13 +277,6 @@ class FeedTests(TestCase):
         self.assertContains(resp, 'Sin resultados')
 
 
-#PNG mínimo para probar las fotos
-PNG_MINIMO = (
-    b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01'
-    b'\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\rIDATx\x9cc\x00'
-    b'\x01\x00\x00\x05\x00\x01\x0d\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82'
-)
-
 # Tests de agregar mascota
 class AddPetTests(TestCase):
     def setUp(self):
@@ -336,9 +331,14 @@ class AddPetTests(TestCase):
 
     def test_agregar_mascota_acepta_imagen(self):
         self.client.login(username='rolando', password='test1234')
+
+        buf = io.BytesIO()
+        Image.new('RGB', (1, 1), color='red').save(buf, format='PNG')
+
+
         imagen = SimpleUploadedFile(
             'firulais.png',
-            PNG_MINIMO,
+            buf.getvalue(),
             content_type='image/png',
         )
         resp = self.client.post(reverse('agregar_mascota'), {
