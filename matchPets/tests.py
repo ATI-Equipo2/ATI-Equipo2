@@ -355,3 +355,226 @@ class AddPetTests(TestCase):
         pet = Pet.objects.get(name='Firulais')
         self.assertTrue(pet.img)
         self.assertTrue(pet.img.name.startswith('pets/'))
+
+# Tests de notificaciones
+class NotificationContextProcessorTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='rolando',
+            email='rolando@example.com',
+            password='test1234',
+            nombre='Rolando',
+        )
+
+    def test_usuario_anonimo_recibe_cero(self):
+        resp = self.client.get(reverse('feed'))
+        self.assertEqual(resp.context['unread_notifications_count'], 0)
+        self.assertEqual(resp.context['recent_notifications'], [])
+
+    def test_usuario_con_notificaciones_cuenta_solo_no_leidas(self):
+        Notification.objects.create(
+            user=self.user, tipo='mensaje', titulo='N1', leida=False,
+        )
+        Notification.objects.create(
+            user=self.user, tipo='mensaje', titulo='N2', leida=False,
+        )
+        Notification.objects.create(
+            user=self.user, tipo='mensaje', titulo='N3', leida=True,
+        )
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.get(reverse('feed'))
+        self.assertEqual(resp.context['unread_notifications_count'], 2)
+        self.assertEqual(len(resp.context['recent_notifications']), 3)
+
+    def test_recent_notifications_devuelve_maximo_cinco(self):
+        for i in range(7):
+            Notification.objects.create(
+                user=self.user, tipo='mensaje', titulo=f'N{i}', leida=False,
+            )
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.get(reverse('feed'))
+        self.assertEqual(resp.context['unread_notifications_count'], 7)
+        self.assertEqual(len(resp.context['recent_notifications']), 5)
+
+
+class NotificacionesViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='rolando',
+            email='rolando@example.com',
+            password='test1234',
+            nombre='Rolando',
+        )
+        self.otro = User.objects.create_user(
+            username='jesus',
+            email='jesus@example.com',
+            password='test1234',
+            nombre='Jesús',
+        )
+        self.mia = Notification.objects.create(
+            user=self.user, tipo='mensaje', titulo='Mía', leida=False,
+        )
+        self.ajena = Notification.objects.create(
+            user=self.otro, tipo='mensaje', titulo='Ajena', leida=False,
+        )
+        self.client.login(username='rolando', password='test1234')
+
+    def test_muestra_solo_mis_notificaciones(self):
+        resp = self.client.get(reverse('notificaciones'))
+        self.assertContains(resp, 'Mía')
+        self.assertNotContains(resp, 'Ajena')
+
+    def test_marcar_leida_actualiza_propia(self):
+        self.client.post(reverse('marcar_leida', args=[self.mia.id]))
+        self.mia.refresh_from_db()
+        self.assertTrue(self.mia.leida)
+
+    def test_marcar_leida_ajena_no_hace_nada(self):
+        self.client.post(reverse('marcar_leida', args=[self.ajena.id]))
+        self.ajena.refresh_from_db()
+        self.assertFalse(self.ajena.leida)
+
+    def test_descartar_borra_propia(self):
+        self.client.post(reverse('descartar_notificacion', args=[self.mia.id]))
+        self.assertFalse(Notification.objects.filter(id=self.mia.id).exists())
+        self.assertTrue(Notification.objects.filter(id=self.ajena.id).exists())
+
+    def test_descartar_ajena_no_hace_nada(self):
+        self.client.post(reverse('descartar_notificacion', args=[self.ajena.id]))
+        self.assertTrue(Notification.objects.filter(id=self.ajena.id).exists())
+
+    def test_mutar_notificacion_por_get_devuelve_405(self):
+        self.assertEqual(
+            self.client.get(reverse('marcar_leida', args=[self.mia.id])).status_code,
+            405,
+        )
+        self.assertEqual(
+            self.client.get(
+                reverse('descartar_notificacion', args=[self.mia.id])
+            ).status_code,
+            405,
+        )
+
+
+class SolicitudFlowTests(TestCase):
+    def setUp(self):
+        self.rolando = User.objects.create_user(
+            username='rolando',
+            email='rolando@example.com',
+            password='test1234',
+            nombre='Rolando',
+        )
+        self.jesus = User.objects.create_user(
+            username='jesus',
+            email='jesus@example.com',
+            password='test1234',
+            nombre='Jesús',
+        )
+        self.pet_rolando = Pet.objects.create(
+            name='Ronaldo', species='dog', age=5, owner=self.rolando,
+        )
+        self.pet_jesus = Pet.objects.create(
+            name='Brown', species='dog', age=1, owner=self.jesus,
+        )
+
+    def test_enviar_solicitud_crea_request_y_notificacion(self):
+        self.client.login(username='rolando', password='test1234')
+        self.client.post(
+            reverse('enviar_solicitud', args=[self.pet_jesus.id]),
+            {'from_pet': self.pet_rolando.id},
+        )
+        self.assertEqual(FriendshipRequest.objects.count(), 1)
+        solicitud = FriendshipRequest.objects.first()
+        self.assertEqual(solicitud.from_user, self.rolando)
+        self.assertEqual(solicitud.to_user, self.jesus)
+        self.assertEqual(solicitud.status, 'pending')
+        self.assertEqual(
+            Notification.objects.filter(
+                user=self.jesus, tipo='solicitud_recibida',
+            ).count(),
+            1,
+        )
+
+    def test_no_se_puede_enviar_a_mascota_propia(self):
+        self.client.login(username='rolando', password='test1234')
+        self.client.post(
+            reverse('enviar_solicitud', args=[self.pet_rolando.id]),
+            {'from_pet': self.pet_rolando.id},
+        )
+        self.assertEqual(FriendshipRequest.objects.count(), 0)
+
+    def test_no_se_duplica_solicitud_pendiente(self):
+        self.client.login(username='rolando', password='test1234')
+        self.client.post(
+            reverse('enviar_solicitud', args=[self.pet_jesus.id]),
+            {'from_pet': self.pet_rolando.id},
+        )
+        self.client.post(
+            reverse('enviar_solicitud', args=[self.pet_jesus.id]),
+            {'from_pet': self.pet_rolando.id},
+        )
+        self.assertEqual(FriendshipRequest.objects.count(), 1)
+
+    def test_aceptar_solicitud_cambia_estado_y_notifica_al_emisor(self):
+        solicitud = services.crear_solicitud(
+            self.rolando, self.pet_rolando, self.pet_jesus,
+        )
+        self.client.login(username='jesus', password='test1234')
+        self.client.post(
+            reverse('responder_solicitud', args=[solicitud.id, 'aceptar'])
+        )
+        solicitud.refresh_from_db()
+        self.assertEqual(solicitud.status, 'accepted')
+        self.assertEqual(
+            Notification.objects.filter(
+                user=self.rolando, tipo='solicitud_aceptada',
+            ).count(),
+            1,
+        )
+
+    def test_denegar_solicitud_cambia_estado_y_notifica_al_emisor(self):
+        solicitud = services.crear_solicitud(
+            self.rolando, self.pet_rolando, self.pet_jesus,
+        )
+        self.client.login(username='jesus', password='test1234')
+        self.client.post(
+            reverse('responder_solicitud', args=[solicitud.id, 'denegar'])
+        )
+        solicitud.refresh_from_db()
+        self.assertEqual(solicitud.status, 'rejected')
+        self.assertEqual(
+            Notification.objects.filter(
+                user=self.rolando, tipo='solicitud_denegada',
+            ).count(),
+            1,
+        )
+
+    def test_solo_destinatario_puede_responder(self):
+        solicitud = services.crear_solicitud(
+            self.rolando, self.pet_rolando, self.pet_jesus,
+        )
+        self.client.login(username='rolando', password='test1234')
+        resp = self.client.post(
+            reverse('responder_solicitud', args=[solicitud.id, 'aceptar'])
+        )
+        self.assertEqual(resp.status_code, 404)
+        solicitud.refresh_from_db()
+        self.assertEqual(solicitud.status, 'pending')
+
+    def test_responder_dos_veces_no_duplica_notificaciones(self):
+        solicitud = services.crear_solicitud(
+            self.rolando, self.pet_rolando, self.pet_jesus,
+        )
+        self.client.login(username='jesus', password='test1234')
+        self.client.post(
+            reverse('responder_solicitud', args=[solicitud.id, 'aceptar'])
+        )
+        self.client.post(
+            reverse('responder_solicitud', args=[solicitud.id, 'aceptar'])
+        )
+        self.assertEqual(
+            Notification.objects.filter(
+                user=self.rolando, tipo='solicitud_aceptada',
+            ).count(),
+            1,
+        )
