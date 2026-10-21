@@ -113,6 +113,18 @@ def add_pet(request, pet_id=None):
     return render(request, 'add-pet.html', {'name': gettext('Editar Mascota') if pet_id else gettext('Agregar Mascota'), 'form': form, 'editando': pet_id is not None})
 
 
+@login_required(login_url='login')
+@require_POST
+def eliminar_mascota(request, pet_id):
+    """Elimina una mascota propia junto con su foto."""
+    pet = get_object_or_404(Pet, pk=pet_id, owner=request.user)
+    if pet.img:
+        pet.img.delete(save=False)
+    pet.delete()
+    messages.success(request, gettext('Mascota eliminada'))
+    return redirect('tus_mascotas')
+
+
 def base_navigation(request):
     return render(request, 'base-navegacion-desktop.html')
 

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import signup, add_pet, base_navigation, base_feed_mobile, base_perfil
+from .views import signup, add_pet, eliminar_mascota, base_navigation, base_feed_mobile, base_perfil
 from .views import perfil_usuario, ver_dueno, perfil_mascota, ver_mascota, tus_mascotas, sus_mascotas, editar_perfil
 from .views import notificaciones, buscar_mascotas
 from .views import enviar_solicitud, responder_solicitud, marcar_leida, descartar_notificacion
@@ -11,6 +11,7 @@ urlpatterns = [
     path('signup/', signup, name='signup'),
     path('agregar_mascota/', add_pet, name='agregar_mascota'),
     path('editar_mascota/<int:pet_id>', add_pet,name='editar_mascota'),
+    path('eliminar_mascota/<int:pet_id>/', eliminar_mascota, name='eliminar_mascota'),
     path('base_navegacion/', base_navigation, name='base_navegacion'),
     path('base_feed_mobile/', base_feed_mobile, name='base_feed_mobile'),
     path('base_perfil/', base_perfil, name='base_perfil'),

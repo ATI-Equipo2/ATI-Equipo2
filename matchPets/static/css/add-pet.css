@@ -274,6 +274,28 @@
   transform: translateY(0);
 }
 
+.form-eliminar {
+  margin: 0.7rem 0 0;
+}
+
+.btn-eliminar {
+  width: 100%;
+  height: 42px;
+  background-color: transparent;
+  color: #c0392b;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1.2px solid #c0392b;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: var(--primary-font, "Roboto", sans-serif);
+}
+
+.btn-eliminar:hover {
+  background-color: #fdecea;
+}
+
 @media (max-width: 480px) {
   .add-pet-container {
     max-width: 95%;

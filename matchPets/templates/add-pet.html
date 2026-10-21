@@ -93,6 +93,16 @@
                 <button type="submit" class="btn-submit">{% if editando %}{% translate "Guardar" %}{% else %}{% translate "Agregar" %}{% endif %}</button>
             </div>
         </form>
+
+        {% if editando %}
+        <!-- Formulario aparte: no se pueden anidar formularios -->
+        {% translate "¿Seguro que quieres eliminar esta mascota? Esta acción no se puede deshacer." as confirmar_eliminar %}
+        <form method="POST" action="{% url 'eliminar_mascota' form.instance.pk %}" class="form-eliminar"
+            onsubmit="return confirm('{{ confirmar_eliminar|escapejs }}');">
+            {% csrf_token %}
+            <button type="submit" class="btn-eliminar">{% translate "Eliminar mascota" %}</button>
+        </form>
+        {% endif %}
     </div>
 </div>
 
