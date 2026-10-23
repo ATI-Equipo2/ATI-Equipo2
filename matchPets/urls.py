@@ -5,6 +5,7 @@ from .views import notificaciones, buscar_mascotas
 from .views import enviar_solicitud, responder_solicitud, marcar_leida, descartar_notificacion
 from .views import feed, inicio
 from .views import LoginView, LogoutView, vista_protegida
+from .views import bandeja_entrada, ver_conversacion
 
 urlpatterns = [
     path('', signup, name='registro'),
@@ -33,4 +34,6 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('protegida/', vista_protegida, name='vista_protegida'),
+    path('mensajes/', bandeja_entrada, name='bandeja_entrada'),
+    path('mensajes/<int:user_id>/', ver_conversacion, name='ver_conversacion'),
 ]

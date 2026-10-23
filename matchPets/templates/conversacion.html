@@ -1,0 +1,42 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/mensajes.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="chat">
+    <div class="chat-encabezado">
+        <a href="{% url 'bandeja_entrada' %}" class="chat-atras" aria-label="{% translate 'Volver' %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+        <a href="{% url 'ver_dueno' otro.id %}" class="chat-nombre">{% firstof otro.nombre otro.username %}</a>
+    </div>
+
+    <div class="chat-hilo">
+        {% for m in mensajes %}
+        <div class="chat-burbuja {% if m.sender_id == request.user.id %}chat-burbuja--propia{% else %}chat-burbuja--ajena{% endif %}">
+            <p>{{ m.content }}</p>
+            <small>{{ m.created_at|date:"H:i" }}</small>
+        </div>
+        {% empty %}
+        <p class="chat-vacia">{% translate "Aún no hay mensajes. Envía el primero." %}</p>
+        {% endfor %}
+    </div>
+
+    <form method="post" class="chat-form">
+        {% csrf_token %}
+        <input type="text" name="content" placeholder="{% translate 'Escribe un mensaje…' %}" required autocomplete="off">
+        <button type="submit" class="chat-enviar">{% translate "Enviar" %}</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="{% url 'bandeja_entrada' %}" aria-current="page"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
+<a href="{% url 'feed' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
+{% endblock %}

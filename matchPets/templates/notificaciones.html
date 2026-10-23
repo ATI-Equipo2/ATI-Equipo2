@@ -28,8 +28,8 @@
                     {% endif %}
                 </span>
                 <div class="notif-texto">
-                    {% if n.tipo == 'mensaje' %}
-                    <a class="notif-linea notif-enlace" href="#">{{ n.titulo }}</a>
+                    {% if n.tipo == 'mensaje' and n.from_user %}
+                    <a class="notif-linea notif-enlace" href="{% url 'ver_conversacion' n.from_user.id %}">{{ n.titulo }}</a>
                     {% else %}
                     <p class="notif-linea">{{ n.titulo }}</p>
                     {% endif %}

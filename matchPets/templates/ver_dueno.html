@@ -20,10 +20,12 @@
         <div class="perfil-encabezado">
             <h1 class="perfil-nombre">{{ nombre_usuario }}</h1>
             <div class="perfil-acciones">
-                <a href="#" class="perfil-accion perfil-accion--mensaje solo-desktop" aria-label="{% translate 'Enviar mensaje' %}">
+                {% if pueden_chatear %}
+                <a href="{% url 'ver_conversacion' usuario.id %}" class="perfil-accion perfil-accion--mensaje solo-desktop" aria-label="{% translate 'Enviar mensaje' %}">
                     <img src="{% static 'img/perfil/icono-enviar-mensaje.png' %}" alt="">
                     <span>{% translate "Enviar Mensaje" %}</span>
                 </a>
+                {% endif %}
             </div>
         </div>
 
@@ -50,7 +52,7 @@
 {% block nav_mobile %}
 <a href="{% url 'buscar_mascotas' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
 <a href="{% url 'perfil_usuario' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
-<a href="#"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
+<a href="{% url 'bandeja_entrada' %}"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
 <a href="{% url 'feed' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
 <a href="{% url 'notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
 {% endblock %}

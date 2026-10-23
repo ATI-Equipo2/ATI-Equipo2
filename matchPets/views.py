@@ -4,13 +4,14 @@ from django.contrib.auth import login as auth_login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import DatabaseError
+from django.db.models import Q
 from django.http import Http404
 from django.views.decorators.http import require_POST
 from django.utils.translation import gettext, ngettext
 
 from . import mock_data, services
 from .forms import PetForm, RegistroForm, UserEditForm
-from .models import FriendshipRequest, Notification, Pet, User
+from .models import FriendshipRequest, Message, Notification, Pet, User
 
 
 class LoginView(auth_views.LoginView):
@@ -146,7 +147,12 @@ def perfil_usuario(request):
 @login_required(login_url='login')
 def ver_dueno(request, user_id):
     usuario = get_object_or_404(User, pk=user_id)
-    return render(request, 'ver_dueno.html', _contexto_usuario(usuario, gettext('Ver Dueño')))
+    pueden = False
+    if usuario.id != request.user.id:
+        pueden = services.pueden_chatear(request.user, usuario)
+    contexto = _contexto_usuario(usuario, gettext('Ver Dueño'))
+    contexto['pueden_chatear'] = pueden
+    return render(request, 'ver_dueno.html', contexto)
 
 
 @login_required(login_url='login')
@@ -297,6 +303,52 @@ def marcar_leida(request, notif_id):
 def descartar_notificacion(request, notif_id):
     Notification.objects.filter(id=notif_id, user=request.user).delete()
     return redirect('notificaciones')
+
+
+# ---------------------------------------------------------------------------
+# Mensajes: bandeja de entrada y conversaciones (estilo Messenger).
+# Solo se puede chatear si hay una solicitud de socialización aceptada.
+# ---------------------------------------------------------------------------
+@login_required(login_url='login')
+def bandeja_entrada(request):
+    """Lista de conversaciones del usuario."""
+    return render(request, 'bandeja_entrada.html', {
+        'title': gettext('Mensajes'),
+        'conversaciones': services.conversaciones_de(request.user),
+    })
+
+
+@login_required(login_url='login')
+def ver_conversacion(request, user_id):
+    """Chat con un usuario específico. Requiere solicitud aceptada entre ambos."""
+    otro = get_object_or_404(User, pk=user_id)
+    if otro.id == request.user.id:
+        return redirect('bandeja_entrada')
+
+    if not services.pueden_chatear(request.user, otro):
+        messages.error(request, gettext('No puedes enviar mensajes a este usuario todavía'))
+        return redirect('bandeja_entrada')
+
+    if request.method == 'POST':
+        contenido = request.POST.get('content', '').strip()
+        if contenido:
+            services.enviar_mensaje(request.user, otro, contenido)
+        return redirect('ver_conversacion', user_id=otro.id)
+
+    Message.objects.filter(sender=otro, receiver=request.user, read=False).update(read=True)
+
+    mensajes_qs = (Message.objects
+                   .filter(
+                       Q(sender=request.user, receiver=otro)
+                       | Q(sender=otro, receiver=request.user)
+                   )
+                   .order_by('created_at'))
+
+    return render(request, 'conversacion.html', {
+        'title': gettext('Conversación con %(nombre)s') % {'nombre': otro.nombre or otro.username},
+        'otro': otro,
+        'mensajes': mensajes_qs,
+    })
 
 
 # ---------------------------------------------------------------------------
