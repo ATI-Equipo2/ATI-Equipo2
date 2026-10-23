@@ -86,6 +86,16 @@ class Notification(models.Model):
         blank=True,
         related_name='notifications',
     )
+    # Usuario que originó la notificación (p. ej. quien envía un mensaje);
+    # puede ser NULL porque no todas las notificaciones son mensajes.
+    from_user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='message_notifications',
+        help_text='Usuario que originó la notificación (p. ej. quien envía un mensaje)',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
