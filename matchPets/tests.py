@@ -780,6 +780,44 @@ class EliminarMascotaTests(TestCase):
         self.assertNotContains(resp, 'Eliminar mascota')
 
 
+# Pruebas unitarias del servicio de búsqueda (services.buscar_mascotas)
+class BuscarMascotasServiceTests(TestCase):
+    def setUp(self):
+        Pet.objects.create(
+            name='Firulais', species='dog', age=3,
+            description='Le encanta jugar en el parque',
+        )
+        Pet.objects.create(
+            name='Michi', species='cat', age=2,
+            description='Una gata tranquila',
+        )
+        Pet.objects.create(name='Piolin', species='bird', age=1)
+
+    def _nombres(self, q):
+        return [pet.name for pet in services.buscar_mascotas(q)]
+
+    def test_sin_texto_devuelve_todas_ordenadas(self):
+        """Sin texto de búsqueda se devuelven todas las mascotas en orden de creación."""
+        self.assertEqual(self._nombres(''), ['Firulais', 'Michi', 'Piolin'])
+
+    def test_busca_por_nombre_parcial_sin_importar_mayusculas(self):
+        self.assertEqual(self._nombres('FIRU'), ['Firulais'])
+
+    def test_busca_por_especie_en_espanol(self):
+        """La especie se guarda en inglés ('cat'), pero el usuario busca «gato»."""
+        self.assertEqual(self._nombres('gato'), ['Michi'])
+        self.assertEqual(self._nombres('ave'), ['Piolin'])
+
+    def test_busca_por_clave_de_especie(self):
+        self.assertEqual(self._nombres('bird'), ['Piolin'])
+
+    def test_busca_por_descripcion(self):
+        self.assertEqual(self._nombres('parque'), ['Firulais'])
+
+    def test_sin_coincidencias_devuelve_lista_vacia(self):
+        self.assertEqual(self._nombres('ornitorrinco'), [])
+
+
 # Tests de la pantalla Buscar Mascotas y del buscador del encabezado
 class BuscarMascotasTests(TestCase):
     def setUp(self):
@@ -825,6 +863,59 @@ class BuscarMascotasTests(TestCase):
             resp,
             f'action="{reverse("feed")}" role="search" class="form-buscar"',
         )
+
+    def test_sin_busqueda_muestra_todas_las_mascotas(self):
+        resp = self.client.get(reverse('buscar_mascotas'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Firulais')
+        self.assertContains(resp, 'Michi')
+
+    def test_buscar_por_nombre(self):
+        resp = self.client.get(reverse('buscar_mascotas'), {'q': 'Firulais'})
+        self.assertContains(resp, 'Firulais')
+        self.assertNotContains(resp, 'Michi')
+
+    def test_buscar_por_especie_en_espanol(self):
+        resp = self.client.get(reverse('buscar_mascotas'), {'q': 'perro'})
+        self.assertContains(resp, 'Firulais')
+        self.assertNotContains(resp, 'Michi')
+
+    def test_resultados_enlazan_al_perfil_de_cada_mascota(self):
+        resp = self.client.get(reverse('buscar_mascotas'))
+        for pet in Pet.objects.all():
+            self.assertContains(resp, f'href="{reverse("ver_mascota", args=[pet.id])}"')
+
+    def test_buscar_requiere_iniciar_sesion(self):
+        self.client.logout()
+        url = reverse('buscar_mascotas')
+        resp = self.client.get(url)
+        self.assertRedirects(resp, f"{reverse('login')}?next={url}")
+
+    def test_sin_resultados_muestra_mensaje(self):
+        resp = self.client.get(reverse('buscar_mascotas'), {'q': 'ornitorrinco'})
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Sin resultados para esa búsqueda.')
+        self.assertNotContains(resp, 'Firulais')
+        self.assertNotContains(resp, 'Michi')
+
+    def test_busqueda_ignora_espacios_alrededor(self):
+        resp = self.client.get(reverse('buscar_mascotas'), {'q': '   Michi   '})
+        self.assertContains(resp, 'Michi')
+        self.assertNotContains(resp, 'Firulais')
+        self.assertContains(resp, 'value="Michi"')
+
+    def test_boton_limpiar_solo_aparece_con_busqueda(self):
+        resp = self.client.get(reverse('buscar_mascotas'))
+        self.assertNotContains(resp, 'class="buscar-limpiar"')
+        resp = self.client.get(reverse('buscar_mascotas'), {'q': 'Michi'})
+        self.assertContains(resp, 'class="buscar-limpiar"')
+
+    def test_texto_buscado_se_escapa_en_la_pagina(self):
+        """Seguridad: lo que escribe el usuario no debe ejecutarse como HTML (XSS)."""
+        resp = self.client.get(reverse('buscar_mascotas'), {'q': '<script>alert(1)</script>'})
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, '<script>alert(1)</script>')
+        self.assertContains(resp, '&lt;script&gt;alert(1)&lt;/script&gt;')
 
 
 # Tests del mini popup de confirmación al enviar una solicitud
