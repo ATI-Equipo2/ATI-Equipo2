@@ -97,6 +97,7 @@
 {% block nav_mobile %}
 <a href="{% url 'buscar_mascotas' %}" aria-label="{% translate 'Buscar' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
 <a href="{% url 'perfil_usuario' %}" aria-label="{% translate 'Mi perfil' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="{% url 'bandeja_entrada' %}" aria-label="{% translate 'Mensajes' %}"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
 <a href="{% url 'feed' %}" aria-label="{% translate 'Inicio' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
 <a href="{% url 'notificaciones' %}" class="nav-notif-activa" aria-label="{% translate 'Notificaciones' %}" aria-current="page"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}">{% if unread_notifications_count > 0 %}<span class="nav-punto" aria-hidden="true"></span>{% endif %}</a>
 {% endblock %}

@@ -946,3 +946,96 @@ class ConfirmacionSolicitudTests(TestCase):
         self.assertRedirects(resp, reverse('ver_mascota', args=[self.pet_jesus.id]))
         self.assertContains(resp, 'notif-toast--esquina')
         self.assertContains(resp, 'Solicitud enviada')
+
+
+class MensajesTests(TestCase):
+    def setUp(self):
+        self.rolando = User.objects.create_user(
+            username='rolando', email='r@x.com',
+            password='test1234', nombre='Rolando',
+        )
+        self.jesus = User.objects.create_user(
+            username='jesus', email='j@x.com',
+            password='test1234', nombre='Jesús',
+        )
+        self.pet_rolando = Pet.objects.create(
+            name='Ronaldo', species='dog', age=5, owner=self.rolando,
+        )
+        self.pet_jesus = Pet.objects.create(
+            name='Brown', species='dog', age=1, owner=self.jesus,
+        )
+        FriendshipRequest.objects.create(
+            from_user=self.jesus, to_user=self.rolando,
+            from_pet=self.pet_jesus, to_pet=self.pet_rolando,
+            status='accepted',
+        )
+        self.client.force_login(self.rolando)
+
+    def _notificaciones_de_jesus(self):
+        return Notification.objects.filter(user=self.rolando, tipo='mensaje', from_user=self.jesus)
+
+    def test_abrir_el_chat_marca_la_notificacion_como_leida(self):
+        services.enviar_mensaje(self.jesus, self.rolando, 'Hola')
+        self.client.get(reverse('ver_conversacion', args=[self.jesus.id]))
+        self.assertFalse(self._notificaciones_de_jesus().filter(leida=False).exists())
+
+    def test_mensaje_nuevo_despues_de_leer_vuelve_a_notificar(self):
+        services.enviar_mensaje(self.jesus, self.rolando, 'Hola')
+        self.client.get(reverse('ver_conversacion', args=[self.jesus.id]))
+        services.enviar_mensaje(self.jesus, self.rolando, '¿Vamos al parque?')
+        self.assertEqual(self._notificaciones_de_jesus().count(), 2)
+        self.assertEqual(self._notificaciones_de_jesus().filter(leida=False).count(), 1)
+
+    def test_no_se_puede_chatear_sin_solicitud_aceptada(self):
+        carla = User.objects.create_user(username='carla', password='test1234')
+        resp = self.client.get(reverse('ver_conversacion', args=[carla.id]))
+        self.assertRedirects(resp, reverse('bandeja_entrada'))
+
+    def test_flecha_del_chat_vuelve_a_la_bandeja(self):
+        resp = self.client.get(reverse('ver_conversacion', args=[self.jesus.id]))
+        self.assertContains(resp, f'href="{reverse("bandeja_entrada")}" class="chat-atras"')
+
+    def test_la_cabecera_tiene_acceso_a_mensajes(self):
+        resp = self.client.get(reverse('perfil_usuario'))
+        self.assertContains(resp, f'<a href="{reverse("bandeja_entrada")}"><img id="icono-chat"')
+
+    def test_la_barra_de_ver_mascota_lleva_a_la_bandeja(self):
+        resp = self.client.get(reverse('ver_mascota', args=[self.pet_jesus.id]))
+        self.assertNotContains(resp, '<a href="#">')
+        self.assertContains(resp, f'href="{reverse("bandeja_entrada")}"')
+
+
+class PopupNotificacionesTests(TestCase):
+    def setUp(self):
+        self.rolando = User.objects.create_user(username='rolando', password='test1234')
+        self.jesus = User.objects.create_user(username='jesus', password='test1234')
+        self.pet_rolando = Pet.objects.create(name='Ronaldo', species='dog', age=5, owner=self.rolando)
+        self.pet_jesus = Pet.objects.create(name='Brown', species='dog', age=1, owner=self.jesus)
+        self.client.force_login(self.rolando)
+
+    def test_notificacion_de_mensaje_abre_el_chat(self):
+        services.enviar_mensaje(self.jesus, self.rolando, 'Hola')
+        resp = self.client.get(reverse('perfil_usuario'))
+        chat = reverse('ver_conversacion', args=[self.jesus.id])
+        self.assertContains(resp, f'class="notif-popup-enlace" href="{chat}"')
+
+    def test_notificacion_de_solicitud_lleva_a_notificaciones(self):
+        services.crear_solicitud(self.jesus, self.pet_jesus, self.pet_rolando)
+        resp = self.client.get(reverse('perfil_usuario'))
+        self.assertContains(resp, f'class="notif-popup-enlace" href="{reverse("notificaciones")}"')
+
+
+class AgregarMascotaNavegacionTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='rolando', password='test1234')
+        self.client.force_login(self.user)
+
+    def test_buscador_lleva_a_buscar_mascotas(self):
+        resp = self.client.get(reverse('agregar_mascota'))
+        self.assertContains(resp, f'action="{reverse("buscar_mascotas")}" role="search"')
+
+    def test_iconos_llevan_a_su_pantalla(self):
+        resp = self.client.get(reverse('agregar_mascota'))
+        for nombre in ('perfil_usuario', 'bandeja_entrada', 'notificaciones', 'feed'):
+            self.assertContains(resp, f'href="{reverse(nombre)}"')
+        self.assertContains(resp, f'action="{reverse("logout")}"')

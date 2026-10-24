@@ -8,8 +8,10 @@
     <ul class="notif-popup-list">
         {% for n in recent_notifications %}
         <li class="notif-popup-item{% if not n.leida %} notif-popup-item--nueva{% endif %}">
-            <span class="notif-popup-titulo">{{ n.titulo }}</span>
-            {% if n.detalle %}<small class="notif-popup-detalle">{{ n.detalle }}</small>{% endif %}
+            <a class="notif-popup-enlace" href="{% if n.tipo == 'mensaje' and n.from_user %}{% url 'ver_conversacion' n.from_user.id %}{% else %}{% url 'notificaciones' %}{% endif %}">
+                <span class="notif-popup-titulo">{{ n.titulo }}</span>
+                {% if n.detalle %}<small class="notif-popup-detalle">{{ n.detalle }}</small>{% endif %}
+            </a>
         </li>
         {% empty %}
         <li class="notif-popup-vacia">{% translate "No tienes notificaciones por ahora." %}</li>
@@ -22,7 +24,7 @@
     var popup = document.getElementById('notif-popup');
     // En la pantalla de notificaciones el ícono navega a la página completa.
     if (!popup || document.querySelector('.notif-page')) return;
-    var disparadores = '#icono-notificacion, #icono-notificacion1, .nav-notif-activa, [data-notif-toggle]';
+    var disparadores = '#icono-notificacion, [data-notif-toggle]';
 
     document.addEventListener('click', function (ev) {
         if (ev.target.closest(disparadores)) {

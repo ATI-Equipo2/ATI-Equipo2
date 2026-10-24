@@ -17,8 +17,10 @@
 
 <body>
     <header>
-        <input id="input-buscar" type="text" placeholder="Buscar">
-        <img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="">
+        <form method="get" action="{% url 'buscar_mascotas' %}" role="search" class="form-buscar">
+            <input id="input-buscar" name="q" type="text" placeholder="{% translate 'Buscar' %}" aria-label="{% translate 'Buscar por nombre o especie' %}">
+            <button type="submit" class="btn-icono"><img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="{% translate 'Buscar' %}"></button>
+        </form>
     </header>
 
 
@@ -36,16 +38,18 @@
         </div>
     </footer>
 
-    <img id="icono-buscar-anaranjado1" src="{% static 'img/icono-buscar-anaranjado.png' %}" alt="">
-    <img id="icono-perfil1" src="{% static 'img/icono-perfil.png' %}" alt="">
-    <img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="">
-    <img id="icono-mascota-feed" src="{% static 'img/icono-mascota.png' %}" alt="">
-    <img id="icono-mensaje" src="{% static 'img/icono-mensaje.png' %}" alt="">
-    <img id="icono-notificacion1" src="{% static 'img/icono-notificacion.png' %}" alt="">
+    <a href="{% url 'buscar_mascotas' %}"><img id="icono-buscar-anaranjado1" src="{% static 'img/icono-buscar-anaranjado.png' %}" alt="{% translate 'Buscar' %}"></a>
+    <a href="{% url 'perfil_usuario' %}"><img id="icono-perfil1" src="{% static 'img/icono-perfil.png' %}" alt="{% translate 'Mi perfil' %}"></a>
+    <a href="{% url 'feed' %}"><img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="{% translate 'Ir al inicio de matchPets' %}"></a>
+    <a href="{% url 'tus_mascotas' %}"><img id="icono-mascota-feed" src="{% static 'img/icono-mascota.png' %}" alt="{% translate 'Mis mascotas' %}"></a>
+    <a href="{% url 'bandeja_entrada' %}"><img id="icono-mensaje" src="{% static 'img/icono-mensaje.png' %}" alt="{% translate 'Mensajes' %}"></a>
+    <a href="{% url 'notificaciones' %}"><img id="icono-notificacion1" src="{% static 'img/icono-notificacion.png' %}" alt="{% translate 'Notificaciones' %}"></a>
     {% if unread_notifications_count > 0 %}<span class="notif-badge notif-badge--movil" aria-label="{% translate "Notificaciones sin leer" %}">{{ unread_notifications_count }}</span>{% endif %}
-    <img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="">
-    <img id="icono-salir-marron" src="{% static 'img/icono-salir-marron.png' %}" alt="">
-    <img id="icono-inicio1" src="{% static 'img/icono-inicio.png' %}" alt="">
+    <form method="post" action="{% url 'logout' %}" class="form-logout">
+        {% csrf_token %}
+        <button type="submit" class="btn-logout"><img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="{% translate 'Cerrar sesión' %}"></button>
+    </form>
+    <a href="{% url 'feed' %}"><img id="icono-inicio1" src="{% static 'img/icono-inicio.png' %}" alt="{% translate 'Inicio' %}"></a>
 
 {% include 'matchPets/partials/_notif_popup.html' %}
 

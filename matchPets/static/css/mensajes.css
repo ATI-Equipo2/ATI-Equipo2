@@ -48,8 +48,12 @@
     padding-bottom: calc(12 * var(--u));
     border-bottom: 1px solid #eee3de;
 }
-.chat-atras { color: var(--accent-color); display: flex; }
-.chat-atras svg { width: calc(24 * var(--u)); height: calc(24 * var(--u)); }
+.chat-atras {
+    color: var(--accent-color); display: flex;
+    padding: 8px; margin-right: 8px; border-radius: 50%;
+}
+.chat-atras:hover { background: rgba(249, 114, 6, 0.1); }
+.chat-atras svg { width: 28px; height: 28px; }
 .chat-nombre {
     font-size: calc(24 * var(--u)); font-weight: 600;
     color: var(--accent-color); text-decoration: none;

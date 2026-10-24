@@ -140,6 +140,15 @@ header {
   z-index: 30;
 }
 
+#icono-chat {
+  position: fixed;
+  top: 2.7%;
+  left: 79%;
+  width: 3.2%;
+  height: auto;
+  z-index: 30;
+}
+
 footer {
   position: fixed;
   bottom: 0;
@@ -407,13 +416,21 @@ footer {
 }
 
 .notif-popup-item {
+  border-bottom: 1px solid #f1ebe8;
+  font-size: 0.9rem;
+}
+
+.notif-popup-enlace {
   display: flex;
   flex-direction: column;
   gap: 2px;
   padding: 10px 16px;
-  border-bottom: 1px solid #f1ebe8;
   color: #1c1a19;
-  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.notif-popup-enlace:hover {
+  background: #fdf1ea;
 }
 
 .notif-popup-item--nueva {

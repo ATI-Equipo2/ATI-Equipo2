@@ -267,7 +267,7 @@ def buscar_mascotas(request):
 def notificaciones(request):
     """Pantalla de Notificaciones / Solicitudes del usuario."""
     lista = (Notification.objects.filter(user=request.user)
-             .select_related('pet', 'solicitud').order_by('-created_at'))
+             .select_related('pet', 'solicitud', 'from_user').order_by('-created_at'))
     return render(request, 'notificaciones.html', {
         'title': gettext('Notificaciones'),
         'notificaciones': lista,
@@ -336,6 +336,9 @@ def ver_conversacion(request, user_id):
         return redirect('ver_conversacion', user_id=otro.id)
 
     Message.objects.filter(sender=otro, receiver=request.user, read=False).update(read=True)
+    Notification.objects.filter(
+        user=request.user, tipo='mensaje', from_user=otro, leida=False
+    ).update(leida=True)
 
     mensajes_qs = (Message.objects
                    .filter(

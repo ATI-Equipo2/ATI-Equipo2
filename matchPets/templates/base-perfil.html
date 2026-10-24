@@ -35,6 +35,7 @@
         {% block iconos_header %}
         <a href="{% url 'perfil_usuario' %}"><img id="icono-perfil" src="{% static 'img/icono-perfil.png' %}" alt="{% translate 'Mi perfil' %}"></a>
         {% endblock %}
+        <a href="{% url 'bandeja_entrada' %}"><img id="icono-chat" src="{% static 'img/icono-mensaje.png' %}" alt="{% translate 'Mensajes' %}"></a>
         <a href="{% url 'notificaciones' %}"><img id="icono-notificacion" src="{% static 'img/icono-notificacion.png' %}" alt="{% translate 'Notificaciones' %}"></a>
         {% if unread_notifications_count > 0 %}<span class="notif-badge" aria-label="{% translate "Notificaciones sin leer" %}">{{ unread_notifications_count }}</span>{% endif %}
         <form method="post" action="{% url 'logout' %}" class="form-logout">

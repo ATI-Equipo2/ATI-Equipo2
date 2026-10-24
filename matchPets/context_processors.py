@@ -9,6 +9,8 @@ def notifications_context(request):
     return {
         'unread_notifications_count': Notification.objects.filter(user=user, leida=False).count(),
         'recent_notifications': list(
-            Notification.objects.filter(user=user).order_by('-created_at')[:5]
+            Notification.objects.filter(user=user)
+            .select_related('from_user')
+            .order_by('-created_at')[:5]
         ),
     }

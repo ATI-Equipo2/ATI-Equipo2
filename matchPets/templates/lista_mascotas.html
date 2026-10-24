@@ -47,6 +47,7 @@
 {% block nav_mobile %}
 <a href="{% url 'buscar_mascotas' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
 <a href="{% url 'agregar_mascota' %}"><img src="{% static 'img/perfil/nav-agregar.svg' %}" alt="{% translate 'Agregar mascota' %}"></a>
+<a href="{% url 'bandeja_entrada' %}"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
 {% if es_propia %}
 <a href="{% url 'feed' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
 {% endif %}
