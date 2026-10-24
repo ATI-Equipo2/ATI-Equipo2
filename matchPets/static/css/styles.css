@@ -26,7 +26,7 @@ body {
 }
 
 #logo {
-  position: fixed;
+  position: absolute;
   width: 65px;
   height: 65px;
   object-fit: cover;
@@ -41,7 +41,7 @@ body {
 .contenedor {
   padding-top: 1rem;
   border-radius: 35px;
-  position: fixed;
+  position: absolute;
   top: 10%;
   left: 50%;
   transform: translateX(-50%);

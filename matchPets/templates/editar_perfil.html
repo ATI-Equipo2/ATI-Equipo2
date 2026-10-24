@@ -1,6 +1,15 @@
 {% extends 'base-registro-iniciarSesion-aggMascota.html' %}
 {% load static i18n %}
 
+{% block elementos_fuera %}
+<a href="javascript:history.back()" class="btn-back" aria-label="{% translate 'Volver' %}">
+    <svg class="back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+</a>
+{% endblock %}
+
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/signup.css' %}" />
 
