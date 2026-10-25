@@ -22,6 +22,8 @@
 
 <body>
 
+    {% block elementos_fuera %} {% endblock %}
+
     <header>
         <!-- Apunta al Inicio/Feed, la pantalla principal del sistema -->
         <a href="{% url 'feed' %}"><img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="{% translate 'Ir al inicio de matchPets' %}"></a>
