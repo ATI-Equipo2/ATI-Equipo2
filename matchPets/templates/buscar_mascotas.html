@@ -1,0 +1,54 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/buscar.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="buscar-page">
+    <!-- Encabezado mobile: coincide con la foto "Mobile - Buscar Mascotas" -->
+    <div class="buscar-top">
+        <a href="{% url 'notificaciones' %}" class="buscar-back" aria-label="{% translate 'Volver' %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+    </div>
+
+    <!-- Buscador propio (en mobile no hay encabezado) -->
+    <form class="buscar-barra" method="get" action="{% url 'buscar_mascotas' %}" role="search">
+        <span class="buscar-lupa" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
+        <label class="solo-lectores" for="buscar-q">{% translate "Buscar por nombre o especie" %}</label>
+        <input id="buscar-q" name="q" type="search" value="{{ q }}" placeholder="{% translate 'Buscar por nombre/especie' %}" autocomplete="off">
+        {% if q %}
+        <a class="buscar-limpiar" href="{% url 'buscar_mascotas' %}" aria-label="{% translate 'Limpiar búsqueda' %}">✕</a>
+        {% endif %}
+    </form>
+
+    <ul class="buscar-resultados" id="buscar-resultados">
+        {% for m in mascotas %}
+        <li>
+            <a class="buscar-item" href="{% url 'ver_mascota' m.id %}">
+                {% include 'matchPets/partials/_foto.html' with item=m %}
+                <span class="buscar-info">
+                    <strong>{{ m.nombre }}</strong>
+                    <small>{{ m.especie }}</small>
+                    {% if m.descripcion %}<small class="buscar-descripcion">{{ m.descripcion }}</small>{% endif %}
+                </span>
+            </a>
+        </li>
+        {% empty %}
+        <li class="buscar-vacia">{% translate "Sin resultados para esa búsqueda." %}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}" aria-label="{% translate 'Buscar' %}" aria-current="page"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}" aria-label="{% translate 'Mi perfil' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="{% url 'bandeja_entrada' %}" aria-label="{% translate 'Mensajes' %}"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
+<a href="{% url 'feed' %}" aria-label="{% translate 'Inicio' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}" class="nav-notif-activa" aria-label="{% translate 'Notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}">{% if unread_notifications_count > 0 %}<span class="nav-punto" aria-hidden="true"></span>{% endif %}</a>
+{% endblock %}

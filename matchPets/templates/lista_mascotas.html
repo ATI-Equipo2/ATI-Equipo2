@@ -1,0 +1,55 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/lista_mascotas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="lista-mascotas">
+    {% for message in messages %}
+    <p class="lista-mensaje lista-mensaje--{{ message.tags }}" role="status">{{ message }}</p>
+    {% endfor %}
+    <div class="lista-encabezado">
+        <a href="{% if es_propia %}{% url 'perfil_usuario' %}{% else %}{% url 'ver_dueno' dueno.id %}{% endif %}" class="lista-atras" aria-label="{% translate 'Volver' %}">
+            <img src="{% static 'img/perfil/icono-atras.svg' %}" alt="">
+        </a>
+        <h1 class="lista-titulo">{{ title }}</h1>
+    </div>
+
+    <div class="lista-grid">
+        {% for mascota in mascotas %}
+        <a href="{% if es_propia %}{% url 'perfil_mascota' mascota.id %}{% else %}{% url 'ver_mascota' mascota.id %}{% endif %}" class="tarjeta-mascota">
+            {% include 'matchPets/partials/_foto.html' with item=mascota %}
+            <div class="tarjeta-info">
+                <h2 class="tarjeta-nombre">{{ mascota.nombre }}</h2>
+                <div class="tarjeta-datos">
+                    <p>{{ mascota.especie }}</p>
+                    <p>{% translate "Temperamento:" %} {{ mascota.temperamento }}</p>
+                    <p>{{ mascota.edad }}</p>
+                    <p>{{ mascota.sexo }}</p>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p class="lista-vacia">{% translate "Aún no hay mascotas registradas." %}</p>
+        {% endfor %}
+    </div>
+
+    {% if es_propia %}
+    <a href="{% url 'agregar_mascota' %}" class="lista-agregar" aria-label="{% translate 'Agregar mascota' %}" title="{% translate 'Agregar mascota' %}">
+        <img src="{% static 'img/perfil/icono-agregar.svg' %}" alt="">
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'agregar_mascota' %}"><img src="{% static 'img/perfil/nav-agregar.svg' %}" alt="{% translate 'Agregar mascota' %}"></a>
+<a href="{% url 'bandeja_entrada' %}"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
+{% if es_propia %}
+<a href="{% url 'feed' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+{% endif %}
+<a href="{% url 'notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
+{% endblock %}

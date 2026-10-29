@@ -1,0 +1,66 @@
+/* Estilos comunes de la plantilla base-perfil.html */
+
+/*
+  --u equivale a 1px del diseño de Figma:
+  desktop se diseñó en 1440x1024 y mobile en 360 de ancho.
+*/
+.perfil-contenido {
+  --u: min(calc(100vw / 1440), calc(100vh / 1024));
+  position: fixed;
+  top: 100px; /* misma altura que el header de styles.css */
+  bottom: 7%;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.perfil-nav {
+  display: none;
+}
+
+header a {
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .perfil-contenido {
+    --u: calc(100vw / 360);
+    position: static;
+    overflow: visible;
+    padding-bottom: calc(95 * var(--u));
+  }
+
+  /* styles.css solo oculta el header desde 360px; aquí cubrimos también pantallas más pequeñas */
+  header,
+  footer,
+  .footer {
+    display: none;
+  }
+
+  .perfil-nav {
+    --u: calc(100vw / 360);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    left: calc(9 * var(--u));
+    right: calc(9 * var(--u));
+    bottom: calc(19 * var(--u));
+    height: calc(52 * var(--u));
+    padding: 0 calc(20 * var(--u));
+    box-sizing: border-box;
+    background-color: var(--accent-color);
+    border-radius: calc(19 * var(--u));
+    z-index: 50;
+  }
+
+  .perfil-nav a {
+    display: flex;
+  }
+
+  .perfil-nav img {
+    width: calc(35 * var(--u));
+    height: calc(35 * var(--u));
+  }
+}

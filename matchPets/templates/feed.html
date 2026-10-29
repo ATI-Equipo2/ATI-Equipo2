@@ -1,0 +1,47 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/feed.css' %}">
+{% endblock %}
+
+{% block accion_buscar %}{% url 'feed' %}{% endblock %}
+
+{% block content %}
+<div class="feed">
+    <!-- Encabezado desktop: coincide con la foto "‹ Inicio" -->
+    <div class="feed-encabezado">
+        
+        <h1 class="feed-titulo">{% translate "Inicio" %}</h1>
+    </div>
+
+    <!-- Buscador por nombre/especie -->
+    <form class="feed-buscar" method="get" action="{% url 'feed' %}" role="search">
+        <span class="feed-lupa" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
+        <label class="solo-lectores" for="feed-q">{% translate "Buscar por nombre o especie" %}</label>
+        <input id="feed-q" name="q" type="search" value="{{ q }}" placeholder="{% translate 'Buscar por nombre/especie' %}" autocomplete="off">
+        {% if q %}
+        <a class="feed-limpiar" href="{% url 'feed' %}" aria-label="{% translate 'Limpiar búsqueda' %}">✕</a>
+        {% endif %}
+    </form>
+
+    <!-- Lista general de mascotas -->
+    <div class="feed-grid">
+        {% for tarjeta in mascotas %}
+            {% include 'pet_card.html' with tarjeta=tarjeta %}
+        {% empty %}
+        <p class="feed-vacia">{% translate "Sin resultados para esa búsqueda." %}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}" aria-label="{% translate 'Buscar' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}" aria-label="{% translate 'Mi perfil' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="{% url 'bandeja_entrada' %}" aria-label="{% translate 'Mensajes' %}"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
+<a href="{% url 'feed' %}" aria-label="{% translate 'Inicio' %}" aria-current="page"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}" class="nav-notif-activa" aria-label="{% translate 'Notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}">{% if unread_notifications_count > 0 %}<span class="nav-punto" aria-hidden="true"></span>{% endif %}</a>
+{% endblock %}

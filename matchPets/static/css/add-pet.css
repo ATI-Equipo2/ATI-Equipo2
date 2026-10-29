@@ -1,0 +1,340 @@
+.add-pet-container {
+  width: 90%;
+  max-width: 500px;
+  margin: 1.5rem auto 3rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.add-pet-header {
+  width: 100%;
+  height: 48px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -28px;
+  z-index: 10;
+}
+
+.btn-back {
+  position: fixed;
+  top: 100px;
+  left: 16px;
+  z-index: 100;
+  color: #f26e00;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+@media (min-width: 360px) and (max-width: 640px) {
+  .btn-back {
+    top: 10px;
+  }
+}
+
+.btn-back:hover {
+  transform: translateX(-2px);
+}
+
+.back-icon {
+  width: 22px;
+  height: 22px;
+  stroke: #f26e00;
+}
+
+.logo-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #ffffff;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.logo-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.card-add-pet {
+  position: relative;
+  z-index: -20;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 32px 32px 20px 20px;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.06);
+  padding: 42px 1.4rem 1.6rem 1.4rem;
+  box-sizing: border-box;
+}
+
+.card-title {
+  color: #f26e00;
+  font-size: 1.55rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 1.15rem 0;
+  letter-spacing: -0.3px;
+  font-family: var(--primary-font, "Roboto", sans-serif);
+}
+
+.form-add-pet {
+  display: flex;
+  flex-direction: column;
+  gap: 0.82rem;
+  width: 100%;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  width: 100%;
+}
+
+.field-group label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #333333;
+  font-family: var(--primary-font, "Roboto", sans-serif);
+}
+
+.field-group input,
+.field-group select,
+.field-group textarea {
+  width: 100%;
+  font-size: 0.88rem;
+  color: #333333;
+  border: 1.2px solid #e2e2e2;
+  border-radius: 8px;
+  outline: none;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  font-family: var(--primary-font, "Roboto", sans-serif);
+}
+
+.field-group input,
+.field-group select {
+  height: 38px;
+  padding: 0 0.85rem;
+}
+
+.field-group select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 16px;
+  padding-right: 2.2rem;
+}
+
+.field-group textarea {
+  padding: 0.5rem 0.7rem;
+}
+
+.field-group input:focus,
+.field-group select:focus,
+.field-group textarea:focus {
+  border-color: #f26e00;
+  box-shadow: 0 0 0 2px rgba(242, 110, 0, 0.15);
+}
+
+.field-group input::placeholder,
+.field-group textarea::placeholder {
+  color: #b5b5b5;
+  font-weight: 400;
+  font-family: var(--primary-font, "Roboto", sans-serif);
+}
+
+.date-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.date-input-wrapper input {
+  padding-right: 2.6rem;
+}
+
+.calendar-icon {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  stroke: #f26e00;
+  pointer-events: none;
+}
+
+.photo-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin: 0.2rem 0;
+}
+
+.photo-preview {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1.2px solid #e2e2e2;
+}
+
+.photo-preview[hidden] {
+  display: none;
+}
+
+.btn-photo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1.4rem;
+  height: 34px;
+  width: 100%;
+  border: 1.2px solid #dcdcdc;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 400;
+  color: #333333;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  font-family: var(--primary-font, "Roboto", sans-serif);
+}
+
+.btn-photo:hover {
+  border-color: #f26e00;
+}
+
+.clip-icon {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+#photo-label-text {
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.btn-submit-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.btn-submit {
+  width: 100%;
+  height: 42px;
+  background-color: #f26e00;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(242, 110, 0, 0.2);
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+  font-family: var(--primary-font, "Roboto", sans-serif);
+}
+
+.btn-submit:hover {
+  background-color: #d95f00;
+  transform: translateY(-1px);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+.form-eliminar {
+  margin: 0.7rem 0 0;
+}
+
+.btn-eliminar {
+  width: 100%;
+  height: 42px;
+  background-color: transparent;
+  color: #c0392b;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1.2px solid #c0392b;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: var(--primary-font, "Roboto", sans-serif);
+}
+
+.btn-eliminar:hover {
+  background-color: #fdecea;
+}
+
+@media (max-width: 480px) {
+  .add-pet-container {
+    max-width: 95%;
+    margin-top: 1rem;
+  }
+}
+
+.field-error {
+  margin: 0;
+  color: #c0392b;
+  font-size: 0.8rem;
+}
+
+/* Ocultar en escritorio el header, footer y alinear la tarjeta a la misma altura de login/signup */
+@media (min-width: 641px) {
+  .add-pet-container {
+    margin: calc(10vh - 20px) auto 3rem;
+  }
+
+  header,
+  footer,
+  #logo-inicio,
+  #icono-buscar-anaranjado1,
+  #icono-perfil1,
+  #icono-mascota-feed,
+  #icono-mensaje,
+  #icono-notificacion1,
+  .notif-badge--movil,
+  #icono-salir,
+  #icono-salir-marron,
+  #icono-inicio1 {
+    display: none !important;
+  }
+
+  .btn-back {
+    top: 24px;
+    left: 24px;
+  }
+}

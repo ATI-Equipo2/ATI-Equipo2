@@ -1,0 +1,493 @@
+@import "../css/_themes.css";
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--primary-font);
+  background-color: var(--main-color);
+}
+
+#pata-amarilla {
+  position: fixed;
+  bottom: 50%;
+  left: 15%;
+  width: 20%;
+  height: 40%;
+  z-index: 1;
+}
+
+#pata-anaranjada {
+  position: fixed;
+  bottom: 20%;
+  left: 65%;
+  width: 20%;
+  height: 40%;
+  z-index: 2;
+}
+
+#logo {
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -70%);
+  border-radius: 50%;
+  z-index: 100;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contenedor {
+  padding-top: 1rem;
+  border-radius: 35px;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 500px;
+  z-index: 20;
+  background-color: var(--white);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#registro {
+  z-index: 50;
+  color: var(--accent-color);
+  text-align: center;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100px;
+  background-color: var(--accent-color);
+  z-index: 2;
+}
+
+#logo-inicio {
+  position: fixed;
+  top: 1%;
+  left: 2%;
+  width: 5%;
+  height: auto;
+  border-radius: 50%;
+  z-index: 30;
+}
+
+#input-buscar {
+  position: fixed;
+  top: 2%;
+  left: 25%;
+  width: 45%;
+  height: 5%;
+  border-radius: 50px;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+#icono-buscar {
+  position: fixed;
+  top: 2.5%;
+  left: 67%;
+  width: 3%;
+  height: auto;
+  z-index: 30;
+}
+
+#icono-buscar:hover {
+  cursor: pointer;
+}
+
+#icono-mascota {
+  position: fixed;
+  top: 2.5%;
+  left: 84%;
+  width: 4%;
+  height: auto;
+  z-index: 30;
+}
+
+#icono-notificacion {
+  position: fixed;
+  top: 2.5%;
+  left: 89.9%;
+  width: 3.5%;
+  height: auto;
+  z-index: 30;
+}
+
+#icono-salir {
+  position: fixed;
+  top: 2.5%;
+  left: 95%;
+  width: 3%;
+  height: auto;
+  z-index: 30;
+}
+
+#icono-perfil {
+  position: fixed;
+  top: 2.5%;
+  left: 84%;
+  width: 4%;
+  height: auto;
+  z-index: 30;
+}
+
+#icono-chat {
+  position: fixed;
+  top: 2.7%;
+  left: 79%;
+  width: 3.2%;
+  height: auto;
+  z-index: 30;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 7%;
+  background-color: var(--accent-color);
+  z-index: 2;
+}
+
+.footer {
+  position: fixed;
+  display: flex;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 7%;
+  background-color: var(--accent-color);
+  color: var(--white);
+  justify-content: flex-end;
+  z-index: 2;
+}
+
+.footer p {
+  margin: 0;
+  padding: 1%;
+}
+
+#icono-buscar-anaranjado,
+#icono-salir-marron,
+#icono-inicio,
+#icono-mascota-feed,
+#icono-mensaje,
+#icono-inicio1,
+#icono-notificacion1,
+#icono-perfil1,
+#icono-buscar-anaranjado1,
+#icono-mensaje {
+  display: none;
+}
+
+@media (min-width: 360px) and (max-width: 640px) {
+  #pata-amarilla,
+  #pata-anaranjada,
+  #logo-inicio,
+  header {
+    display: none;
+  }
+
+  #registro {
+    font-size: 1.5rem;
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 0%;
+    background-color: #f97206;
+    z-index: 2;
+    border-radius: 5%;
+  }
+
+  .footer p,
+  #input-buscar,
+  #icono-buscar {
+    display: none;
+  }
+
+  #icono-buscar-anaranjado {
+    display: block;
+    position: fixed;
+    bottom: 0%;
+    left: 7%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
+
+  #icono-mascota {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 30%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
+
+  #icono-inicio {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 55%;
+    width: 10%;
+    height: auto;
+    z-index: 3;
+  }
+
+  #icono-notificacion {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 80%;
+    width: 11%;
+    height: auto;
+    z-index: 3;
+  }
+
+  #icono-salir {
+    display: none;
+  }
+
+  #icono-perfil {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 30%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
+
+  #icono-mensaje {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 47%;
+    width: 10%;
+    height: auto;
+    z-index: 3;
+  }
+
+  #icono-buscar-anaranjado1 {
+    display: block;
+    position: fixed;
+    bottom: 0%;
+    left: 4%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
+
+  #icono-perfil1 {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 25%;
+    width: 12%;
+    height: auto;
+    z-index: 3;
+  }
+
+  #icono-inicio1 {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 67%;
+    width: 10%;
+    height: auto;
+    z-index: 3;
+  }
+
+  #icono-notificacion1 {
+    display: block;
+    position: fixed;
+    top: 93.5%;
+    left: 85%;
+    width: 11%;
+    height: auto;
+    z-index: 3;
+  }
+}
+
+/* Botón de cerrar sesión (formulario POST) con aspecto de ícono */
+.form-logout {
+  margin: 0;
+}
+
+/* Buscador del encabezado (formulario GET); el input y la lupa se posicionan arriba */
+.form-buscar {
+  margin: 0;
+}
+
+.btn-logout {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+/* Notificaciones: badge de no leídas y popup (visibles en todas las pantallas) */
+.notif-badge {
+  position: fixed;
+  top: 1.6%;
+  left: 92.2%;
+  z-index: 31;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  border-radius: 9px;
+  background: #e11d48;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* En la maqueta mobile el ícono está en la barra inferior */
+.notif-badge--movil {
+  display: none;
+}
+
+.notif-popup {
+  position: fixed;
+  top: 92px;
+  right: 4%;
+  z-index: 60;
+  width: min(340px, 92vw);
+  max-height: 70vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #eee3de;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  font-family: var(--primary-font, inherit);
+}
+
+.notif-popup[hidden] {
+  display: none;
+}
+
+.notif-popup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee3de;
+  color: #1c1a19;
+  font-size: 1rem;
+}
+
+.notif-popup-contador {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: #e11d48;
+  color: #ffffff;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.notif-popup-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notif-popup-item {
+  border-bottom: 1px solid #f1ebe8;
+  font-size: 0.9rem;
+}
+
+.notif-popup-enlace {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px;
+  color: #1c1a19;
+  text-decoration: none;
+}
+
+.notif-popup-enlace:hover {
+  background: #fdf1ea;
+}
+
+.notif-popup-item--nueva {
+  background: #fff7f4;
+  border-left: 3px solid var(--accent-color, #f97206);
+}
+
+.notif-popup-detalle {
+  color: #6f6a66;
+  font-size: 0.8rem;
+}
+
+.notif-popup-vacia {
+  padding: 18px 16px;
+  text-align: center;
+  color: #8b8b8b;
+  font-size: 0.9rem;
+}
+
+.notif-popup-ver {
+  display: block;
+  padding: 10px 16px;
+  text-align: center;
+  color: var(--accent-color, #f97206);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (min-width: 360px) and (max-width: 640px) {
+  .notif-badge--movil {
+    display: flex;
+    top: 92.2%;
+    left: 93%;
+  }
+}
+
+@media (max-width: 640px) {
+  .notif-badge:not(.notif-badge--movil) {
+    display: none;
+  }
+
+  .notif-popup {
+    top: auto;
+    right: 8px;
+    bottom: 84px;
+    left: 8px;
+    width: auto;
+  }
+}
+
+/* Botón sin aspecto de botón (para íconos dentro de formularios POST) */
+.btn-icono {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}

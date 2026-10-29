@@ -1,0 +1,42 @@
+{% load i18n %}{# Popup de notificaciones recientes + script para abrirlo/cerrarlo. Usa el context processor notifications_context. #}
+{% if user.is_authenticated %}
+<div class="notif-popup" id="notif-popup" role="dialog" aria-label="{% translate 'Notificaciones' %}" hidden>
+    <div class="notif-popup-head">
+        <strong>{% translate "Notificaciones" %}</strong>
+        {% if unread_notifications_count > 0 %}<span class="notif-popup-contador">{{ unread_notifications_count }}</span>{% endif %}
+    </div>
+    <ul class="notif-popup-list">
+        {% for n in recent_notifications %}
+        <li class="notif-popup-item{% if not n.leida %} notif-popup-item--nueva{% endif %}">
+            <a class="notif-popup-enlace" href="{% if n.tipo == 'mensaje' and n.from_user %}{% url 'ver_conversacion' n.from_user.id %}{% else %}{% url 'notificaciones' %}{% endif %}">
+                <span class="notif-popup-titulo">{{ n.titulo }}</span>
+                {% if n.detalle %}<small class="notif-popup-detalle">{{ n.detalle }}</small>{% endif %}
+            </a>
+        </li>
+        {% empty %}
+        <li class="notif-popup-vacia">{% translate "No tienes notificaciones por ahora." %}</li>
+        {% endfor %}
+    </ul>
+    <a class="notif-popup-ver" href="{% url 'notificaciones' %}">{% translate "Ver todas" %}</a>
+</div>
+<script>
+(function () {
+    var popup = document.getElementById('notif-popup');
+    // En la pantalla de notificaciones el ícono navega a la página completa.
+    if (!popup || document.querySelector('.notif-page')) return;
+    var disparadores = '#icono-notificacion, [data-notif-toggle]';
+
+    document.addEventListener('click', function (ev) {
+        if (ev.target.closest(disparadores)) {
+            ev.preventDefault();
+            popup.hidden = !popup.hidden;
+        } else if (!popup.hidden && !ev.target.closest('#notif-popup')) {
+            popup.hidden = true;
+        }
+    });
+    document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape') popup.hidden = true;
+    });
+})();
+</script>
+{% endif %}

@@ -46,19 +46,53 @@ Para que esta automatización funcione, es **obligatorio** que todo el equipo si
 **1. Abrir el Pull Request:** 
 Sube tu rama de desarrollo a GitHub y abre el PR apuntando hacia `main`.
 
-**2. Vincular la tarjeta (Paso clave):** 
-En la caja de descripción del Pull Request, debes incluir una palabra clave exacta seguida del símbolo `#` y el número de tu Issue. 
-*Ejemplos válidos (usar solo uno):*
-* `Closes #33`
-* `Fixes #33`
-* `Resolves #33`
+Al completarse el merge, la tarjeta vinculada viajará sola a la columna de finalizado del tablero
 
-**3. Pruebas Automáticas y Aprobación:** 
-Antes de fusionar el código, se deben cumplir dos barreras de seguridad:
-* **Integración Continua (CI):** El flujo de GitHub Actions ejecutará nuestras pruebas de Django. Debemos esperar a que termine y muestre el *check* verde (✅).
-* **Revisión de Código:** Otro miembro del equipo revisará los cambios en la pestaña *"Files changed"* y seleccionará *"Approve"*.
+# Entorno de desarrollo y datos de prueba
 
-**4. Ejecutar el Merge:** 
-Con las pruebas en verde y la aprobación del equipo, se procede a presionar *"Merge pull request"*.
+La base de datos (SQLite) y las imágenes subidas (`media/`) **no se suben a git**. Para que todo el equipo tenga los mismos datos, hay un comando que puebla la base de datos.
 
-*Al completarse el merge, la tarjeta vinculada viajará sola a la columna de finalizado del tablero.*
+## Con Docker
+
+```
+docker-compose up --build
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py seed_data --flush
+```
+
+(`docker-compose up` ya aplica las migraciones al arrancar; el `migrate` explícito es por si acaso.)
+
+- `seed_data --flush` borra mascotas, solicitudes, notificaciones, mensajes y usuarios no administradores, y vuelve a crear los datos de ejemplo. Los superusuarios se conservan. Sin `--flush` solo crea o actualiza (se puede ejecutar varias veces).
+- Usuarios de ejemplo: `rolando` y `jesus`, ambos con contraseña `test1234`. Incluye 7 mascotas y una solicitud de socialización pendiente de Brown (jesus) hacia Ronaldo (rolando), para probar las notificaciones.
+- Panel de administración (`/admin/`): crea tu propio superusuario con `docker-compose exec web python manage.py createsuperuser`.
+
+## Sin Docker
+
+```
+python -m venv venv
+venv\Scripts\activate        # en Linux/Mac: source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_data --flush
+python manage.py runserver
+```
+
+La aplicación queda en `http://localhost:8000/` (también bajo `/matchPets/`).
+
+## Si aparece `no such table: matchPets_user`
+
+Tu base de datos se creó con un historial de migraciones anterior y no se puede migrar encima. Recréala (los datos locales se pierden, pero el seed los repone):
+
+- Docker: `docker-compose down -v` y luego `docker-compose up --build` (borra el volumen `bd_data`).
+- Sin Docker: borra `db.sqlite3` y ejecuta de nuevo `python manage.py migrate`.
+
+## Traducciones
+
+Después de añadir textos con `{% translate %}` o `gettext`, ejecuta:
+
+```
+python manage.py makemessages -l en --ignore=venv --no-obsolete
+python manage.py compilemessages -l en
+```
+
+(`--ignore=venv` evita que se mezclen las cadenas de Django.)

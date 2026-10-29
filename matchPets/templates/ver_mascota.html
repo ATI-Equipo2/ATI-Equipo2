@@ -1,0 +1,95 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/perfil_detalle.css' %}">
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+{% endblock %}
+
+{% block content %}
+{% if messages %}
+<!-- Mini popup de confirmación (solicitud enviada, ya enviada, etc.) abajo a la derecha -->
+<div class="toast-esquina" id="toast-esquina" role="status" aria-live="polite">
+    {% for message in messages %}
+    <p class="notif-toast notif-toast--esquina visible notif-toast--{{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+</div>
+<script>
+(function () {
+    var pila = document.getElementById('toast-esquina');
+    setTimeout(function () {
+        pila.querySelectorAll('.notif-toast').forEach(function (t) { t.classList.remove('visible'); });
+        setTimeout(function () { pila.remove(); }, 300);
+    }, 3000);
+})();
+</script>
+{% endif %}
+<article class="perfil perfil--mascota">
+    <div class="perfil-foto">
+        {% include 'matchPets/partials/_foto.html' with item=mascota %}
+    </div>
+
+    <div class="perfil-info">
+        <div class="perfil-encabezado">
+            <h1 class="perfil-nombre">{{ mascota.nombre }}</h1>
+            <div class="perfil-acciones">
+                {% if not es_propia %}
+                {% if mis_mascotas %}
+                <!-- Enviar solicitud para socializar (POST con csrf) -->
+                <form method="post" action="{% url 'enviar_solicitud' mascota.id %}" class="form-solicitud">
+                    {% csrf_token %}
+                    {% if mis_mascotas|length > 1 %}
+                    <select name="from_pet" class="solicitud-select" aria-label="{% translate 'Tu mascota' %}" required>
+                        {% for p in mis_mascotas %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+                    </select>
+                    {% else %}
+                    <input type="hidden" name="from_pet" value="{{ mis_mascotas.0.id }}">
+                    {% endif %}
+                    <button type="submit" class="perfil-accion perfil-accion--circulo btn-icono" aria-label="{% translate 'Enviar solicitud de amistad' %}" title="{% translate 'Enviar solicitud de amistad' %}">
+                        <img src="{% static 'img/perfil/icono-agregar-usuario.svg' %}" alt="">
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'agregar_mascota' %}" class="solicitud-aviso">{% translate "Agrega una mascota para enviar solicitudes" %}</a>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <ul class="perfil-datos">
+            {% if mascota.dueno_id %}
+            <li class="perfil-dato perfil-dato--normal">
+                <img src="{% static 'img/perfil/icono-dueno.png' %}" alt="">
+                <a href="{% url 'ver_dueno' mascota.dueno_id %}">{% translate "Ver dueño" %}</a>
+            </li>
+            {% endif %}
+            <li class="perfil-dato">
+                <img src="{% static 'img/perfil/icono-calendario.svg' %}" alt="{% translate 'Edad' %}">
+                <span>{{ mascota.edad }}</span>
+            </li>
+            <li class="perfil-dato perfil-dato--normal">
+                <img src="{% static 'img/perfil/icono-especie.png' %}" alt="{% translate 'Especie y sexo' %}">
+                <span>{{ mascota.especie }} {{ mascota.sexo|lower }}</span>
+            </li>
+        </ul>
+
+        <p class="perfil-descripcion">{{ mascota.descripcion }}</p>
+
+        {% if mascota.socializar %}
+        <h2 class="perfil-socializar">
+            <img src="{% static 'img/perfil/icono-socializar.png' %}" alt="">
+            <span>{% translate "En busca de socializar" %}</span>
+        </h2>
+        <p class="perfil-descripcion">{{ mascota.socializar }}</p>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="{% url 'bandeja_entrada' %}"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
+<a href="{% url 'feed' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
+{% endblock %}

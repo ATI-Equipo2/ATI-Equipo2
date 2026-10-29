@@ -1,0 +1,45 @@
+{% extends 'base-registro-iniciarSesion-aggMascota.html' %}
+{% load static i18n %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}" />
+
+<form class="form-signup" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for error in form.non_field_errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+
+    <div class="field-group">
+        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+        {{ form.username }}
+        {% for error in form.username.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="field-group">
+        <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
+        {{ form.nombre }}
+        {% for error in form.nombre.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="field-group">
+        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+        {{ form.email }}
+        {% for error in form.email.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="field-group">
+        <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+        {{ form.password1 }}
+        {% for error in form.password1.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="field-group">
+        <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+        {{ form.password2 }}
+        {% for error in form.password2.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="btn-submit-wrapper">
+        <button type="submit" class="btn-signup">{% translate "Crear Cuenta" %}</button>
+    </div>
+</form>
+{% endblock %}

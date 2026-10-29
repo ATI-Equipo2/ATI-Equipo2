@@ -1,0 +1,249 @@
+/* Inicio / Feed — lista general de mascotas (desktop + mobile, según fotos). */
+
+.feed {
+  --u: min(calc(100vw / 1440), calc(100vh / 1024));
+  --naranja: var(--accent-color, #f97206);
+  box-sizing: border-box;
+  padding: calc(18 * var(--u)) calc(84 * var(--u)) calc(40 * var(--u));
+}
+
+.feed-encabezado {
+  display: flex;
+  align-items: center;
+  gap: calc(4 * var(--u));
+  padding-left: calc(5 * var(--u));
+  margin-bottom: calc(22 * var(--u));
+}
+
+.feed-atras {
+  color: var(--naranja);
+  display: flex;
+}
+
+.feed-atras svg {
+  width: calc(31 * var(--u));
+  height: calc(30 * var(--u));
+}
+
+.feed-titulo {
+  margin: 0;
+  color: var(--naranja);
+  font-size: calc(32 * var(--u));
+  font-weight: 600;
+}
+
+/* Buscador por nombre/especie (solo mobile: en desktop se usa el del header) */
+.feed-buscar {
+  display: none;
+}
+
+.feed-lupa {
+  color: #fff;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.feed-lupa svg {
+  width: calc(28 * var(--u));
+  height: calc(28 * var(--u));
+}
+
+.feed-buscar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: calc(20 * var(--u));
+  color: #4a4644;
+}
+
+.feed-buscar input::placeholder {
+  color: #7d7875;
+}
+
+.feed-limpiar {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  color: #1c1a19;
+  font-size: calc(20 * var(--u));
+  line-height: 1;
+  padding: calc(4 * var(--u));
+}
+
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* Rejilla de tarjetas: 2 columnas en desktop */
+.feed-grid {
+  display: grid;
+  grid-template-columns: repeat(2, calc(547 * var(--u)));
+  justify-content: center;
+  column-gap: calc(107 * var(--u));
+  row-gap: calc(30 * var(--u));
+}
+
+.tarjeta-inicio {
+  display: flex;
+  align-items: center;
+  gap: calc(34 * var(--u));
+  min-height: calc(328 * var(--u));
+  padding: calc(20 * var(--u)) calc(32 * var(--u));
+  box-sizing: border-box;
+  background-color: var(--white);
+  color: var(--black);
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.tarjeta-inicio:hover {
+  transform: translateY(-2px);
+}
+
+.tarjeta-inicio .tarjeta-foto {
+  flex-shrink: 0;
+  display: flex;
+}
+
+.tarjeta-inicio .tarjeta-foto img {
+  width: calc(146 * var(--u));
+  height: calc(184 * var(--u));
+  object-fit: cover;
+  object-position: center top;
+  border-radius: calc(8 * var(--u));
+  background: #eee;
+}
+
+.tarjeta-inicio .tarjeta-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tarjeta-inicio .tarjeta-nombre {
+  margin: 0 0 calc(3 * var(--u));
+  color: var(--naranja);
+  font-size: calc(40 * var(--u));
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.tarjeta-inicio .tarjeta-datos {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+}
+
+.tarjeta-inicio .tarjeta-datos span {
+  font-size: calc(16 * var(--u));
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.feed-vacia {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--grey-400, #8b8b8b);
+  font-size: calc(24 * var(--u));
+  text-align: center;
+}
+
+/* Punto rojo de no leídas en la barra mobile */
+.nav-notif-activa {
+  position: relative;
+}
+
+.nav-punto {
+  position: absolute;
+  top: calc(2 * var(--u));
+  right: calc(2 * var(--u));
+  width: calc(12 * var(--u));
+  height: calc(12 * var(--u));
+  background: #e11d48;
+  border-radius: 50%;
+  border: 2px solid var(--accent-color, #f97206);
+}
+
+@media (max-width: 640px) {
+  .feed {
+    --u: calc(100vw / 360);
+    padding: calc(14 * var(--u)) calc(16 * var(--u)) 0 0;
+  }
+
+  /* En mobile la foto muestra la lista directamente, como en el diseño */
+  .feed-encabezado {
+    display: none;
+  }
+
+  .feed-buscar {
+    display: flex;
+    align-items: center;
+    gap: calc(10 * var(--u));
+    background: #e9e5f6;
+    border-radius: 999px;
+    max-width: none;
+    margin: 0 calc(0 * var(--u)) calc(18 * var(--u)) calc(21 * var(--u));
+    padding: calc(10 * var(--u)) calc(14 * var(--u));
+  }
+
+  .feed-lupa svg {
+    width: calc(24 * var(--u));
+    height: calc(24 * var(--u));
+  }
+
+  .feed-buscar input {
+    font-size: calc(15 * var(--u));
+  }
+
+  .feed-limpiar {
+    font-size: calc(16 * var(--u));
+  }
+
+  .feed-grid {
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+    row-gap: calc(24 * var(--u));
+    padding-left: calc(21 * var(--u));
+  }
+
+  .tarjeta-inicio {
+    align-items: flex-start;
+    gap: calc(15 * var(--u));
+    min-height: 0;
+    padding: 0;
+    background-color: transparent;
+  }
+
+  .tarjeta-inicio .tarjeta-foto img {
+    width: calc(95 * var(--u));
+    height: calc(113 * var(--u));
+  }
+
+  .tarjeta-inicio .tarjeta-nombre {
+    margin: 0;
+    font-size: calc(32 * var(--u));
+  }
+
+  .tarjeta-inicio .tarjeta-datos {
+    gap: calc(1 * var(--u));
+  }
+
+  .tarjeta-inicio .tarjeta-datos span {
+    font-size: calc(12 * var(--u));
+  }
+
+  .feed-vacia {
+    font-size: calc(14 * var(--u));
+  }
+
+  .nav-punto {
+    width: calc(10 * var(--u));
+    height: calc(10 * var(--u));
+  }
+}

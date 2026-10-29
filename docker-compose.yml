@@ -6,7 +6,7 @@ services:
       - bd_data:/data
     command: sh -c "mkdir -p /data && chmod 777 /data && echo 'Contenedor de base de datos listo' && tail -f /dev/null"
     healthcheck:
-      test: ["CMD", "test", "-d", "/data"]
+      test: [ "CMD", "test", "-d", "/data" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -16,12 +16,15 @@ services:
     container_name: mAsTIcotas_web
     ports:
       - "8000:8000"
+    # Aplica las migraciones pendientes antes de levantar el servidor
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    # El código (y por tanto ./media) se monta con .:/app, así que las imágenes subidas persisten
     volumes:
+      - .:/app
       - bd_data:/data
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
 volumes:
   bd_data:

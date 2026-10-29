@@ -1,0 +1,78 @@
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% if title %}
+        {{ title }}
+        {% else %}
+        {% translate "Perfil de Usuario" %}
+        {% endif %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/perfil.css' %}">
+    <!-- Hoja de estilos propia de cada pantalla -->
+    {% block estilos %}
+    {% endblock %}
+</head>
+
+<body>
+
+    {% block elementos_fuera %} {% endblock %}
+
+    <header>
+        <!-- Apunta al Inicio/Feed, la pantalla principal del sistema -->
+        <a href="{% url 'feed' %}"><img id="logo-inicio" src="{% static 'img/logo.jpeg' %}" alt="{% translate 'Ir al inicio de matchPets' %}"></a>
+        <!-- Buscador: por defecto lleva a Buscar Mascotas; el feed lo cambia para filtrarse a sí mismo -->
+        <form method="get" action="{% block accion_buscar %}{% url 'buscar_mascotas' %}{% endblock %}" role="search" class="form-buscar">
+            <input id="input-buscar" name="q" type="text" value="{{ q }}" placeholder="{% translate 'Buscar' %}" aria-label="{% translate 'Buscar por nombre o especie' %}">
+            <button type="submit" class="btn-icono"><img id="icono-buscar" src="{% static 'img/icono-buscar.png' %}" alt="{% translate 'Buscar' %}"></button>
+        </form>
+
+        <!-- El primer ícono cambia según la pantalla (perfil o mascotas) -->
+        {% block iconos_header %}
+        <a href="{% url 'perfil_usuario' %}"><img id="icono-perfil" src="{% static 'img/icono-perfil.png' %}" alt="{% translate 'Mi perfil' %}"></a>
+        {% endblock %}
+        <a href="{% url 'bandeja_entrada' %}"><img id="icono-chat" src="{% static 'img/icono-mensaje.png' %}" alt="{% translate 'Mensajes' %}"></a>
+        <a href="{% url 'notificaciones' %}"><img id="icono-notificacion" src="{% static 'img/icono-notificacion.png' %}" alt="{% translate 'Notificaciones' %}"></a>
+        {% if unread_notifications_count > 0 %}<span class="notif-badge" aria-label="{% translate "Notificaciones sin leer" %}">{{ unread_notifications_count }}</span>{% endif %}
+        <form method="post" action="{% url 'logout' %}" class="form-logout">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout" aria-label="{% translate 'Cerrar sesión' %}"><img id="icono-salir" src="{% static 'img/icono-salir.png' %}" alt="{% translate 'Cerrar sesión' %}"></button>
+        </form>
+    </header>
+
+
+    <main class="perfil-contenido">
+        {% block content %}
+
+
+        {% endblock %}
+    </main>
+
+
+    <footer>
+        <div class="footer">
+            <p>{% translate "Política de Privacidad" %}</p>
+            <p>{% translate "Términos de Servicio" %}</p>
+            <p>{% translate "Avisos Legales" %}</p>
+        </div>
+    </footer>
+
+    <!-- Barra de navegación mobile: cada pantalla define sus íconos -->
+    <nav class="perfil-nav" aria-label="{% translate 'Navegación principal' %}">
+        {% block nav_mobile %}
+
+
+        {% endblock %}
+    </nav>
+
+{% include 'matchPets/partials/_notif_popup.html' %}
+
+</body>
+
+</html>

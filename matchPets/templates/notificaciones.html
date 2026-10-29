@@ -1,0 +1,103 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="notif-page" data-aviso-inicial="{% for message in messages %}{{ message }}{% endfor %}">
+    <div class="notif-top">
+        <a href="{% url 'buscar_mascotas' %}" class="notif-back" aria-label="{% translate 'Volver' %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+        <h1 class="notif-title">{% translate "Notificaciones" %}</h1>
+    </div>
+
+    <section class="notif-panel" aria-label="{% translate 'Notificaciones' %}">
+        <div class="notif-list" id="notif-list">
+            {% for n in notificaciones %}
+            <article class="notif-card{% if not n.leida %} notif-card--nueva{% endif %}" data-tipo="{{ n.tipo }}" data-id="{{ n.id }}">
+                <span class="notif-icono" aria-hidden="true">
+                    {% if n.tipo == 'mensaje' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    {% elif n.tipo == 'solicitud_aceptada' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+                    {% else %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    {% endif %}
+                </span>
+                <div class="notif-texto">
+                    {% if n.tipo == 'mensaje' and n.from_user %}
+                    <a class="notif-linea notif-enlace" href="{% url 'ver_conversacion' n.from_user.id %}">{{ n.titulo }}</a>
+                    {% else %}
+                    <p class="notif-linea">{{ n.titulo }}</p>
+                    {% endif %}
+                    {% if n.detalle %}<p class="notif-detalle">{{ n.detalle }}</p>{% endif %}
+
+                    {% if n.tipo == 'solicitud_recibida' and n.solicitud %}
+                    {% if n.solicitud.status == 'pending' %}
+                    <div class="notif-botones">
+                        <form method="post" action="{% url 'responder_solicitud' n.solicitud.id 'aceptar' %}" class="notif-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-aceptar">{% translate "Aceptar" %}</button>
+                        </form>
+                        <form method="post" action="{% url 'responder_solicitud' n.solicitud.id 'denegar' %}" class="notif-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-denegar">{% translate "Denegar" %}</button>
+                        </form>
+                    </div>
+                    {% elif n.solicitud.status == 'accepted' %}
+                    <p class="notif-estado ok">{% translate "Solicitud aceptada" %}</p>
+                    {% else %}
+                    <p class="notif-estado ko">{% translate "Solicitud denegada" %}</p>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <div class="notif-acciones">
+                    {% if not n.leida %}
+                    <form method="post" action="{% url 'marcar_leida' n.id %}" class="notif-form">
+                        {% csrf_token %}
+                        <button type="submit" class="notif-leer" aria-label="{% translate 'Marcar como leída' %}" title="{% translate 'Marcar como leída' %}">✓</button>
+                    </form>
+                    {% endif %}
+                    <form method="post" action="{% url 'descartar_notificacion' n.id %}" class="notif-form">
+                        {% csrf_token %}
+                        <button type="submit" class="notif-cerrar" aria-label="{% translate 'Descartar notificación' %}">✕</button>
+                    </form>
+                </div>
+            </article>
+            {% empty %}
+            <p class="notif-vacia">{% translate "No tienes notificaciones por ahora." %}</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Aviso flotante: solicitud enviada / aceptada / denegada -->
+    <div class="notif-toast" id="notif-toast" role="status" aria-live="polite" hidden></div>
+</div>
+
+<script>
+(function () {
+    var toast = document.getElementById('notif-toast');
+    var page = document.querySelector('.notif-page');
+    var aviso = page && page.dataset.avisoInicial;
+    if (!aviso) return;
+    toast.textContent = aviso;
+    toast.hidden = false;
+    toast.classList.add('visible');
+    setTimeout(function () {
+        toast.classList.remove('visible');
+        toast.hidden = true;
+    }, 2600);
+})();
+</script>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}" aria-label="{% translate 'Buscar' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}" aria-label="{% translate 'Mi perfil' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="{% url 'bandeja_entrada' %}" aria-label="{% translate 'Mensajes' %}"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
+<a href="{% url 'feed' %}" aria-label="{% translate 'Inicio' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}" class="nav-notif-activa" aria-label="{% translate 'Notificaciones' %}" aria-current="page"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}">{% if unread_notifications_count > 0 %}<span class="nav-punto" aria-hidden="true"></span>{% endif %}</a>
+{% endblock %}

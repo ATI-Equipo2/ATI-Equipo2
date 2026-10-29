@@ -1,0 +1,49 @@
+{% extends 'base-perfil.html' %}
+{% load static i18n %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'css/mensajes.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bandeja">
+    <div class="bandeja-encabezado">
+        <h1 class="bandeja-titulo">{% translate "Mensajes" %}</h1>
+    </div>
+
+    {% if conversaciones %}
+    <ul class="bandeja-lista">
+        {% for c in conversaciones %}
+        <li>
+            <a class="bandeja-item" href="{% url 'ver_conversacion' c.usuario.id %}">
+                <span class="bandeja-foto">
+                    {% if c.usuario.foto %}
+                    <img src="{{ c.usuario.foto.url }}" alt="">
+                    {% else %}
+                    <img src="{% static 'img/logo.jpeg' %}" alt="">
+                    {% endif %}
+                </span>
+                <span class="bandeja-info">
+                    <strong>{% firstof c.usuario.nombre c.usuario.username %}</strong>
+                    <small>{{ c.ultimo_mensaje.content|truncatechars:50 }}</small>
+                </span>
+                {% if c.no_leidos %}
+                <span class="bandeja-badge">{{ c.no_leidos }}</span>
+                {% endif %}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="bandeja-vacia">{% translate "No tienes conversaciones todavía." %}</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block nav_mobile %}
+<a href="{% url 'buscar_mascotas' %}"><img src="{% static 'img/perfil/nav-buscar.svg' %}" alt="{% translate 'Buscar' %}"></a>
+<a href="{% url 'perfil_usuario' %}"><img src="{% static 'img/perfil/nav-usuario.svg' %}" alt="{% translate 'Mi perfil' %}"></a>
+<a href="{% url 'bandeja_entrada' %}" aria-current="page"><img src="{% static 'img/perfil/nav-chat.svg' %}" alt="{% translate 'Mensajes' %}"></a>
+<a href="{% url 'feed' %}"><img src="{% static 'img/perfil/nav-inicio.svg' %}" alt="{% translate 'Inicio' %}"></a>
+<a href="{% url 'notificaciones' %}"><img src="{% static 'img/perfil/nav-notificacion.svg' %}" alt="{% translate 'Notificaciones' %}"></a>
+{% endblock %}
