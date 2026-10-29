@@ -140,6 +140,13 @@
   border: 2px solid var(--accent-color, #f97206);
 }
 
+/*Ocultamos la barra de celulares en desktop*/
+@media (min-width: 641px) {
+  .buscar-barra {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
   .buscar-page {
     --u: calc(100vw / 360);
@@ -203,3 +210,4 @@
     font-size: calc(13 * var(--u));
   }
 }
+

@@ -14,19 +14,19 @@
 
 /* Encabezado solo visible en mobile */
 .notif-top {
-  display: none;
+  display: flex;
+  justify-content: center; /* Para que el título quede centrado */
+  margin-bottom: 20px;
 }
 
 /* Panel desktop: tarjeta flotante a la derecha, como en la foto 4 */
 .notif-panel {
-  width: min(calc(560 * var(--u)), 100%);
-  margin-left: auto;
-  margin-right: calc(40 * var(--u));
-  background: #fff;
-  border-radius: calc(14 * var(--u));
-  box-shadow: 0 calc(10 * var(--u)) calc(35 * var(--u)) rgba(0, 0, 0, 0.16);
-  border: 1px solid #eee3de;
-  overflow: hidden;
+  width: 100%;
+  max-width: calc(800 * var(--u));
+  margin: 0 auto; /* Lo centramos */
+  background: transparent; /* Quita el fondo blanco de "tarjeta" */
+  box-shadow: none; 
+  
 }
 
 .notif-list {
